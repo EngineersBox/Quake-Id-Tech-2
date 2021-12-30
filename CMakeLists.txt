@@ -25,31 +25,24 @@ list (REMOVE_DUPLICATES Quake_INCLUDE_DIRS)
 add_executable(Quake ${Quake_SOURCES})
 target_include_directories(Quake PRIVATE ${Quake_INCLUDE_DIRS})
 
-# Configure SDL2
-find_package(SDL2 CONFIG REQUIRED)
-target_link_libraries(Quake PUBLIC ${SDL2_LIBRARIES})
-target_include_directories(Quake PUBLIC ${SDL2_INCLUDE_DIRS})
-target_link_libraries(Quake PUBLIC ${SDL2_LIBRARIES})
-target_link_libraries(Quake PRIVATE SDL2::SDL2 SDL2::SDL2main)
-
-# Configure SDL2_Image
-find_package(sdl2-image CONFIG REQUIRED)
-target_link_libraries(Quake PRIVATE SDL2::SDL2_image)
-
-# Configure SDL2_TTF
-find_package(sdl2-ttf CONFIG REQUIRED)
-target_link_libraries(Quake PRIVATE SDL2::SDL2_ttf)
-
-# Configure OpenGL
+# OpenGL
 find_package(OpenGL REQUIRED)
 target_include_directories(Quake PUBLIC ${OPENGL_INCLUDE_DIR})
 target_include_directories(Quake PUBLIC ${OPENGL_LIBRARIES})
 target_link_libraries(Quake PUBLIC ${OPENGL_LIBRARIES})
 
-# Configure Glm
+# GLFW 3
+find_package(glfw3 CONFIG REQUIRED)
+target_link_libraries(Quake PRIVATE glfw)
+
+# GLEW
+find_package(GLEW REQUIRED)
+target_link_libraries(Quake PRIVATE GLEW::GLEW)
+
+# GLM
 find_package(glm CONFIG REQUIRED)
 target_link_libraries(Quake PRIVATE glm::glm)
 
-# Configure spdlog
+# spdlog
 find_package(spdlog CONFIG REQUIRED)
 target_link_libraries(Quake PRIVATE spdlog::spdlog spdlog::spdlog_header_only)

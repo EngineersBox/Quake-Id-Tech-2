@@ -1,40 +1,46 @@
 #pragma once
 
-#ifndef ENGINE_H
-#define ENGINE_H
+#ifndef QUAKE_ENGINE_HPP
+#define QUAKE_ENGINE_HPP
 
 #include "window.hpp"
-#include "../view/camera.hpp"
-#include "timing/highResTimer.hpp"
-#include "../scene/world/world.hpp"
-#include "debug/context.hpp"
+#include "logging/logger.hpp"
 
-class Engine : public Window {
-private:
-    Camera* camera{};
-    World* world{};
-protected:
-	HighResTimer* timer;
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <string>
+#include <map>
+#include <boost/units/quantity.hpp>
+#include <boost/units/systems/si/length.hpp>
+#include <boost/units/base_units/imperial/inch.hpp>
 
-	virtual void cycle(float deltaTime);
-	virtual void onCycle() {}
-    virtual void onInit() {}
-	virtual Camera* getCamera() { return this->camera;  }
-	virtual World* getWorld() { return this->world;  }
-	virtual void tickInput(float deltaTime);
-	void swapBuffers() { SDL_GL_SwapWindow(this->window); }
-public:
-	Engine(): timer(new HighResTimer) {
-        QDebug::logOpenGLContext();
-	}
-	Engine(const char* name, bool fscreen, int width, int height) :
-		Window(name, fscreen, width, height),
-		timer(new HighResTimer) {
-        QDebug::logOpenGLContext();
-    }
-	~Engine() override = default;
+namespace Core {
+    class Engine {
+    private:
+        int width = 1920;
+        int height = 1080;
+        GLFWwindow* window;
+        std::string windowName;
 
-    int eventLoop();
-};
+        static void configureCallbacks();
+    public:
+        std::map<GLFWmonitor*, size_t> monitors;
+        std::array<std::unique_ptr<Core::Display>, 8> displays;
 
-#endif // ENGINE_H
+        Engine(const char* windowName);
+
+        void init();
+        void destroy();
+
+        static void checkEngineInstanceValid();
+        static inline void onMonitorEvent(GLFWmonitor* monitor, int event);
+
+        void tick();
+        void render();
+        bool shouldExit();
+
+        Engine() = default;
+    };
+}
+
+#endif //QUAKE_ENGINE_HPP

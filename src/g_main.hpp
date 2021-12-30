@@ -1,10 +1,11 @@
 ﻿#pragma once
 
+#define GLM_FORCE_SWIZZLE
+
 #include <iostream>
-#include <SDL2/SDL.h>
 #include <cstdio>
 #include <spdlog/spdlog.h>
 
-#include "resource/loader/QLoader.hpp"
-#include "g_engine.hpp"
 #include "core/logging/logger.hpp"
+#include "core/engine.hpp"
+#include "rendering/scene/bsp/bsp.hpp"
