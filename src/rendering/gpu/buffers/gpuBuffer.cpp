@@ -1,7 +1,7 @@
-#include "gpu_buffer.hpp"
-#include "gpu.hpp"
+#include "gpuBuffer.hpp"
+#include "../gpu.hpp"
 
-namespace Rendering::GPU {
+namespace Rendering::GPU::Buffers {
 	GpuBuffer::GpuBuffer() {
         id = gpu.create_buffer();
     }

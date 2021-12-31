@@ -12,14 +12,14 @@
 
 #include "../../scene/structure/rectangle.hpp"
 #include "indexType.hpp"
-#include "gpu_defs.hpp"
+#include "gpuDefs.hpp"
 #include "colorTypes.hpp"
 #include "../../resources/texture.hpp"
+#include "buffers/frameBuffer.hpp"
+#include "shaders/shader.hpp"
+#include "buffers/gpuBuffer.hpp"
 
 namespace Rendering::GPU {
-	struct FrameBuffer;
-	struct GpuBuffer;
-    struct GpuProgram;
 
     struct Gpu {
         enum class BufferTarget {
@@ -155,7 +155,7 @@ namespace Rendering::GPU {
 
         //programs
         struct ProgramManager {
-            typedef boost::weak_ptr<GpuProgram> WeakType;
+            typedef boost::weak_ptr<Shaders::Shader> WeakType;
 			[[nodiscard]] boost::optional<WeakType> top() const;
 			void push(const WeakType& data);
 			WeakType pop();
@@ -166,8 +166,8 @@ namespace Rendering::GPU {
 
         //frame buffers
         struct FrameBufferManager {
-			typedef boost::weak_ptr<FrameBuffer> WeakType;
-			typedef boost::shared_ptr<FrameBuffer> SharedType;
+			typedef boost::weak_ptr<Buffers::FrameBuffer> WeakType;
+			typedef boost::shared_ptr<Buffers::FrameBuffer> SharedType;
             [[nodiscard]] boost::optional<WeakType> top() const;
 			void push(const SharedType& frame_buffer);
 			WeakType pop();
@@ -201,7 +201,7 @@ namespace Rendering::GPU {
 
         //buffers
         struct BufferManager {
-            typedef boost::shared_ptr<GpuBuffer> BufferType;
+            typedef boost::shared_ptr<Buffers::GpuBuffer> BufferType;
 			void put(BufferType& buffer);
 			void erase(BufferType& buffer);
 			void push(BufferTarget target, BufferType buffer);

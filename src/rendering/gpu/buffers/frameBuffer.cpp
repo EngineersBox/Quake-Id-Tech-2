@@ -1,7 +1,7 @@
-#include "frame_buffer.hpp"
-#include "gpu.hpp"
+#include "frameBuffer.hpp"
+#include "../gpu.hpp"
 
-namespace Rendering::GPU {
+namespace Rendering::GPU::Buffers {
 	FrameBuffer::FrameBuffer(GpuFrameBufferType type, const GpuFrameBufferSizeType& size) :
         type(type),
         size(size) {

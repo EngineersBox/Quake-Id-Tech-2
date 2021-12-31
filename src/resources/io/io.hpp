@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <istream>
+#include <fstream>
 
 #include "../../scene/structure/range.hpp"
 
@@ -18,9 +19,15 @@ namespace Resources::IO {
         istream.read(reinterpret_cast<char*>(&t), sizeof(T));
     }
 
-    template<typename T>
     inline void read(std::istream& istream, std::string& s) {
         std::getline(istream, s, '\0');
+    }
+
+    inline void readAllFromFile(const std::string& filePath, std::string& s) {
+        std::ifstream in(filePath, std::ios::in | std::ios::binary);
+        if (in) {
+            s = std::string((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+        }
     }
 
     template<typename T, size_t N>

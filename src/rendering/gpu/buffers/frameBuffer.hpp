@@ -3,10 +3,10 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 
-#include "gpu_defs.hpp"
-#include "../../resources/texture.hpp"
+#include "../gpuDefs.hpp"
+#include "../../../resources/texture.hpp"
 
-namespace Rendering::GPU {
+namespace Rendering::GPU::Buffers {
     struct FrameBuffer {
 		[[nodiscard]] GpuId get_id() const { return id; }
         [[nodiscard]] const boost::shared_ptr<Resources::Texture>& get_color_texture() const { return color_texture; }

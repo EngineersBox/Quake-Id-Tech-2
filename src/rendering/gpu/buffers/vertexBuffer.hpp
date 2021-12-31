@@ -3,10 +3,10 @@
 #include <array>
 #include <vector>
 
-#include "gpu_buffer.hpp"
-#include "gpu.hpp"
+#include "gpuBuffer.hpp"
+#include "../gpu.hpp"
 
-namespace Rendering::GPU {
+namespace Rendering::GPU::Buffers {
     template<typename Vertex>
 	struct VertexBuffer : GpuBuffer {
         typedef Vertex VertexType;

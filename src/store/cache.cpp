@@ -41,7 +41,7 @@ namespace Store {
         file_path /= file_name;
 
         std::ofstream ofstream(file_path.c_str(), std::ios::out);
-        ::write(ofstream, data, count);
+        Resources::IO::write(ofstream, data, count);
 
         auto checksum = crc32.checksum();
 

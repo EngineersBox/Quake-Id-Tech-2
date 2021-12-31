@@ -4,10 +4,10 @@
 #include <vector>
 #include <type_traits>
 
-#include "gpu.hpp"
-#include "gpu_buffer.hpp"
+#include "../gpu.hpp"
+#include "gpuBuffer.hpp"
 
-namespace Rendering::GPU {
+namespace Rendering::GPU::Buffers {
 	template<typename Index, typename Enable = void>
     struct IndexBuffer;
 

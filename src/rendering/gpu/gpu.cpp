@@ -10,10 +10,10 @@
 #include <spdlog/spdlog.h>
 
 #include "opengl.hpp"
-#include "gpu_program.hpp"
-#include "frame_buffer.hpp"
+#include "shader/gpu_program.hpp"
+#include "buffers/frameBuffer.hpp"
 #include "../../resources/texture.hpp"
-#include "gpu_buffer.hpp"
+#include "buffers/gpuBuffer.hpp"
 #include "../../resources/image.hpp"
 #include "../../store/cache.hpp"
 #include "../../resources/io/io.hpp"
@@ -386,7 +386,7 @@ namespace Rendering::GPU {
         }
 
         //restore previously bound frame buffer
-        boost::optional<boost::weak_ptr<FrameBuffer>> frame_buffer = gpu.frame_buffers.top();
+        boost::optional<boost::weak_ptr<Buffers::FrameBuffer>> frame_buffer = gpu.frame_buffers.top();
         glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer ? (int) frame_buffer->lock()->get_id() : 0); glCheckError();
 
         return id;
@@ -560,7 +560,7 @@ namespace Rendering::GPU {
             throw std::exception();
         }
 
-        boost::weak_ptr<GpuProgram> previous_program = programs.top();
+        boost::weak_ptr<Shaders::Shader> previous_program = programs.top();
         programs.pop();
         previous_program.lock()->on_unbind();
 
@@ -691,7 +691,7 @@ namespace Rendering::GPU {
             throw std::out_of_range("");
         }
 
-        std::stack<boost::shared_ptr<GpuBuffer>>& _buffers = target_buffers_itr->second;
+        std::stack<boost::shared_ptr<Buffers::GpuBuffer>>& _buffers = target_buffers_itr->second;
         if (_buffers.empty()) {
             throw std::out_of_range("");
         }
@@ -709,7 +709,7 @@ namespace Rendering::GPU {
             throw std::out_of_range("");
         }
 
-        const std::stack<boost::shared_ptr<GpuBuffer>>& _buffers = target_buffers_itr->second;
+        const std::stack<boost::shared_ptr<Buffers::GpuBuffer>>& _buffers = target_buffers_itr->second;
         if (_buffers.empty()) {
             throw std::out_of_range("");
         }
@@ -727,7 +727,7 @@ namespace Rendering::GPU {
 
     GpuId Gpu::create_program(const std::string& vertex_shader_source, const std::string& fragment_shader_source) const {
         auto create_shader = [&](GLenum type, const std::string& source) -> GLint {
-            //create shader
+            //create shaders
             GpuId id = glCreateShader(type); glCheckError();
 
             const char* strings = source.c_str();
@@ -759,19 +759,19 @@ namespace Rendering::GPU {
         boost::crc_32_type crc32;
         crc32.process_bytes(vertex_shader_source.data(), vertex_shader_source.size());
         crc32.process_bytes(fragment_shader_source.data(), fragment_shader_source.size());
-        auto source_checksum = crc32.checksum();
+        unsigned int source_checksum = crc32.checksum();
 
         //TODO: give these programs proper names
-        auto ifstream = Store::cache.get(std::to_string(source_checksum));
+        std::unique_ptr<std::basic_ifstream<char>> ifstream = Store::cache.get(std::to_string(source_checksum));
 
         if (ifstream->is_open()) {
             GLenum binary_format;
             GLsizei binary_length;
             std::vector<char> binary;
 
-            read(*ifstream, binary_format);
-            read(*ifstream, binary_length);
-            read(*ifstream, binary, binary_length);
+            Resources::IO::read(*ifstream, binary_format);
+            Resources::IO::read(*ifstream, binary_length);
+            Resources::IO::read(*ifstream, binary, binary_length);
 
             glProgramBinary(id, binary_format, binary.data(), binary_length); glCheckError();
 
@@ -826,9 +826,9 @@ namespace Rendering::GPU {
         glGetProgramBinary(id, static_cast<GLsizei>(program_binary_data.size()), &binary_length, &binary_format, static_cast<GLvoid*>(program_binary_data.data())); glCheckError();
 
         std::stringstream stringstream;
-        write(stringstream, binary_format);
-        write(stringstream, binary_length);
-        write(stringstream, program_binary_data);
+        Resources::IO::write(stringstream, binary_format);
+        Resources::IO::write(stringstream, binary_length);
+        Resources::IO::write(stringstream, program_binary_data);
         std::string data = stringstream.str();
 
         Store::cache.put_buffer(std::to_string(source_checksum), data.data(), data.size());

@@ -17,8 +17,8 @@
 #include "../../../resources/texture.hpp"
 #include "bspEntity.hpp"
 #include "../../gpu/gpu.hpp"
-#include "../../../rendering/gpu/vertex_buffer.hpp"
-#include "../../../rendering/gpu/index_buffer.hpp"
+#include "../../gpu/buffers/vertexBuffer.hpp"
+#include "../../gpu/buffers/indexBuffer.hpp"
 
 namespace Rendering::Scene {
 class BSP: public Resources::Resource {
@@ -138,10 +138,10 @@ class BSP: public Resources::Resource {
             Type type = Type::X;
         };
 
-        typedef bsp_gpu_program::VertexType VertexType;
-        typedef Rendering::GPU::VertexBuffer<VertexType> VertexBufferType;
+        typedef BSPShader::VertexType VertexType;
+        typedef Rendering::GPU::Buffers::VertexBuffer<VertexType> VertexBufferType;
         typedef unsigned int IndexType;
-        typedef Rendering::GPU::IndexBuffer<IndexType> IndexBufferType;
+        typedef Rendering::GPU::Buffers::IndexBuffer<IndexType> IndexBufferType;
 
         struct TraceArgs {
             ::Scene::Structure::Line3<float> line;

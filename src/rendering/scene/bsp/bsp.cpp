@@ -6,13 +6,14 @@
 
 #include "bsp.hpp"
 #include "cameraParams.hpp"
-#include "image.hpp"
-#include "gpu.hpp"
+#include "../../../resources/image.hpp"
+#include "../../../resurces/texture.hpp"
+#include "../../gpu/gpu.hpp"
 #include "collision.hpp"
 #include "bspGpuProgram.hpp"
-#include "resourceManager.hpp"
-#include "gpuProgramManager.hpp"
-#include "gpuBufferManager.hpp"
+#include "../../../resources/resourceManager.hpp"
+#include "../../gpu/shaders/shaderManager.hpp"
+#include "../../gpu/buffers/gpuBufferManager.hpp"
 #include "../../../resources/io/io.hpp"
 #include "cameraParams.hpp"
 
@@ -305,12 +306,12 @@ namespace Rendering::Scene {
 
             bsp_textures.push_back(bsp_texture);
             texture_name.append(".png");
-            boost::shared_ptr<Texture> texture;
+            boost::shared_ptr<Resources::Texture> texture;
 
-            try{
-                texture = resources.get<Texture>(texture_name);
+            try {
+                texture = Resources::resources.get<Resources::Texture>(texture_name);
             } catch (...) {
-                spdlog::error("Couldn't load texture: {}", texture_name);
+                spdlog::error("Could not load texture: {}", texture_name);
             }
             textures.push_back(texture);
         }
@@ -436,14 +437,14 @@ namespace Rendering::Scene {
 
                 auto lighting_data_size = 3 * static_cast<int>(texture_size.x) * static_cast<int>(texture_size.y);
 
-                auto image = boost::make_shared<Image>(
-                        static_cast<Image::SizeType>(texture_size),
+                auto image = boost::make_shared<Resources::Image>(
+                        static_cast<Resources::Image::SizeType>(texture_size),
                         8,
-                        ColorType::RGB,
+                        Rendering::GPU::ColorType::RGB,
                         lighting_data.data() + face.lightmap_offset,
                         lighting_data_size);
 
-                auto lightmap_texture = boost::make_shared<Texture>(image);
+                auto lightmap_texture = boost::make_shared<Resources::Texture>(image);
 
                 face_lightmap_textures[face_index] = lightmap_texture;
             }
@@ -465,7 +466,7 @@ namespace Rendering::Scene {
             end = entities_string.find_first_of('}', begin + 1);
             std::string entity_string = entities_string.substr(begin + 1, end - begin - 1);
             BSPEntity entity(entity_string);
-            auto model_optional = entity.get_optional<std::string>("model");
+            auto model_optional = entity.getOptional<std::string>("model");
             if (model_optional) {
                 auto model = model_optional.get();
                 if (boost::algorithm::starts_with(model, "*")) {
@@ -475,10 +476,10 @@ namespace Rendering::Scene {
             entities.emplace_back(std::move(entity));
         }
 
-        vertex_buffer = gpu_buffers.make<VertexBufferType>().lock();
-        vertex_buffer->data(vertices, Gpu::BufferUsage::STATIC_DRAW);
-        index_buffer = gpu_buffers.make<IndexBufferType>().lock();
-        index_buffer->data(indices, Gpu::BufferUsage::STATIC_DRAW);
+        vertex_buffer = Rendering::GPU::Buffers::gpuBuffers.make<VertexBufferType>().lock();
+        vertex_buffer->data(vertices, Rendering::GPU::Gpu::BufferUsage::STATIC_DRAW);
+        index_buffer = Rendering::GPU::Buffers::gpuBuffers.make<IndexBufferType>().lock();
+        index_buffer->data(indices, Rendering::GPU::Gpu::BufferUsage::STATIC_DRAW);
     }
 
     void BSP::render(const CameraParameters& camera_parameters) {
@@ -487,32 +488,32 @@ namespace Rendering::Scene {
         auto camera_leaf_index = get_leaf_index_from_location(camera_parameters.location);
 
         //culling
-        auto culling_state = gpu.culling.get_state();
+        auto culling_state = Rendering::GPU::gpu.culling.get_state();
         culling_state.is_enabled = true;
-        culling_state.mode = Gpu::CullingMode::FRONT;
-        gpu.culling.push_state(culling_state);
+        culling_state.mode = Rendering::GPU::Gpu::CullingMode::FRONT;
+        Rendering::GPU::gpu.culling.push_state(culling_state);
 
         //blend
-        auto blend_state = gpu.blend.get_state();
+        auto blend_state = Rendering::GPU::gpu.blend.get_state();
         blend_state.is_enabled = false;
-        gpu.blend.push_state(blend_state);
+        Rendering::GPU::gpu.blend.push_state(blend_state);
 
         static const auto DIFFUSE_TEXTURE_INDEX = 0;
         static const auto LIGHTMAP_TEXTURE_INDEX = 1;
 
         //bind buffers
-        gpu.buffers.push(Gpu::BufferTarget::ARRAY, vertex_buffer);
-        gpu.buffers.push(Gpu::BufferTarget::ELEMENT_ARRAY, index_buffer);
+        Rendering::GPU::gpu.buffers.push(Rendering::GPU::Gpu::BufferTarget::ARRAY, vertex_buffer);
+        Rendering::GPU::gpu.buffers.push(Rendering::GPU::Gpu::BufferTarget::ELEMENT_ARRAY, index_buffer);
 
         //bind program
-        const auto gpu_program = gpu_programs.get<bsp_gpu_program>();
-        gpu.programs.push(gpu_program);
+        const auto gpu_program = Rendering::GPU::Shaders::shaders.get<bsp_gpu_program>();
+        Rendering::GPU::gpu.programs.push(gpu_program);
 
-        gpu.set_uniform("world_matrix", glm::mat4());
-        gpu.set_uniform("view_projection_matrix", camera_parameters.projection_matrix * camera_parameters.view_matrix);
-        gpu.set_uniform("diffuse_texture", DIFFUSE_TEXTURE_INDEX);
-        gpu.set_uniform("lightmap_texture", LIGHTMAP_TEXTURE_INDEX);
-        gpu.set_uniform("lightmap_gamma", render_settings.lightmap_gamma);
+        Rendering::GPU::gpu.set_uniform("world_matrix", glm::mat4());
+        Rendering::GPU::gpu.set_uniform("view_projection_matrix", camera_parameters.projection_matrix * camera_parameters.view_matrix);
+        Rendering::GPU::gpu.set_uniform("diffuse_texture", DIFFUSE_TEXTURE_INDEX);
+        Rendering::GPU::gpu.set_uniform("lightmap_texture", LIGHTMAP_TEXTURE_INDEX);
+        Rendering::GPU::gpu.set_uniform("lightmap_gamma", render_settings.lightmap_gamma);
 
         auto render_face = [&](int face_index) {
             if (faces_rendered[face_index]) return;
@@ -521,13 +522,15 @@ namespace Rendering::Scene {
 
             const auto& diffuse_texture = textures[texture_infos[face.texture_info_index].texture_index];
             const auto& lightmap_texture = face_lightmap_textures[face_index];
-            gpu.textures.bind(DIFFUSE_TEXTURE_INDEX, diffuse_texture);
-            gpu.textures.bind(LIGHTMAP_TEXTURE_INDEX, lightmap_texture);
+            Rendering::GPU::gpu.textures.bind(DIFFUSE_TEXTURE_INDEX, diffuse_texture);
+            Rendering::GPU::gpu.textures.bind(LIGHTMAP_TEXTURE_INDEX, lightmap_texture);
 
-            gpu.draw_elements(Gpu::PrimitiveType::TRIANGLE_FAN,
-                              face.surface_edge_count,
-                              IndexBufferType::DATA_TYPE,
-                              face_start_indices[face_index] * sizeof(IndexType));
+            Rendering::GPU::gpu.draw_elements(
+                Rendering::GPU::Gpu::PrimitiveType::TRIANGLE_FAN,
+                face.surface_edge_count,
+                IndexBufferType::DATA_TYPE,
+                face_start_indices[face_index] * sizeof(IndexType)
+            );
 
             faces_rendered[face_index] = true;
             ++render_stats.face_count;
@@ -543,7 +546,7 @@ namespace Rendering::Scene {
 
         std::function<void(NodeIndexType, NodeIndexType)> render_node = [&](NodeIndexType node_index, NodeIndexType camera_leaf_index) {
             if (node_index < 0) {
-                if (node_index == -1) return
+                if (node_index == -1) return;
                 auto leaf_pvs_map_itr = leaf_pvs_map.find(camera_leaf_index - 1);
                 if (camera_leaf_index > 0 &&
                     leaf_pvs_map_itr != leaf_pvs_map.end() &&
@@ -588,18 +591,18 @@ namespace Rendering::Scene {
             const auto& model = models[model_index];
 
             //render mode
-            auto render_mode_optional = entity.get_optional<int>("rendermode");
+            auto render_mode_optional = entity.getOptional<int>("rendermode");
             auto render_mode = RenderMode::NORMAL;
             if (render_mode_optional) render_mode = static_cast<RenderMode>(render_mode_optional.get());
 
             //alpha
             float alpha = 1.0f;
-            auto alpha_optional = entity.get_optional<unsigned char>("renderamt");
+            auto alpha_optional = entity.getOptional<unsigned char>("renderamt");
             if (alpha_optional) alpha = static_cast<float>(alpha_optional.get()) / 255.0f;
 
             //origin
             glm::vec3 origin;
-            auto origin_optional = entity.get_optional("origin");
+            auto origin_optional = entity.getOptional("origin");
             if (origin_optional) {
                 boost::is_any_of(" ");
                 std::vector<std::string> tokens;
@@ -619,7 +622,7 @@ namespace Rendering::Scene {
 
             //color
             glm::vec4 color(1.0f);
-            auto color_optional = entity.get_optional("rendercolor");
+            auto color_optional = entity.getOptional("rendercolor");
             if (color_optional) {
                 std::vector<std::string> tokens;
                 boost::algorithm::split(tokens, color_optional.get(), boost::is_any_of(" "), boost::algorithm::token_compress_on);
@@ -629,26 +632,26 @@ namespace Rendering::Scene {
                 color.b = boost::lexical_cast<float>(tokens[2]) / 255.0f;
             }
 
-            auto blend_state = gpu.blend.get_state();
-            auto depth_state = gpu.depth.get_state();
+            auto blend_state = Rendering::GPU::gpu.blend.get_state();
+            auto depth_state = Rendering::GPU::gpu.depth.get_state();
             depth_state.should_test = true;
-            const auto gpu_program = gpu_programs.get<bsp_gpu_program>();
+            const auto gpu_program = Rendering::GPU::Shaders::shaders.get<bsp_gpu_program>();
 
             switch (render_mode) {
                 case RenderMode::TEXTURE:
-                    gpu.set_uniform("alpha", 0.0f);
+                    Rendering::GPU::gpu.set_uniform("alpha", 0.0f);
                     blend_state.is_enabled = true;
-                    blend_state.src_factor = Gpu::BlendFactor::SRC_ALPHA;
-                    blend_state.dst_factor = Gpu::BlendFactor::ONE;
+                    blend_state.src_factor = Rendering::GPU::Gpu::BlendFactor::SRC_ALPHA;
+                    blend_state.dst_factor = Rendering::GPU::Gpu::BlendFactor::ONE;
                     break;
                 case RenderMode::SOLID:
-                    gpu.set_uniform("should_test_alpha", 1);
+                    Rendering::GPU::gpu.set_uniform("should_test_alpha", 1);
                     break;
                 case RenderMode::ADDITIVE:
-                    gpu.set_uniform("alpha", alpha);
+                    Rendering::GPU::gpu.set_uniform("alpha", alpha);
                     blend_state.is_enabled = true;
-                    blend_state.src_factor = Gpu::BlendFactor::ONE;
-                    blend_state.dst_factor = Gpu::BlendFactor::ONE;
+                    blend_state.src_factor = Rendering::GPU::Gpu::BlendFactor::ONE;
+                    blend_state.dst_factor = Rendering::GPU::Gpu::BlendFactor::ONE;
                     depth_state.should_write_mask = false;
                     break;
                 default:
@@ -657,47 +660,47 @@ namespace Rendering::Scene {
                     break;
             }
 
-            gpu.blend.push_state(blend_state);
-            gpu.depth.push_state(depth_state);
+            Rendering::GPU::gpu.blend.push_state(blend_state);
+            Rendering::GPU::gpu.depth.push_state(depth_state);
             auto world_matrix = ::glm::translate(model.origin);
             world_matrix *= ::glm::translate(origin);
-            gpu.set_uniform("world_matrix", world_matrix);
+            Rendering::GPU::gpu.set_uniform("world_matrix", world_matrix);
             render_node(model.head_node_indices[0], -1);
 
             switch (render_mode) {
                 case RenderMode::TEXTURE:
                 case RenderMode::ADDITIVE:
-                    gpu.set_uniform("alpha", 1.0f);
+                    Rendering::GPU::gpu.set_uniform("alpha", 1.0f);
                     break;
                 case RenderMode::SOLID:
-                    gpu.set_uniform("should_test_alpha", 0);
+                    Rendering::GPU::gpu.set_uniform("should_test_alpha", 0);
                     break;
                 default:
                     break;
             }
 
-            gpu.depth.pop_state();
-            gpu.blend.pop_state();
+            Rendering::GPU::gpu.depth.pop_state();
+            Rendering::GPU::gpu.blend.pop_state();
         };
 
         render_stats.reset();
 
         //depth
-        auto depth_state = gpu.depth.get_state();
+        auto depth_state = Rendering::GPU::gpu.depth.get_state();
         depth_state.should_test = true;
-        gpu.depth.push_state(depth_state);
+        Rendering::GPU::gpu.depth.push_state(depth_state);
         render_node(0, camera_leaf_index);
-        gpu.depth.pop_state();
+        Rendering::GPU::gpu.depth.pop_state();
 
         for (unsigned long brush_entity_index : brush_entity_indices) {
             render_brush_entity(brush_entity_index);
         }
 
-        gpu.programs.pop();
-        gpu.buffers.pop(Gpu::BufferTarget::ELEMENT_ARRAY);
-        gpu.buffers.pop(Gpu::BufferTarget::ARRAY);
-        gpu.culling.pop_state();
-        gpu.blend.pop_state();
+        Rendering::GPU::gpu.programs.pop();
+        Rendering::GPU::gpu.buffers.pop(Rendering::GPU::Gpu::BufferTarget::ELEMENT_ARRAY);
+        Rendering::GPU::gpu.buffers.pop(Rendering::GPU::Gpu::BufferTarget::ARRAY);
+        Rendering::GPU::gpu.culling.pop_state();
+        Rendering::GPU::gpu.blend.pop_state();
     }
 
     int BSP::get_leaf_index_from_location(const glm::vec3& location) const {

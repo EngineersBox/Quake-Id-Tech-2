@@ -9,14 +9,11 @@
 
 namespace Rendering::Scene {
     class BSPEntity {
-        BSPEntity(const std::string& string);
 
         [[nodiscard]] const std::string& getClassname() const { return classname; }
 
-        template<typename T = std::string>
-        T get(const std::string& key) const {
-            return boost::lexical_cast<T>(properties.at(key));
-        }
+    public:
+        BSPEntity(const std::string& string);
 
         template<typename T = std::string>
         boost::optional<T> getOptional(const std::string& key) const {
@@ -29,6 +26,12 @@ namespace Rendering::Scene {
             }
             return property;
         }
+
+        template<typename T = std::string>
+        T get(const std::string& key) const {
+            return boost::lexical_cast<T>(properties.at(key));
+        }
+
     private:
         std::map<std::string, std::string> properties;
         std::string classname;

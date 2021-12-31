@@ -28,6 +28,10 @@ namespace Core::Logger {
         return "logs/quake_log_" + getCurrentTime(DATETIME_LITERAL_FORMAT) + ".log";
     }
 
+    static void generalErrorHandler(const std::string& msg) {
+        spdlog::error("[EXCEPTION] :: {0}", msg);
+    }
+
     static void init() {
         try {
             std::vector<spdlog::sink_ptr> sinks;
@@ -43,6 +47,8 @@ namespace Core::Logger {
             std::shared_ptr<spdlog::logger> combinedLogger = std::make_shared<spdlog::logger>("logger", begin(sinks), end(sinks));
             spdlog::set_default_logger(combinedLogger);
             combinedLogger->set_level(spdlog::level::trace);
+
+            spdlog::set_error_handler(Core::Logger::generalErrorHandler)
         } catch (const spdlog::spdlog_ex& ex) {
             std::cout << "Logger init failed: " << ex.what() << std::endl;
             exit(1);

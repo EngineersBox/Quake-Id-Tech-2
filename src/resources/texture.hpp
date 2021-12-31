@@ -6,7 +6,7 @@
 #include "resource.hpp"
 #include "image.hpp"
 #include "../rendering/gpu/colorTypes.hpp"
-#include "../rendering/gpu/gpu_defs.hpp"
+#include "../rendering/gpu/gpuDefs.hpp"
 
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
