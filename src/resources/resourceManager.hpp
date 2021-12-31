@@ -19,7 +19,7 @@ namespace Resources {
 
         [[nodiscard]] size_t count() const;
 
-        template<typename T, typename std::enable_if<IsResource<T>::value, T>::type = true>
+        template<typename T, std::enable_if_t<IsResource<T>::value, bool> = true>
         size_t count() {
             static const std::type_index TYPE_INDEX = typeid(T);
             std::lock_guard<std::recursive_mutex> lock(mutex);
@@ -29,7 +29,7 @@ namespace Resources {
             return type_resources_itr->second.size();
         }
 
-        template<typename T, typename std::enable_if<IsResource<T>::value, T>::type = true>
+        template<typename T, std::enable_if_t<IsResource<T>::value, bool> = true>
         boost::shared_ptr<T> get(const std::string& name) {
             static const std::type_index TYPE_INDEX = typeid(T);
             std::lock_guard<std::recursive_mutex> lock(mutex);
@@ -71,7 +71,7 @@ namespace Resources {
 			return resource;
 		}
 
-        template<typename T, typename std::enable_if<IsResource<T>::value, T>::type = true>
+        template<typename T, std::enable_if_t<IsResource<T>::value, T> = true>
         void put(boost::shared_ptr<T> resource) {
             static const std::type_index TYPE_INDEX = typeid(T);
             std::lock_guard<std::recursive_mutex> lock(mutex);

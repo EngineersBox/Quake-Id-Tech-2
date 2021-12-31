@@ -10,7 +10,7 @@
 
 namespace Rendering::GPU::Shaders {
     struct ShaderManager {
-		template<typename T, typename std::enable_if<IsGpuProgram<T>::value, T>::type = true>
+		template<typename T, std::enable_if_t<IsGpuProgram<T>::value, bool> = true>
         boost::shared_ptr<T> make() {
             static const std::type_index TYPE_INDEX = typeid(T);
             const boost::shared_ptr<T> _shader = boost::make_shared<T>();
@@ -18,7 +18,7 @@ namespace Rendering::GPU::Shaders {
             return _shader;
         }
 
-        template<typename T, typename std::enable_if<IsGpuProgram<T>::value, T>::type = true>
+        template<typename T, std::enable_if_t<IsGpuProgram<T>::value, bool> = true>
         boost::shared_ptr<T> get() {
             static const std::type_index TYPE_INDEX = typeid(T);
             const auto shader_iter = shaders.find(TYPE_INDEX);

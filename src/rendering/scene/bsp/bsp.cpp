@@ -5,17 +5,16 @@
 #include <spdlog/spdlog.h>
 
 #include "bsp.hpp"
-#include "cameraParams.hpp"
+#include "../../view/cameraParams.hpp"
 #include "../../../resources/image.hpp"
-#include "../../../resurces/texture.hpp"
+#include "../../../resources/texture.hpp"
 #include "../../gpu/gpu.hpp"
 #include "collision.hpp"
-#include "bspGpuProgram.hpp"
+#include "bspShader.hpp"
 #include "../../../resources/resourceManager.hpp"
 #include "../../gpu/shaders/shaderManager.hpp"
 #include "../../gpu/buffers/gpuBufferManager.hpp"
 #include "../../../resources/io/io.hpp"
-#include "cameraParams.hpp"
 
 
 namespace Rendering::Scene {
@@ -482,7 +481,7 @@ namespace Rendering::Scene {
         index_buffer->data(indices, Rendering::GPU::Gpu::BufferUsage::STATIC_DRAW);
     }
 
-    void BSP::render(const CameraParameters& camera_parameters) {
+    void BSP::render(const View::CameraParameters& camera_parameters) {
         boost::dynamic_bitset<> faces_rendered = boost::dynamic_bitset<>(faces.size());
         faces_rendered.reset();
         auto camera_leaf_index = get_leaf_index_from_location(camera_parameters.location);
@@ -506,7 +505,7 @@ namespace Rendering::Scene {
         Rendering::GPU::gpu.buffers.push(Rendering::GPU::Gpu::BufferTarget::ELEMENT_ARRAY, index_buffer);
 
         //bind program
-        const auto gpu_program = Rendering::GPU::Shaders::shaders.get<bsp_gpu_program>();
+        const auto gpu_program = Rendering::GPU::Shaders::shaders.get<BSPShader>();
         Rendering::GPU::gpu.programs.push(gpu_program);
 
         Rendering::GPU::gpu.set_uniform("world_matrix", glm::mat4());
@@ -635,7 +634,7 @@ namespace Rendering::Scene {
             auto blend_state = Rendering::GPU::gpu.blend.get_state();
             auto depth_state = Rendering::GPU::gpu.depth.get_state();
             depth_state.should_test = true;
-            const auto gpu_program = Rendering::GPU::Shaders::shaders.get<bsp_gpu_program>();
+            const auto gpu_program = Rendering::GPU::Shaders::shaders.get<BSPShader>();
 
             switch (render_mode) {
                 case RenderMode::TEXTURE:
@@ -662,8 +661,8 @@ namespace Rendering::Scene {
 
             Rendering::GPU::gpu.blend.push_state(blend_state);
             Rendering::GPU::gpu.depth.push_state(depth_state);
-            auto world_matrix = ::glm::translate(model.origin);
-            world_matrix *= ::glm::translate(origin);
+            auto world_matrix = glm::translate(model.origin);
+            world_matrix *= glm::translate(origin);
             Rendering::GPU::gpu.set_uniform("world_matrix", world_matrix);
             render_node(model.head_node_indices[0], -1);
 

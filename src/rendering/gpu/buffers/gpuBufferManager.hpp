@@ -7,7 +7,7 @@
 
 namespace Rendering::GPU::Buffers {
     struct GpuBufferManager {
-        template<typename T, typename std::enable_if<IsGpuBuffer<T>::value, T>::type = true>
+        template<typename T, std::enable_if_t<IsGpuBuffer<T>::value, bool> = true>
         boost::weak_ptr<T> make() {
             boost::shared_ptr<T> gpuBuffer = boost::make_shared<T>();
             auto buffersIter = buffers.insert(buffers.begin(), std::make_pair(gpuBuffer->get_id(), gpuBuffer));
