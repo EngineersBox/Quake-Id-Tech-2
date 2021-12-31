@@ -19,6 +19,8 @@
 #include "../../gpu/gpu.hpp"
 #include "../../gpu/buffers/vertexBuffer.hpp"
 #include "../../gpu/buffers/indexBuffer.hpp"
+#include "bspShader.hpp"
+#include "../../view/cameraParams.hpp"
 
 namespace Rendering::Scene {
 class BSP: public Resources::Resource {
@@ -171,7 +173,7 @@ class BSP: public Resources::Resource {
         };
 
         BSP(std::istream& istream);
-        void render(const CameraParameters& camera_parameters);
+        void render(const View::CameraParameters& camera_parameters);
         [[nodiscard]] int get_leaf_index_from_location(const glm::vec3& location) const;
         [[nodiscard]] const RenderStats& geRenderStats() const { return render_stats; }
         RenderSettings render_settings;  //TODO: sort this out elsewhere
