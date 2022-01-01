@@ -34,7 +34,6 @@ namespace Store {
 
 	int Cache::put_buffer(const std::string& file_name, const void* data, size_t count) {
         boost::crc_32_type crc32;
-
         crc32.process_bytes(data, count);
 
         boost::filesystem::path file_path(CACHE_DIRECTORY);
@@ -43,10 +42,8 @@ namespace Store {
         std::ofstream ofstream(file_path.c_str(), std::ios::out);
         Resources::IO::write(ofstream, data, count);
 
-        auto checksum = crc32.checksum();
-
-        file_checksums.insert(std::make_pair(file_name, checksum));
-
+        unsigned int checksum = crc32.checksum();
+        fileChecksums.insert(std::make_pair(file_name, checksum));
         return checksum;
     }
 
@@ -63,7 +60,7 @@ namespace Store {
         } catch (boost::filesystem::filesystem_error& e) {
             spdlog::error(e.what());
         }
-        file_checksums.erase(file_name);
+        fileChecksums.erase(file_name);
     }
 
 	void Cache::purge() {
@@ -75,11 +72,11 @@ namespace Store {
     }
 
 	int Cache::checksum(const std::string& file_name) const {
-        auto file_checksums_itr = file_checksums.find(file_name);
-        if (file_checksums_itr == file_checksums.end()) {
+        auto fileChecksumsItr = fileChecksums.find(file_name);
+        if (fileChecksumsItr == fileChecksums.end()) {
             throw std::invalid_argument("file does not exist");
         }
-        return file_checksums_itr->second;
+        return fileChecksumsItr->second;
     }
 
 	void Cache::write() {
@@ -88,8 +85,8 @@ namespace Store {
         if (!ofstream.is_open()) return;
 
         boost::property_tree::ptree ptree_;
-        for (const auto& file_checksum : file_checksums) {
-            ptree_.put(file_checksum.first, file_checksum.second);
+        for (const auto& fileChecksum : fileChecksums) {
+            ptree_.put(fileChecksum.first, fileChecksum.second);
         }
 
         try {
@@ -112,9 +109,9 @@ namespace Store {
             return;
         }
         
-        file_checksums.clear();
+        fileChecksums.clear();
         for (auto& ptree_itr : ptree_) {
-            file_checksums.insert(std::make_pair(ptree_itr.first, std::atoi(ptree_itr.second.data().c_str())));
+            fileChecksums.insert(std::make_pair(ptree_itr.first, std::atoi(ptree_itr.second.data().c_str())));
         }
     }
 }

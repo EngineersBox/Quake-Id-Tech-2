@@ -173,25 +173,25 @@ namespace Rendering::GPU {
 			WeakType pop();
 
         private:
-			std::stack<SharedType> frame_buffers;
-        } frame_buffers;
+			std::stack<SharedType> frameBuffers;
+        } frameBufferManager;
 
         //textures
         struct TextureManager {
-            const static auto texture_count = 32;
+            const static auto textureCount = 32;
             typedef boost::weak_ptr<Resources::Texture> WeakType;
 			typedef boost::shared_ptr<Resources::Texture> SharedType;
-            typedef IndexType<texture_count>::Type IndexType;
+            typedef IndexType<textureCount>::Type IndexType;
 			[[nodiscard]] WeakType get(IndexType index) const;
 			WeakType bind(IndexType index, const SharedType& texture);
 			WeakType unbind(IndexType index);
 
         private:
-            std::array<SharedType, texture_count> textures;
+            std::array<SharedType, textureCount> textures;
         } textures;
 
         //viewports
-        struct viewport_mgr {
+        struct ViewportManager {
             [[nodiscard]] GpuViewportType top() const;
             void push(const GpuViewportType& viewport);
             GpuViewportType pop();
@@ -209,56 +209,56 @@ namespace Rendering::GPU {
 			[[nodiscard]] BufferType top(BufferTarget target) const;
 			void data(BufferTarget target, const void* data, size_t size, BufferUsage usage);
         private:
-			std::map<BufferTarget, std::stack<BufferType>> target_buffers;
+			std::map<BufferTarget, std::stack<BufferType>> targetBuffers;
 			std::set<BufferType> buffers;
         } buffers;
 
         //blend
         struct BlendStateManager {
             struct BlendState {
-                bool is_enabled = false;
-				BlendFactor src_factor = BlendFactor::ONE;
-				BlendFactor dst_factor = BlendFactor::ZERO;
+                bool isEnabled = false;
+				BlendFactor srcFactor = BlendFactor::ONE;
+				BlendFactor dstFactor = BlendFactor::ZERO;
 				BlendEquation equation = BlendEquation::ADD;
             };
 
-			[[nodiscard]] BlendState get_state() const;
-			void push_state(const BlendState& state);
-            void pop_state();
+			[[nodiscard]] BlendState getState() const;
+			void pushState(const BlendState& state);
+            void popState();
         private:
 			std::stack<BlendState> states;
-			void apply_state(const BlendState& state);
+			void applyState(const BlendState& state);
         } blend;
 
-        //depth
-        struct depth {
-            struct state {
-                bool should_test = false;
-                bool should_write_mask = true;
+        //Depth
+        struct Depth {
+            struct State {
+                bool shouldTest = false;
+                bool shouldWriteMask = true;
 				DepthFunction function = DepthFunction::DEFAULT;
             };
 
-            state get_state() const;
-            void push_state(const state& state);
-            void pop_state();
+            [[nodiscard]] State getState() const;
+            void pushState(const State& state);
+            void popState();
         private:
-            std::stack<state> states;
-            void apply_state(const state& state);
+            std::stack<State> states;
+            void apply_state(const State& state);
         } depth;
 
         struct CullingStateManager {
             struct CullingState {
-                bool is_enabled = false;
-				CullingFrontFace front_face = CullingFrontFace::CCW;
+                bool isEnabled = false;
+				CullingFrontFace frontFace = CullingFrontFace::CCW;
 				CullingMode mode = CullingMode::BACK;
             };
 
-			[[nodiscard]] CullingState get_state() const;
-			void push_state(const CullingState& state);
-            void pop_state();
+			[[nodiscard]] CullingState getState() const;
+			void pushState(const CullingState& state);
+            void popState();
         private:
 			std::stack<CullingState> states;
-			void apply_state(const CullingState& state);
+			void applyState(const CullingState& state);
         } culling;
 
         //stencil
@@ -278,15 +278,15 @@ namespace Rendering::GPU {
 
 				StencilFunctionParameters function;
 				StencilOperations operations;
-                bool is_enabled = false;
+                bool isEnabled = false;
                 unsigned int mask = 0xFFFFFFFF;
             };
-			[[nodiscard]] StencilState get_state() const;
-			void push_state(const StencilState& state);
-            void pop_state();
+			[[nodiscard]] StencilState getState() const;
+			void pushState(const StencilState& state);
+            void popState();
         private:
 			std::stack<StencilState> states;
-			void apply_state(const StencilState& state);
+			void applyState(const StencilState& state);
         } stencil;
 
         //color
@@ -300,65 +300,65 @@ namespace Rendering::GPU {
                 };
 				ColorMask mask;
             };
-			[[nodiscard]] ColorState get_state() const;
-			void push_state(const ColorState& state);
-            void pop_state();
+			[[nodiscard]] ColorState getState() const;
+			void pushState(const ColorState& state);
+            void popState();
         private:
 			std::stack<ColorState> states;
-			void apply_state(const ColorState& state);
+			void applyState(const ColorState& state);
         } color;
 
-        void clear(GpuClearFlagType clear_flags) const;
-        void draw_elements(PrimitiveType primitive_type, size_t count, GpuDataTypes index_data_type, size_t offset) const;
+        void clear(GpuClearFlagType clearFlag) const;
+        void drawElements(PrimitiveType primitiveType, size_t count, GpuDataTypes indexDataType, size_t offset) const;
 
-        [[nodiscard]] GpuId create_program(const std::string& vertex_shader_source, const std::string& fragment_shader_source) const;
-		void destroy_program(GpuId id);
+        [[nodiscard]] GpuId createProgram(const std::string& vertexShaderSource, const std::string& fragmentShaderSource) const;
+		void destroyProgram(GpuId id);
 
-		GpuId create_buffer();
-		void destroy_buffer(GpuId id);
+		GpuId createBuffer();
+		void destroyBuffer(GpuId id);
 
-		GpuId create_frame_buffer(GpuFrameBufferType type, const GpuFrameBufferSizeType& size, boost::shared_ptr<Resources::Texture>& color_texture, boost::shared_ptr<Resources::Texture>& depth_stencil_texture, boost::shared_ptr<Resources::Texture>& depth_texture);
-		void destroy_frame_buffer(GpuId id);
+		GpuId createFrameBuffer(GpuFrameBufferType type, const GpuFrameBufferSizeType& size, boost::shared_ptr<Resources::Texture>& colorTexture, boost::shared_ptr<Resources::Texture>& depthStencilTexture, boost::shared_ptr<Resources::Texture>& depthTexture);
+		void destroyFrameBuffer(GpuId id);
 
-		GpuId create_texture(ColorType color_type, glm::uvec2 size, const void* data);
-		void resize_texture(const boost::shared_ptr<Resources::Texture>& texture, glm::uvec2 size);
-		void destroy_texture(GpuId id);
+		GpuId createTexture(ColorType color_type, glm::uvec2 size, const void* data);
+		void resizeTexture(const boost::shared_ptr<Resources::Texture>& texture, glm::uvec2 size);
+		void destroyTexture(GpuId id);
 
-		GpuLocation get_uniform_location(GpuId program_id, const char* name) const;
-		GpuLocation get_attribute_location(GpuId program_id, const char* name) const;
+		GpuLocation getUniformLocation(GpuId program_id, const char* name) const;
+		GpuLocation getAttributeLocation(GpuId program_id, const char* name) const;
 
-		void get_uniform(const char* name, std::vector<glm::mat4>& params, size_t count);
+		void getUniform(const char* name, std::vector<glm::mat4>& params, size_t count);
 
-        void enable_vertex_attribute_array(GpuLocation location);
-		void disable_vertex_attribute_array(GpuLocation location);
-		void set_vertex_attrib_pointer(GpuLocation location, int size, GpuDataTypes data_type, bool is_normalized, int stride, const void* pointer);
-		void set_vertex_attrib_pointer(GpuLocation location, int size, GpuDataTypes data_type, int stride, const void* pointer);
-        void set_uniform(const char* name, const glm::mat3& value, bool should_tranpose = false) const;
-        void set_uniform(const char* name, const glm::mat4& value, bool should_tranpose = false) const;
-        void set_uniform(const char* name, int value) const;
-        void set_uniform(const char* name, unsigned int value) const;
-        void set_uniform(const char* name, float value) const;
-        void set_uniform(const char* name, const glm::vec2& value) const;
-        void set_uniform(const char* name, const glm::vec3& value) const;
-        void set_uniform(const char* name, const glm::vec4& value) const;
-        void set_uniform(const char* name, const std::vector<glm::mat4>& value, bool should_transpose = false) const;
-        void set_uniform_subroutine(ShaderType shader_type, GpuIndex index);
+        void enableVertexAttributeArray(GpuLocation location);
+		void disableVertexAttributeArray(GpuLocation location);
+		void setVertexAttribPointer(GpuLocation location, int size, GpuDataTypes dataType, bool isNormalized, int stride, const void* pointer);
+		void setVertexAttribPointer(GpuLocation location, int size, GpuDataTypes dataType, int stride, const void* pointer);
+        void setUniform(const char* name, const glm::mat3& value, bool shouldTranpose = false) const;
+        void setUniform(const char* name, const glm::mat4& value, bool shouldTranpose = false) const;
+        void setUniform(const char* name, int value) const;
+        void setUniform(const char* name, unsigned int value) const;
+        void setUniform(const char* name, float value) const;
+        void setUniform(const char* name, const glm::vec2& value) const;
+        void setUniform(const char* name, const glm::vec3& value) const;
+        void setUniform(const char* name, const glm::vec4& value) const;
+        void setUniform(const char* name, const std::vector<glm::mat4>& value, bool shouldTranspose = false) const;
+        void setUniformSubroutine(ShaderType shaderType, GpuIndex index);
 
-        void set_clear_color(glm::vec4& color);
-        glm::vec4 get_clear_color();
+        void setClearColor(glm::vec4& _color);
+        glm::vec4 getClearColor();
 
-        GpuLocation get_subroutine_uniform_location(GpuId program_id, ShaderType shader_type, const std::string& name);
-        GpuIndex get_subroutine_index(GpuId program_id, ShaderType shader_type, const std::string& name);
+        GpuLocation getSubroutineUniformLocation(GpuId programId, ShaderType shaderType, const std::string& name);
+        GpuIndex getSubroutineIndex(GpuId programId, ShaderType shaderType, const std::string& name);
 
-        [[nodiscard]] const std::string& get_vendor() const;
-        [[nodiscard]] const std::string& get_renderer() const;
-        [[nodiscard]] const std::string& get_version() const;
-        [[nodiscard]] const std::string& get_shading_language_version() const;
-        [[nodiscard]] const std::string& get_extensions() const;
+        [[nodiscard]] const std::string& getVendor() const;
+        [[nodiscard]] const std::string& getRenderer() const;
+        [[nodiscard]] const std::string& getVersion() const;
+        [[nodiscard]] const std::string& getShadingLanguageVersion() const;
+        [[nodiscard]] const std::string& getExtensions() const;
 
-		void get_texture_data(const boost::shared_ptr<Resources::Texture>& texture, std::vector<unsigned char>& data, int level = 0);
+		void getTextureData(const boost::shared_ptr<Resources::Texture>& texture, std::vector<unsigned char>& data, int level = 0);
 
-		std::unique_ptr<unsigned char[]> get_backbuffer_pixels(int& width, int& height);
+		std::unique_ptr<unsigned char[]> getBackbufferPixels(int& width, int& height);
     };
 
     extern Gpu gpu;

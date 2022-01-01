@@ -10,17 +10,17 @@ namespace Store {
 		Cache();
 		~Cache();
 
-        std::unique_ptr<std::ifstream> get(const std::string& file_name) const;
+        [[nodiscard]] std::unique_ptr<std::ifstream> get(const std::string& file_name) const;
         int put_buffer(const std::string& file_name, const void* buffer, size_t count);
         int put(const std::string& file_name, const std::string& contents);
         void erase(const std::string& file_name);
-        int checksum(const std::string& file_name) const;
+        [[nodiscard]] int checksum(const std::string& file_name) const;
         void purge();
         void write();
         void read();
 
     private:
-        std::map<std::string, int> file_checksums;
+        std::map<std::string, int> fileChecksums;
         std::mutex mutex;
     };
 

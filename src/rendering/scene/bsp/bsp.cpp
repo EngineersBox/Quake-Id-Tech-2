@@ -60,13 +60,13 @@ namespace Rendering::Scene {
         }
 
         //planes
-        const BSPChunk& plane_chunk = chunks[static_cast<size_t>(BSPChunk::Type::PLANES)];
-        istream.seekg(plane_chunk.offset, std::ios_base::beg);
+        const BSPChunk& planeChunk = chunks[static_cast<size_t>(BSPChunk::Type::PLANES)];
+        istream.seekg(planeChunk.offset, std::ios_base::beg);
 
-        unsigned long plane_count = plane_chunk.length / sizeof(BSPPlane);
-        planes.resize(plane_count);
+        unsigned long planeCount = planeChunk.length / sizeof(BSPPlane);
+        this->planes.resize(planeCount);
 
-        for (BSPPlane& plane : planes) {
+        for (BSPPlane& plane : this->planes) {
             Resources::IO::read(istream, plane.plane.normal.x);
             Resources::IO::read(istream, plane.plane.normal.z);
             Resources::IO::read(istream, plane.plane.normal.y);
@@ -75,138 +75,138 @@ namespace Rendering::Scene {
             plane.plane.normal.z = -plane.plane.normal.z;
         }
 
-        //vertex_locations
-        const BSPChunk& vertices_chunk = chunks[static_cast<size_t>(BSPChunk::Type::VERTICES)];
-        istream.seekg(vertices_chunk.offset, std::ios_base::beg);
+        //vertexLocations
+        const BSPChunk& verticesChunk = chunks[static_cast<size_t>(BSPChunk::Type::VERTICES)];
+        istream.seekg(verticesChunk.offset, std::ios_base::beg);
 
-        std::vector<glm::vec3> vertex_locations;
-        unsigned long vertex_location_count = vertices_chunk.length / sizeof(glm::vec3);
-        vertex_locations.resize(vertex_location_count);
+        std::vector<glm::vec3> vertexLocations;
+        unsigned long vertexLocationCount = verticesChunk.length / sizeof(glm::vec3);
+        vertexLocations.resize(vertexLocationCount);
 
-        for (glm::vec<3, float>& vertex_location : vertex_locations) {
-            Resources::IO::read(istream, vertex_location.x);
-            Resources::IO::read(istream, vertex_location.z);
-            Resources::IO::read(istream, vertex_location.y);
-            vertex_location.z = -vertex_location.z;
+        for (glm::vec<3, float>& vertexLocation : vertexLocations) {
+            Resources::IO::read(istream, vertexLocation.x);
+            Resources::IO::read(istream, vertexLocation.z);
+            Resources::IO::read(istream, vertexLocation.y);
+            vertexLocation.z = -vertexLocation.z;
         }
 
         //edges
-        const BSPChunk& edges_chunk = chunks[static_cast<size_t>(BSPChunk::Type::EDGES)];
-        istream.seekg(edges_chunk.offset, std::ios_base::beg);
-        unsigned long edge_count = edges_chunk.length / sizeof(Edge);
-        edges.resize(edge_count);
+        const BSPChunk& edgesChunk = chunks[static_cast<size_t>(BSPChunk::Type::EDGES)];
+        istream.seekg(edgesChunk.offset, std::ios_base::beg);
+        unsigned long edgeCount = edgesChunk.length / sizeof(Edge);
+        this->edges.resize(edgeCount);
 
-        for (Edge& edge : edges) {
-            Resources::IO::read(istream, edge.vertex_indices[0]);
-            Resources::IO::read(istream, edge.vertex_indices[1]);
+        for (Edge& edge : this->edges) {
+            Resources::IO::read(istream, edge.vertexIndices[0]);
+            Resources::IO::read(istream, edge.vertexIndices[1]);
         }
 
-        //surface_edges
-        const BSPChunk& surface_edges_chunk = chunks[static_cast<size_t>(BSPChunk::Type::SURFACE_EDGES)];
-        istream.seekg(surface_edges_chunk.offset, std::ios_base::beg);
-        unsigned long surface_edge_count = surface_edges_chunk.length / sizeof(int);
-        surface_edges.resize(surface_edge_count);
+        //surfaceEdges
+        const BSPChunk& surfaceEdgesChunk = chunks[static_cast<size_t>(BSPChunk::Type::SURFACE_EDGES)];
+        istream.seekg(surfaceEdgesChunk.offset, std::ios_base::beg);
+        unsigned long surfaceEdgeCount = surfaceEdgesChunk.length / sizeof(int);
+        this->surfaceEdges.resize(surfaceEdgeCount);
 
-        for (int& surface_edge : surface_edges) {
-            Resources::IO::read(istream, surface_edge);
+        for (int& surfaceEdge : this->surfaceEdges) {
+            Resources::IO::read(istream, surfaceEdge);
         }
 
         //faces
-        const BSPChunk& faces_chunk = chunks[static_cast<size_t>(BSPChunk::Type::FACES)];
-        istream.seekg(faces_chunk.offset, std::ios_base::beg);
-        unsigned long face_count = faces_chunk.length / sizeof(Face);
-        faces.resize(face_count);
+        const BSPChunk& facesChunk = chunks[static_cast<size_t>(BSPChunk::Type::FACES)];
+        istream.seekg(facesChunk.offset, std::ios_base::beg);
+        unsigned long faceCount = facesChunk.length / sizeof(Face);
+        this->faces.resize(faceCount);
 
-        for (Face& face : faces) {
-            Resources::IO::read(istream, face.plane_index);
-            Resources::IO::read(istream, face.plane_side);
-            Resources::IO::read(istream, face.surface_edge_start_index);
-            Resources::IO::read(istream, face.surface_edge_count);
-            Resources::IO::read(istream, face.texture_info_index);
-            Resources::IO::read(istream, face.lighting_styles[0]);
-            Resources::IO::read(istream, face.lighting_styles[1]);
-            Resources::IO::read(istream, face.lighting_styles[2]);
-            Resources::IO::read(istream, face.lighting_styles[3]);
-            Resources::IO::read(istream, face.lightmap_offset);
+        for (Face& face : this->faces) {
+            Resources::IO::read(istream, face.planeIndex);
+            Resources::IO::read(istream, face.planeSide);
+            Resources::IO::read(istream, face.surfaceEdgeStartIndex);
+            Resources::IO::read(istream, face.surfaceEdgeCount);
+            Resources::IO::read(istream, face.textureInfoIndex);
+            Resources::IO::read(istream, face.lightingStyles[0]);
+            Resources::IO::read(istream, face.lightingStyles[1]);
+            Resources::IO::read(istream, face.lightingStyles[2]);
+            Resources::IO::read(istream, face.lightingStyles[3]);
+            Resources::IO::read(istream, face.lightmapOffset);
         }
 
         //nodes
-        const BSPChunk& nodes_chunk = chunks[static_cast<size_t>(BSPChunk::Type::NODES)];
-        istream.seekg(nodes_chunk.offset, std::ios_base::beg);
-        unsigned long node_count = nodes_chunk.length / sizeof(Node);
-        nodes.resize(node_count);
+        const BSPChunk& nodesChunk = chunks[static_cast<size_t>(BSPChunk::Type::NODES)];
+        istream.seekg(nodesChunk.offset, std::ios_base::beg);
+        unsigned long nodeCount = nodesChunk.length / sizeof(Node);
+        this->nodes.resize(nodeCount);
 
-        for (Node& node : nodes) {
-            Resources::IO::read(istream, node.plane_index);
-            Resources::IO::read(istream, node.child_indices[0]);
-            Resources::IO::read(istream, node.child_indices[1]);
+        for (Node& node : this->nodes) {
+            Resources::IO::read(istream, node.planeIndex);
+            Resources::IO::read(istream, node.childIndices[0]);
+            Resources::IO::read(istream, node.childIndices[1]);
             Resources::IO::read(istream, node.aabb.min.x);
             Resources::IO::read(istream, node.aabb.min.z);
             Resources::IO::read(istream, node.aabb.min.y);
             Resources::IO::read(istream, node.aabb.max.x);
             Resources::IO::read(istream, node.aabb.max.z);
             Resources::IO::read(istream, node.aabb.max.y);
-            Resources::IO::read(istream, node.face_start_index);
-            Resources::IO::read(istream, node.face_count);
+            Resources::IO::read(istream, node.faceStartIndex);
+            Resources::IO::read(istream, node.faceCount);
             node.aabb.min.z = -node.aabb.min.z;
             node.aabb.max.z = -node.aabb.max.z;
         }
 
         //leaves
-        const BSPChunk& leaves_chunk = chunks[static_cast<size_t>(BSPChunk::Type::LEAVES)];
-        istream.seekg(leaves_chunk.offset, std::ios_base::beg);
-        unsigned long leaf_count = leaves_chunk.length / sizeof(Leaf);
-        leafs.resize(leaf_count);
+        const BSPChunk& leavesChunk = chunks[static_cast<size_t>(BSPChunk::Type::LEAVES)];
+        istream.seekg(leavesChunk.offset, std::ios_base::beg);
+        unsigned long leafCount = leavesChunk.length / sizeof(Leaf);
+        this->leaves.resize(leafCount);
 
-        for (auto& leaf : leafs) {
-            Resources::IO::read(istream, leaf.content_type);
-            Resources::IO::read(istream, leaf.visibility_offset);
+        for (Leaf& leaf : this->leaves) {
+            Resources::IO::read(istream, leaf.contentType);
+            Resources::IO::read(istream, leaf.visibilityOffset);
             Resources::IO::read(istream, leaf.aabb.min.x);
             Resources::IO::read(istream, leaf.aabb.min.z);
             Resources::IO::read(istream, leaf.aabb.min.y);
             Resources::IO::read(istream, leaf.aabb.max.x);
             Resources::IO::read(istream, leaf.aabb.max.z);
             Resources::IO::read(istream, leaf.aabb.max.y);
-            Resources::IO::read(istream, leaf.mark_surface_start_index);
-            Resources::IO::read(istream, leaf.mark_surface_count);
-            Resources::IO::read(istream, leaf.ambient_sound_levels[0]);
-            Resources::IO::read(istream, leaf.ambient_sound_levels[1]);
-            Resources::IO::read(istream, leaf.ambient_sound_levels[2]);
-            Resources::IO::read(istream, leaf.ambient_sound_levels[3]);
+            Resources::IO::read(istream, leaf.markSurfaceStartIndex);
+            Resources::IO::read(istream, leaf.markSurfaceCount);
+            Resources::IO::read(istream, leaf.ambientSoundLevels[0]);
+            Resources::IO::read(istream, leaf.ambientSoundLevels[1]);
+            Resources::IO::read(istream, leaf.ambientSoundLevels[2]);
+            Resources::IO::read(istream, leaf.ambientSoundLevels[3]);
 
             leaf.aabb.min.z = -leaf.aabb.min.z;
             leaf.aabb.max.z = -leaf.aabb.max.z;
         }
 
-        //mark_surfaces
-        const BSPChunk& mark_surfaces_chunk = chunks[static_cast<size_t>(BSPChunk::Type::MARK_SURFACES)];
-        istream.seekg(mark_surfaces_chunk.offset, std::ios_base::beg);
-        unsigned long mark_surface_count = mark_surfaces_chunk.length / sizeof(unsigned short);
-        mark_surfaces.resize(mark_surface_count);
+        //markSurfaces
+        const BSPChunk& markSurfacesChunk = chunks[static_cast<size_t>(BSPChunk::Type::MARK_SURFACES)];
+        istream.seekg(markSurfacesChunk.offset, std::ios_base::beg);
+        unsigned long markSurfaceCount = markSurfacesChunk.length / sizeof(unsigned short);
+        this->markSurfaces.resize(markSurfaceCount);
 
-        for (unsigned short& mark_surface : mark_surfaces) {
-            Resources::IO::read(istream, mark_surface);
+        for (unsigned short& markSurface : this->markSurfaces) {
+            Resources::IO::read(istream, markSurface);
         }
 
-        //clip_nodes
-        const BSPChunk& clip_nodes_chunk = chunks[static_cast<size_t>(BSPChunk::Type::CLIP_NODES)];
-        istream.seekg(clip_nodes_chunk.offset, std::ios_base::beg);
-        unsigned long clip_node_count = clip_nodes_chunk.length / sizeof(ClipNode);
-        clip_nodes.resize(clip_node_count);
+        //clipNodes
+        const BSPChunk& clipNodesChunk = chunks[static_cast<size_t>(BSPChunk::Type::CLIP_NODES)];
+        istream.seekg(clipNodesChunk.offset, std::ios_base::beg);
+        unsigned long clipNodeCount = clipNodesChunk.length / sizeof(ClipNode);
+        this->clipNodes.resize(clipNodeCount);
 
-        for (ClipNode& clip_node : clip_nodes) {
-            Resources::IO::read(istream, clip_node.plane_index);
-            Resources::IO::read(istream, clip_node.child_indices[0]);
-            Resources::IO::read(istream, clip_node.child_indices[1]);
+        for (ClipNode& clipNode : this->clipNodes) {
+            Resources::IO::read(istream, clipNode.planeIndex);
+            Resources::IO::read(istream, clipNode.childIndices[0]);
+            Resources::IO::read(istream, clipNode.childIndices[1]);
         }
 
         //models
-        const BSPChunk& models_chunk = chunks[static_cast<size_t>(BSPChunk::Type::MODELS)];
-        istream.seekg(models_chunk.offset, std::ios_base::beg);
-        unsigned long model_count = models_chunk.length / sizeof(Model);
-        models.resize(model_count);
+        const BSPChunk& modelsChunk = chunks[static_cast<size_t>(BSPChunk::Type::MODELS)];
+        istream.seekg(modelsChunk.offset, std::ios_base::beg);
+        unsigned long modelCount = modelsChunk.length / sizeof(Model);
+        this->models.resize(modelCount);
 
-        for (Model& model : models) {
+        for (Model& model : this->models) {
             Resources::IO::read(istream, model.aabb.min.x);
             Resources::IO::read(istream, model.aabb.min.z);
             Resources::IO::read(istream, model.aabb.min.y);
@@ -216,403 +216,405 @@ namespace Rendering::Scene {
             Resources::IO::read(istream, model.origin.x);
             Resources::IO::read(istream, model.origin.z);
             Resources::IO::read(istream, model.origin.y);
-            Resources::IO::read(istream, model.head_node_indices[0]);
-            Resources::IO::read(istream, model.head_node_indices[1]);
-            Resources::IO::read(istream, model.head_node_indices[2]);
-            Resources::IO::read(istream, model.head_node_indices[3]);
-            Resources::IO::read(istream, model.vis_leafs);
-            Resources::IO::read(istream, model.face_start_index);
-            Resources::IO::read(istream, model.face_count);
+            Resources::IO::read(istream, model.headNodeIndices[0]);
+            Resources::IO::read(istream, model.headNodeIndices[1]);
+            Resources::IO::read(istream, model.headNodeIndices[2]);
+            Resources::IO::read(istream, model.headNodeIndices[3]);
+            Resources::IO::read(istream, model.visLeafs);
+            Resources::IO::read(istream, model.faceStartIndex);
+            Resources::IO::read(istream, model.faceCount);
             model.aabb.min.z = -model.aabb.min.z;
             model.aabb.max.z = -model.aabb.max.z;
             model.origin.z = -model.origin.z;
         }
 
         //visibility
-        const BSPChunk& visibility_chunk = chunks[static_cast<size_t>(BSPChunk::Type::VISIBLIITY)];
-        istream.seekg(visibility_chunk.offset, std::ios_base::beg);
+        const BSPChunk& visibilityChunk = chunks[static_cast<size_t>(BSPChunk::Type::VISIBLIITY)];
+        istream.seekg(visibilityChunk.offset, std::ios_base::beg);
 
-        if (visibility_chunk.length > 0) {
-            std::function<void(int)> count_vis_leaves = [&](int node_index) {
+        if (visibilityChunk.length > 0) {
+            std::function<void(int)> countVisLeaves = [&](int node_index) {
                 if (node_index < 0) {
-                    if (node_index == -1 || leafs[~node_index].content_type == ContentType::SOLID) {
+                    if (node_index == -1 || this->leaves[~node_index].contentType == ContentType::SOLID) {
                         return;
                     }
-                    ++vis_leaf_count;
+                    ++this->visLeafCount;
                     return;
                 }
-                count_vis_leaves(nodes[node_index].child_indices[0]);
-                count_vis_leaves(nodes[node_index].child_indices[1]);
+                countVisLeaves(this->nodes[node_index].childIndices[0]);
+                countVisLeaves(this->nodes[node_index].childIndices[1]);
             };
 
-            count_vis_leaves(0);
-            std::vector<unsigned char> visibility_data;
-            Resources::IO::read(istream, visibility_data, visibility_chunk.length);
+            countVisLeaves(0);
+            std::vector<unsigned char> visibilityData;
+            Resources::IO::read(istream, visibilityData, visibilityChunk.length);
 
-            for (size_t i = 0; i < vis_leaf_count; ++i) {
-                const Leaf& leaf = leafs[i + 1];
-                if (leaf.visibility_offset < 0) {
+            for (size_t i = 0; i < this->visLeafCount; ++i) {
+                const Leaf& leaf = this->leaves[i + 1];
+                if (leaf.visibilityOffset < 0) {
                     continue;
                 }
 
-                boost::dynamic_bitset<> leaf_pvs = boost::dynamic_bitset<>(leaf_count - 1);
-                leaf_pvs.reset();
-                size_t leaf_pvs_index = 0;
-                std::__wrap_iter<unsigned char*> visibility_data_itr = visibility_data.begin() + leaf.visibility_offset;
+                boost::dynamic_bitset<> leafPvs = boost::dynamic_bitset<>(leafCount - 1);
+                leafPvs.reset();
+                size_t leafPvsIndex = 0;
+                std::__wrap_iter<unsigned char*> visibilityDataItr = visibilityData.begin() + leaf.visibilityOffset;
 
-                while (leaf_pvs_index < vis_leaf_count) {
-                    if (*visibility_data_itr == 0) {
-                        ++visibility_data_itr;
-                        leaf_pvs_index += 8 * (*visibility_data_itr);
+                while (leafPvsIndex < this->visLeafCount) {
+                    if (*visibilityDataItr == 0) {
+                        ++visibilityDataItr;
+                        leafPvsIndex += 8 * (*visibilityDataItr);
                     } else {
-                        for (unsigned char mask = 1; mask != 0; ++leaf_pvs_index, mask <<= 1) {
-                            if ((*visibility_data_itr & mask) && (leaf_pvs_index < vis_leaf_count)) {
-                                leaf_pvs[leaf_pvs_index] = true;
+                        for (unsigned char mask = 1; mask != 0; ++leafPvsIndex, mask <<= 1) {
+                            if ((*visibilityDataItr & mask) && (leafPvsIndex < this->visLeafCount)) {
+                                leafPvs[leafPvsIndex] = true;
                             }
                         }
                     }
-                    ++visibility_data_itr;
+                    ++visibilityDataItr;
                 }
-                leaf_pvs_map.insert(std::make_pair(i, std::move(leaf_pvs)));
+                this->leafPvsMap.insert(std::make_pair(i, std::move(leafPvs)));
             }
         }
 
         //textures
-        const BSPChunk& textures_chunk = chunks[static_cast<size_t>(BSPChunk::Type::TEXTURES)];
-        istream.seekg(textures_chunk.offset, std::ios_base::beg);
-        unsigned int texture_count;
-        Resources::IO::read(istream, texture_count);
-        std::vector<unsigned int> texture_offsets;
-        texture_offsets.resize(texture_count);
+        const BSPChunk& texturesChunk = chunks[static_cast<size_t>(BSPChunk::Type::TEXTURES)];
+        istream.seekg(texturesChunk.offset, std::ios_base::beg);
+        unsigned int textureCount;
+        Resources::IO::read(istream, textureCount);
+        std::vector<unsigned int> textureOffsets;
+        textureOffsets.resize(textureCount);
 
-        for (unsigned int& texture_offset : texture_offsets) {
-            Resources::IO::read(istream, texture_offset);
+        for (unsigned int& textureOffset : textureOffsets) {
+            Resources::IO::read(istream, textureOffset);
         }
 
-        std::vector<BSPTexture> bsp_textures;
+        std::vector<BSPTexture> bspTextures;
 
-        for (unsigned int i = 0; i < texture_count; ++i) {
-            istream.seekg(textures_chunk.offset + texture_offsets[i], std::ios_base::beg);
+        for (unsigned int i = 0; i < textureCount; ++i) {
+            istream.seekg(texturesChunk.offset + textureOffsets[i], std::ios_base::beg);
 
-            char texture_name_bytes[16];
-            Resources::IO::read(istream, texture_name_bytes);
-            std::string texture_name = texture_name_bytes;
-            BSPTexture bsp_texture;
+            char textureNameBytes[16];
+            Resources::IO::read(istream, textureNameBytes);
+            std::string textureName = textureNameBytes;
+            BSPTexture bspTexture{};
 
-            Resources::IO::read(istream, bsp_texture.width);
-            Resources::IO::read(istream, bsp_texture.height);
-            Resources::IO::read(istream, bsp_texture.mipmap_offsets);
+            Resources::IO::read(istream, bspTexture.width);
+            Resources::IO::read(istream, bspTexture.height);
+            Resources::IO::read(istream, bspTexture.mipmapOffsets);
 
-            bsp_textures.push_back(bsp_texture);
-            texture_name.append(".png");
+            bspTextures.push_back(bspTexture);
+            textureName.append(".png");
             boost::shared_ptr<Resources::Texture> texture;
 
             try {
-                texture = Resources::resources.get<Resources::Texture>(texture_name);
+                texture = Resources::resources.get<Resources::Texture>(textureName);
             } catch (...) {
-                spdlog::error("Could not load texture: {}", texture_name);
+                spdlog::error("Could not load texture: {}", textureName);
             }
-            textures.push_back(texture);
+            this->textures.push_back(texture);
         }
 
         //texture_info
-        const BSPChunk& texture_info_chunk = chunks[static_cast<size_t>(BSPChunk::Type::TEXTURE_INFO)];
-        istream.seekg(texture_info_chunk.offset, std::ios_base::beg);
-        unsigned long texture_info_count = texture_info_chunk.length / sizeof(TextureInfo);
-        texture_infos.resize(texture_info_count);
+        const BSPChunk& textureInfoChunk = chunks[static_cast<size_t>(BSPChunk::Type::TEXTURE_INFO)];
+        istream.seekg(textureInfoChunk.offset, std::ios_base::beg);
+        unsigned long textureInfoCount = textureInfoChunk.length / sizeof(TextureInfo);
+        this->textureInfos.resize(textureInfoCount);
 
-        for (TextureInfo& texture_info : texture_infos) {
-            Resources::IO::read(istream, texture_info.s.axis.x);
-            Resources::IO::read(istream, texture_info.s.axis.z);
-            Resources::IO::read(istream, texture_info.s.axis.y);
-            Resources::IO::read(istream, texture_info.s.offset);
-            Resources::IO::read(istream, texture_info.t.axis.x);
-            Resources::IO::read(istream, texture_info.t.axis.z);
-            Resources::IO::read(istream, texture_info.t.axis.y);
-            Resources::IO::read(istream, texture_info.t.offset);
-            Resources::IO::read(istream, texture_info.texture_index);
-            Resources::IO::read(istream, texture_info.flags);
-            texture_info.s.axis.z = -texture_info.s.axis.z;
-            texture_info.t.axis.z = -texture_info.t.axis.z;
+        for (TextureInfo& textureInfo : this->textureInfos) {
+            Resources::IO::read(istream, textureInfo.s.axis.x);
+            Resources::IO::read(istream, textureInfo.s.axis.z);
+            Resources::IO::read(istream, textureInfo.s.axis.y);
+            Resources::IO::read(istream, textureInfo.s.offset);
+            Resources::IO::read(istream, textureInfo.t.axis.x);
+            Resources::IO::read(istream, textureInfo.t.axis.z);
+            Resources::IO::read(istream, textureInfo.t.axis.y);
+            Resources::IO::read(istream, textureInfo.t.offset);
+            Resources::IO::read(istream, textureInfo.textureIndex);
+            Resources::IO::read(istream, textureInfo.flags);
+            textureInfo.s.axis.z = -textureInfo.s.axis.z;
+            textureInfo.t.axis.z = -textureInfo.t.axis.z;
         }
 
         std::vector<IndexType> indices;
         std::vector<VertexType> vertices;
 
-        for (Face& face : faces) {
-            auto normal = planes[face.plane_index].plane.normal;
-            if (face.plane_side != 0) {
+        for (Face& face : this->faces) {
+            auto normal = this->planes[face.planeIndex].plane.normal;
+            if (face.planeSide != 0) {
                 normal = -normal;
             }
 
-            face_start_indices.push_back(indices.size());
-            TextureInfo& texture_info = texture_infos[face.texture_info_index];
-            BSPTexture& bsp_texture = bsp_textures[texture_info.texture_index];
+            this->faceStartIndices.push_back(indices.size());
+            TextureInfo& textureInfo = this->textureInfos[face.textureInfoIndex];
+            BSPTexture& bspTexture = bspTextures[textureInfo.textureIndex];
 
-            for (auto i = 0; i < face.surface_edge_count; ++i) {
+            for (auto i = 0; i < face.surfaceEdgeCount; ++i) {
                 VertexType vertex;
-                int edge_index = surface_edges[face.surface_edge_start_index + i];
-                if (edge_index > 0) {
-                    vertex.location = vertex_locations[edges[edge_index].vertex_indices[0]];
+                int edgeIndex = this->surfaceEdges[face.surfaceEdgeStartIndex + i];
+                if (edgeIndex > 0) {
+                    vertex.location = vertexLocations[this->edges[edgeIndex].vertexIndices[0]];
                 } else {
-                    edge_index = -edge_index;
-                    vertex.location = vertex_locations[edges[edge_index].vertex_indices[1]];
+                    edgeIndex = -edgeIndex;
+                    vertex.location = vertexLocations[this->edges[edgeIndex].vertexIndices[1]];
                 }
 
-                vertex.diffuse_texcoord.x = (glm::dot(vertex.location, texture_info.s.axis) + texture_info.s.offset) / bsp_texture.width;
-                vertex.diffuse_texcoord.y = -(glm::dot(vertex.location, texture_info.t.axis) + texture_info.t.offset) / bsp_texture.height;
+                vertex.diffuseTexcoord.x = (glm::dot(vertex.location, textureInfo.s.axis) + textureInfo.s.offset) / bspTexture.width;
+                vertex.diffuseTexcoord.y = -(glm::dot(vertex.location, textureInfo.t.axis) + textureInfo.t.offset) / bspTexture.height;
                 vertices.push_back(vertex);
                 indices.push_back(static_cast<unsigned int>(indices.size()));
             }
         }
 
         //lighting
-        const BSPChunk& lighting_chunk = chunks[static_cast<size_t>(BSPChunk::Type::LIGHTING)];
-        istream.seekg(lighting_chunk.offset, std::ios_base::beg);
+        const BSPChunk& lightingChunk = chunks[static_cast<size_t>(BSPChunk::Type::LIGHTING)];
+        istream.seekg(lightingChunk.offset, std::ios_base::beg);
 
-        std::vector<unsigned char> lighting_data;
-        Resources::IO::read(istream, lighting_data, lighting_chunk.length);
-        face_lightmap_textures.resize(faces.size());
+        std::vector<unsigned char> lightingData;
+        Resources::IO::read(istream, lightingData, lightingChunk.length);
+        this->faceLightmapTextures.resize(this->faces.size());
 
-        for (size_t face_index = 0; face_index < faces.size(); ++face_index) {
-            Face& face = faces[face_index];
-
-            if (face.lighting_styles[0] == 0 && static_cast<int>(face.lightmap_offset) >= -1) {
+        for (size_t faceIndex = 0; faceIndex < this->faces.size(); ++faceIndex) {
+            Face& face = this->faces[faceIndex];
+            if (face.lightingStyles[0] == 0 && static_cast<int>(face.lightmapOffset) >= -1) {
                 float min_u = std::numeric_limits<float>::max();
                 float min_v = std::numeric_limits<float>::max();
                 float max_u = -std::numeric_limits<float>::max();
                 float max_v = -std::numeric_limits<float>::max();
 
-                TextureInfo& texture_info = texture_infos[face.texture_info_index];
+                TextureInfo& textureInfo = this->textureInfos[face.textureInfoIndex];
 
-                for (int surface_edge_index = 0; surface_edge_index < face.surface_edge_count; ++surface_edge_index) {
-                    int edge_index = surface_edges[face.surface_edge_start_index + surface_edge_index];
-                    glm::vec3 vertex_location;
+                for (int surfaceEdgeIndex = 0; surfaceEdgeIndex < face.surfaceEdgeCount; ++surfaceEdgeIndex) {
+                    int edgeIndex = this->surfaceEdges[face.surfaceEdgeStartIndex + surfaceEdgeIndex];
+                    glm::vec3 vertexLocation;
 
-                    if (edge_index >= 0) {
-                        vertex_location = vertex_locations[edges[edge_index].vertex_indices[0]];
+                    if (edgeIndex >= 0) {
+                        vertexLocation = vertexLocations[this->edges[edgeIndex].vertexIndices[0]];
                     } else {
-                        vertex_location = vertex_locations[edges[-edge_index].vertex_indices[1]];
+                        vertexLocation = vertexLocations[this->edges[-edgeIndex].vertexIndices[1]];
                     }
 
-                    float u = glm::dot(texture_info.s.axis, vertex_location) + texture_info.s.offset;
+                    float u = glm::dot(textureInfo.s.axis, vertexLocation) + textureInfo.s.offset;
                     min_u = glm::min(u, min_u);
                     max_u = glm::max(u, max_u);
 
-                    float v = glm::dot(texture_info.t.axis, vertex_location) + texture_info.t.offset;
+                    float v = glm::dot(textureInfo.t.axis, vertexLocation) + textureInfo.t.offset;
                     min_v = glm::min(v, min_v);
                     max_v = glm::max(v, max_v);
                 }
 
-                float texture_min_u = glm::floor(min_u / 16);
-                float texture_min_v = glm::floor(min_v / 16);
-                float texture_max_u = glm::ceil(max_u / 16);
-                float texture_max_v = glm::ceil(max_v / 16);
+                float textureMin_u = glm::floor(min_u / 16);
+                float textureMin_v = glm::floor(min_v / 16);
+                float textureMax_u = glm::ceil(max_u / 16);
+                float textureMax_v = glm::ceil(max_v / 16);
 
-                glm::vec2 texture_size;
-                texture_size.x = texture_max_u - texture_min_u + 1;
-                texture_size.y = texture_max_v - texture_min_v + 1;
+                glm::vec2 textureSize;
+                textureSize.x = textureMax_u - textureMin_u + 1;
+                textureSize.y = textureMax_v - textureMin_v + 1;
 
-                for (int surface_edge_index = 0; surface_edge_index < face.surface_edge_count; ++surface_edge_index) {
-                    int edge_index = surface_edges[face.surface_edge_start_index + surface_edge_index];
-                    glm::vec3 vertex_location;
+                for (int surfaceEdgeIndex = 0; surfaceEdgeIndex < face.surfaceEdgeCount; ++surfaceEdgeIndex) {
+                    int edgeIndex = this->surfaceEdges[face.surfaceEdgeStartIndex + surfaceEdgeIndex];
+                    glm::vec3 vertexLocation;
 
-                    if (edge_index >= 0) {
-                        vertex_location = vertex_locations[edges[edge_index].vertex_indices[0]];
+                    if (edgeIndex >= 0) {
+                        vertexLocation = vertexLocations[this->edges[edgeIndex].vertexIndices[0]];
                     } else {
-                        vertex_location = vertex_locations[edges[-edge_index].vertex_indices[1]];
+                        vertexLocation = vertexLocations[this->edges[-edgeIndex].vertexIndices[1]];
                     }
 
-                    float u = glm::dot(texture_info.s.axis, vertex_location) + texture_info.s.offset;
-                    float v = glm::dot(texture_info.t.axis, vertex_location) + texture_info.t.offset;
+                    float u = glm::dot(textureInfo.s.axis, vertexLocation) + textureInfo.s.offset;
+                    float v = glm::dot(textureInfo.t.axis, vertexLocation) + textureInfo.t.offset;
 
-                    float lightmap_u = (texture_size.x / 2) + (u - ((min_u + max_u) / 2)) / 16;
-                    float lightmap_v = (texture_size.y / 2) + (v - ((min_v + max_v) / 2)) / 16;
+                    float lightmap_u = (textureSize.x / 2) + (u - ((min_u + max_u) / 2)) / 16;
+                    float lightmap_v = (textureSize.y / 2) + (v - ((min_v + max_v) / 2)) / 16;
 
-                    auto& lightmap_texcoord = vertices[face_start_indices[face_index] + surface_edge_index].lightmap_texcoord;
-                    lightmap_texcoord.x = lightmap_u / texture_size.x;
-                    lightmap_texcoord.y = lightmap_v / texture_size.y;
+                    glm::vec2& lightmapTexcoord = vertices[this->faceStartIndices[faceIndex] + surfaceEdgeIndex].lightmapTexcoord;
+                    lightmapTexcoord.x = lightmap_u / textureSize.x;
+                    lightmapTexcoord.y = lightmap_v / textureSize.y;
                 }
 
-                auto lighting_data_size = 3 * static_cast<int>(texture_size.x) * static_cast<int>(texture_size.y);
+                int lightingDataSize = 3 * static_cast<int>(textureSize.x) * static_cast<int>(textureSize.y);
 
-                auto image = boost::make_shared<Resources::Image>(
-                        static_cast<Resources::Image::SizeType>(texture_size),
-                        8,
-                        Rendering::GPU::ColorType::RGB,
-                        lighting_data.data() + face.lightmap_offset,
-                        lighting_data_size);
+                boost::shared_ptr<Resources::Image> image = boost::make_shared<Resources::Image>(
+                    static_cast<Resources::Image::SizeType>(textureSize),
+                    8,
+                    Rendering::GPU::ColorType::RGB,
+                    lightingData.data() + face.lightmapOffset,
+                    lightingDataSize
+                );
 
-                auto lightmap_texture = boost::make_shared<Resources::Texture>(image);
-
-                face_lightmap_textures[face_index] = lightmap_texture;
+                boost::shared_ptr<Resources::Texture> lightmapTexture = boost::make_shared<Resources::Texture>(image);
+                this->faceLightmapTextures[faceIndex] = lightmapTexture;
             }
         }
 
         //entities
-        const BSPChunk& entities_chunk = chunks[static_cast<size_t>(BSPChunk::Type::ENTITIES)];
-        istream.seekg(entities_chunk.offset, std::ios_base::beg);
-        std::vector<char> entities_buffer;
-        Resources::IO::read(istream, entities_buffer, entities_chunk.length);
-        std::string entities_string = entities_buffer.data();
+        const BSPChunk& entitiesChunk = chunks[static_cast<size_t>(BSPChunk::Type::ENTITIES)];
+        istream.seekg(entitiesChunk.offset, std::ios_base::beg);
+        std::vector<char> entitiesBuffer;
+        Resources::IO::read(istream, entitiesBuffer, entitiesChunk.length);
+        std::string entitiesString = entitiesBuffer.data();
         size_t end = -1;
 
         for (;;) {
-            unsigned long begin = entities_string.find_first_of('{', end + 1);
+            unsigned long begin = entitiesString.find_first_of('{', end + 1);
 
             if (begin == -1) break;
 
-            end = entities_string.find_first_of('}', begin + 1);
-            std::string entity_string = entities_string.substr(begin + 1, end - begin - 1);
-            BSPEntity entity(entity_string);
-            auto model_optional = entity.getOptional<std::string>("model");
-            if (model_optional) {
-                auto model = model_optional.get();
+            end = entitiesString.find_first_of('}', begin + 1);
+            std::string entityString = entitiesString.substr(begin + 1, end - begin - 1);
+            BSPEntity entity(entityString);
+            boost::optional<std::string> modelOptional = entity.getOptional<std::string>("model");
+            if (modelOptional) {
+                std::string model = modelOptional.get();
                 if (boost::algorithm::starts_with(model, "*")) {
-                    brush_entity_indices.push_back(entities.size());
+                    this->brushEntityIndices.push_back(this->entities.size());
                 }
             }
-            entities.emplace_back(std::move(entity));
+            this->entities.emplace_back(std::move(entity));
         }
 
-        vertex_buffer = Rendering::GPU::Buffers::gpuBuffers.make<VertexBufferType>().lock();
-        vertex_buffer->data(vertices, Rendering::GPU::Gpu::BufferUsage::STATIC_DRAW);
-        index_buffer = Rendering::GPU::Buffers::gpuBuffers.make<IndexBufferType>().lock();
-        index_buffer->data(indices, Rendering::GPU::Gpu::BufferUsage::STATIC_DRAW);
+        this->vertexBuffer = Rendering::GPU::Buffers::gpuBuffers.make<VertexBufferType>().lock();
+        this->vertexBuffer->data(vertices, Rendering::GPU::Gpu::BufferUsage::STATIC_DRAW);
+        this->indexBuffer = Rendering::GPU::Buffers::gpuBuffers.make<IndexBufferType>().lock();
+        this->indexBuffer->data(indices, Rendering::GPU::Gpu::BufferUsage::STATIC_DRAW);
     }
 
-    void BSP::render(const View::CameraParameters& camera_parameters) {
-        boost::dynamic_bitset<> faces_rendered = boost::dynamic_bitset<>(faces.size());
-        faces_rendered.reset();
-        auto camera_leaf_index = get_leaf_index_from_location(camera_parameters.location);
+    void BSP::render(const View::CameraParameters& cameraParameters) {
+        boost::dynamic_bitset<> facesRendered = boost::dynamic_bitset<>(this->faces.size());
+        facesRendered.reset();
+        int cameraLeafIndex = getLeafIndexFromLocation(cameraParameters.location);
 
         //culling
-        auto culling_state = Rendering::GPU::gpu.culling.get_state();
-        culling_state.is_enabled = true;
-        culling_state.mode = Rendering::GPU::Gpu::CullingMode::FRONT;
-        Rendering::GPU::gpu.culling.push_state(culling_state);
+        GPU::Gpu::CullingStateManager::CullingState cullingState = Rendering::GPU::gpu.culling.getState();
+        cullingState.isEnabled = true;
+        cullingState.mode = Rendering::GPU::Gpu::CullingMode::FRONT;
+        Rendering::GPU::gpu.culling.pushState(cullingState);
 
         //blend
-        auto blend_state = Rendering::GPU::gpu.blend.get_state();
-        blend_state.is_enabled = false;
-        Rendering::GPU::gpu.blend.push_state(blend_state);
+        GPU::Gpu::BlendStateManager::BlendState blendState = Rendering::GPU::gpu.blend.getState();
+        blendState.isEnabled = false;
+        Rendering::GPU::gpu.blend.pushState(blendState);
 
         static const auto DIFFUSE_TEXTURE_INDEX = 0;
         static const auto LIGHTMAP_TEXTURE_INDEX = 1;
 
         //bind buffers
-        Rendering::GPU::gpu.buffers.push(Rendering::GPU::Gpu::BufferTarget::ARRAY, vertex_buffer);
-        Rendering::GPU::gpu.buffers.push(Rendering::GPU::Gpu::BufferTarget::ELEMENT_ARRAY, index_buffer);
+        Rendering::GPU::gpu.buffers.push(Rendering::GPU::Gpu::BufferTarget::ARRAY, this->vertexBuffer);
+        Rendering::GPU::gpu.buffers.push(Rendering::GPU::Gpu::BufferTarget::ELEMENT_ARRAY, this->indexBuffer);
 
         //bind program
-        const auto gpu_program = Rendering::GPU::Shaders::shaders.get<BSPShader>();
-        Rendering::GPU::gpu.programs.push(gpu_program);
+        const boost::shared_ptr<BSPShader> gpuShader = Rendering::GPU::Shaders::shaders.get<BSPShader>();
+        Rendering::GPU::gpu.programs.push(gpuShader);
 
-        Rendering::GPU::gpu.set_uniform("world_matrix", glm::mat4());
-        Rendering::GPU::gpu.set_uniform("view_projection_matrix", camera_parameters.projection_matrix * camera_parameters.view_matrix);
-        Rendering::GPU::gpu.set_uniform("diffuse_texture", DIFFUSE_TEXTURE_INDEX);
-        Rendering::GPU::gpu.set_uniform("lightmap_texture", LIGHTMAP_TEXTURE_INDEX);
-        Rendering::GPU::gpu.set_uniform("lightmap_gamma", render_settings.lightmap_gamma);
+        Rendering::GPU::gpu.setUniform("world_matrix", glm::mat4());
+        Rendering::GPU::gpu.setUniform(
+            "view_projection_matrix",
+            cameraParameters.projectionMatrix * cameraParameters.viewMatrix
+       );
+        Rendering::GPU::gpu.setUniform("diffuse_texture", DIFFUSE_TEXTURE_INDEX);
+        Rendering::GPU::gpu.setUniform("lightmap_texture", LIGHTMAP_TEXTURE_INDEX);
+        Rendering::GPU::gpu.setUniform("lightmap_gamma", renderSettings.lightmap_gamma);
 
-        auto render_face = [&](int face_index) {
-            if (faces_rendered[face_index]) return;
-            const Face& face = faces[face_index];
-            if (face.lighting_styles[0] == Face::LIGHTING_STYLE_NONE) return;
+        auto renderFace = [&](int face_index) {
+            if (facesRendered[face_index]) return;
+            const Face& face = this->faces[face_index];
+            if (face.lightingStyles[0] == Face::LIGHTING_STYLE_NONE) return;
 
-            const auto& diffuse_texture = textures[texture_infos[face.texture_info_index].texture_index];
-            const auto& lightmap_texture = face_lightmap_textures[face_index];
-            Rendering::GPU::gpu.textures.bind(DIFFUSE_TEXTURE_INDEX, diffuse_texture);
-            Rendering::GPU::gpu.textures.bind(LIGHTMAP_TEXTURE_INDEX, lightmap_texture);
+            const boost::shared_ptr<Resources::Texture>& diffuseTexture = this->textures[this->textureInfos[face.textureInfoIndex].textureIndex];
+            const boost::shared_ptr<Resources::Texture>& lightmapTexture = this->faceLightmapTextures[face_index];
+            Rendering::GPU::gpu.textures.bind(DIFFUSE_TEXTURE_INDEX, diffuseTexture);
+            Rendering::GPU::gpu.textures.bind(LIGHTMAP_TEXTURE_INDEX, lightmapTexture);
 
-            Rendering::GPU::gpu.draw_elements(
-                Rendering::GPU::Gpu::PrimitiveType::TRIANGLE_FAN,
-                face.surface_edge_count,
-                IndexBufferType::DATA_TYPE,
-                face_start_indices[face_index] * sizeof(IndexType)
+            Rendering::GPU::gpu.drawElements(
+                    Rendering::GPU::Gpu::PrimitiveType::TRIANGLE_FAN,
+                    face.surfaceEdgeCount,
+                    IndexBufferType::DATA_TYPE,
+                    this->faceStartIndices[face_index] * sizeof(IndexType)
             );
 
-            faces_rendered[face_index] = true;
-            ++render_stats.face_count;
+            facesRendered[face_index] = true;
+            ++this->renderStats.faceCount;
         };
 
-        auto render_leaf = [&](NodeIndexType leaf_index) {
-            const Leaf& leaf = leafs[leaf_index];
-            for (int i = 0; i < leaf.mark_surface_count; ++i) {
-                render_face(mark_surfaces[leaf.mark_surface_start_index + i]);
+        auto renderLeaf = [&](NodeIndexType leaf_index) {
+            const Leaf& leaf = this->leaves[leaf_index];
+            for (int i = 0; i < leaf.markSurfaceCount; ++i) {
+                renderFace(this->markSurfaces[leaf.markSurfaceStartIndex + i]);
             }
-            ++render_stats.leaf_count;
+            ++this->renderStats.leafCount;
         };
 
-        std::function<void(NodeIndexType, NodeIndexType)> render_node = [&](NodeIndexType node_index, NodeIndexType camera_leaf_index) {
+        std::function<void(NodeIndexType, NodeIndexType)> renderNode = [&](NodeIndexType node_index, NodeIndexType camera_leaf_index) {
             if (node_index < 0) {
                 if (node_index == -1) return;
-                auto leaf_pvs_map_itr = leaf_pvs_map.find(camera_leaf_index - 1);
+                auto leafPvsMapItr = this->leafPvsMap.find(camera_leaf_index - 1);
                 if (camera_leaf_index > 0 &&
-                    leaf_pvs_map_itr != leaf_pvs_map.end() &&
-                    !leaf_pvs_map[camera_leaf_index - 1][~node_index - 1]) return;
+                    leafPvsMapItr != this->leafPvsMap.end() &&
+                    !this->leafPvsMap[camera_leaf_index - 1][~node_index - 1]) return;
 
-                render_leaf(~node_index);
+                renderLeaf(~node_index);
                 return;
             }
 
-            const Node& node = nodes[node_index];
-            const BSPPlane& plane = planes[node.plane_index];
+            const Node& node = this->nodes[node_index];
+            const BSPPlane& plane = this->planes[node.planeIndex];
             float distance = 0;
 
             switch (plane.type) {
                 case BSPPlane::Type::X:
-                    distance = camera_parameters.location.x - plane.plane.distance;
+                    distance = cameraParameters.location.x - plane.plane.distance;
                     break;
                 case BSPPlane::Type::Y:
-                    distance = camera_parameters.location.y - plane.plane.distance;
+                    distance = cameraParameters.location.y - plane.plane.distance;
                     break;
                 case BSPPlane::Type::Z:
-                    distance = camera_parameters.location.z - plane.plane.distance;
+                    distance = cameraParameters.location.z - plane.plane.distance;
                     break;
                 default:
-                    distance = glm::dot(plane.plane.normal, camera_parameters.location) - plane.plane.distance;
+                    distance = glm::dot(plane.plane.normal, cameraParameters.location) - plane.plane.distance;
             }
 
             if (distance > 0) {
-                render_node(node.child_indices[1], camera_leaf_index);
-                render_node(node.child_indices[0], camera_leaf_index);
+                renderNode(node.childIndices[1], camera_leaf_index);
+                renderNode(node.childIndices[0], camera_leaf_index);
             } else {
-                render_node(node.child_indices[0], camera_leaf_index);
-                render_node(node.child_indices[1], camera_leaf_index);
+                renderNode(node.childIndices[0], camera_leaf_index);
+                renderNode(node.childIndices[1], camera_leaf_index);
             }
         };
 
-        auto render_brush_entity = [&](size_t entity_index) {
-            return;
+        auto renderBrushEntity = [&](size_t entity_index) {
+//            return;
 
-            const auto& entity = entities[entity_index];
-            const auto model_index = boost::lexical_cast<int>(entity.get("model").substr(1));
-            const auto& model = models[model_index];
+            const BSPEntity& entity = this->entities[entity_index];
+            const int modelIndex = boost::lexical_cast<int>(entity.get("model").substr(1));
+            const Model& model = this->models[modelIndex];
 
             //render mode
-            auto render_mode_optional = entity.getOptional<int>("rendermode");
-            auto render_mode = RenderMode::NORMAL;
-            if (render_mode_optional) render_mode = static_cast<RenderMode>(render_mode_optional.get());
+            boost::optional<int> renderModeOptional = entity.getOptional<int>("rendermode");
+            RenderMode renderMode = RenderMode::NORMAL;
+            if (renderModeOptional) renderMode = static_cast<RenderMode>(renderModeOptional.get());
 
             //alpha
             float alpha = 1.0f;
-            auto alpha_optional = entity.getOptional<unsigned char>("renderamt");
-            if (alpha_optional) alpha = static_cast<float>(alpha_optional.get()) / 255.0f;
+            boost::optional<unsigned char> alphaOptional = entity.getOptional<unsigned char>("renderamt");
+            if (alphaOptional) alpha = static_cast<float>(alphaOptional.get()) / 255.0f;
 
             //origin
             glm::vec3 origin;
-            auto origin_optional = entity.getOptional("origin");
-            if (origin_optional) {
+            boost::optional<std::string> originOptional = entity.getOptional("origin");
+            if (originOptional) {
                 boost::is_any_of(" ");
                 std::vector<std::string> tokens;
 
 #if defined(_MSC_VER) && _MSC_VER >= 1400
                 #pragma warning(push)
-#pragma warning(disable:4996) 
+#pragma warning(disable:4996)
 #endif
-                boost::algorithm::split(tokens, origin_optional.get(), boost::is_any_of(" "), boost::algorithm::token_compress_on);
+                boost::algorithm::split(tokens, originOptional.get(), boost::is_any_of(" "), boost::algorithm::token_compress_on);
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-#pragma warning(pop) 
+#pragma warning(pop)
 #endif
                 origin.x = boost::lexical_cast<float>(tokens[0]);
                 origin.y = boost::lexical_cast<float>(tokens[2]);
@@ -621,101 +623,101 @@ namespace Rendering::Scene {
 
             //color
             glm::vec4 color(1.0f);
-            auto color_optional = entity.getOptional("rendercolor");
-            if (color_optional) {
+            boost::optional<std::string> colorOptional = entity.getOptional("rendercolor");
+            if (colorOptional) {
                 std::vector<std::string> tokens;
-                boost::algorithm::split(tokens, color_optional.get(), boost::is_any_of(" "), boost::algorithm::token_compress_on);
+                boost::algorithm::split(tokens, colorOptional.get(), boost::is_any_of(" "), boost::algorithm::token_compress_on);
 
                 color.r = boost::lexical_cast<float>(tokens[0]) / 255.0f;
                 color.g = boost::lexical_cast<float>(tokens[1]) / 255.0f;
                 color.b = boost::lexical_cast<float>(tokens[2]) / 255.0f;
             }
 
-            auto blend_state = Rendering::GPU::gpu.blend.get_state();
-            auto depth_state = Rendering::GPU::gpu.depth.get_state();
-            depth_state.should_test = true;
-            const auto gpu_program = Rendering::GPU::Shaders::shaders.get<BSPShader>();
+            GPU::Gpu::BlendStateManager::BlendState _blendState = Rendering::GPU::gpu.blend.getState();
+            GPU::Gpu::Depth::State depthState = Rendering::GPU::gpu.depth.getState();
+            depthState.shouldTest = true;
+            const boost::shared_ptr<BSPShader> _gpuShader = Rendering::GPU::Shaders::shaders.get<BSPShader>();
 
-            switch (render_mode) {
+            switch (renderMode) {
                 case RenderMode::TEXTURE:
-                    Rendering::GPU::gpu.set_uniform("alpha", 0.0f);
-                    blend_state.is_enabled = true;
-                    blend_state.src_factor = Rendering::GPU::Gpu::BlendFactor::SRC_ALPHA;
-                    blend_state.dst_factor = Rendering::GPU::Gpu::BlendFactor::ONE;
+                    Rendering::GPU::gpu.setUniform("alpha", 0.0f);
+                    _blendState.isEnabled = true;
+                    _blendState.srcFactor = Rendering::GPU::Gpu::BlendFactor::SRC_ALPHA;
+                    _blendState.dstFactor = Rendering::GPU::Gpu::BlendFactor::ONE;
                     break;
                 case RenderMode::SOLID:
-                    Rendering::GPU::gpu.set_uniform("should_test_alpha", 1);
+                    Rendering::GPU::gpu.setUniform("should_test_alpha", 1);
                     break;
                 case RenderMode::ADDITIVE:
-                    Rendering::GPU::gpu.set_uniform("alpha", alpha);
-                    blend_state.is_enabled = true;
-                    blend_state.src_factor = Rendering::GPU::Gpu::BlendFactor::ONE;
-                    blend_state.dst_factor = Rendering::GPU::Gpu::BlendFactor::ONE;
-                    depth_state.should_write_mask = false;
+                    Rendering::GPU::gpu.setUniform("alpha", alpha);
+                    _blendState.isEnabled = true;
+                    _blendState.srcFactor = Rendering::GPU::Gpu::BlendFactor::ONE;
+                    _blendState.dstFactor = Rendering::GPU::Gpu::BlendFactor::ONE;
+                    depthState.shouldWriteMask = false;
                     break;
                 default:
-                    blend_state.is_enabled = false;
-                    depth_state.should_write_mask = true;
+                    _blendState.isEnabled = false;
+                    depthState.shouldWriteMask = true;
                     break;
             }
 
-            Rendering::GPU::gpu.blend.push_state(blend_state);
-            Rendering::GPU::gpu.depth.push_state(depth_state);
-            auto world_matrix = glm::translate(model.origin);
-            world_matrix *= glm::translate(origin);
-            Rendering::GPU::gpu.set_uniform("world_matrix", world_matrix);
-            render_node(model.head_node_indices[0], -1);
+            Rendering::GPU::gpu.blend.pushState(_blendState);
+            Rendering::GPU::gpu.depth.pushState(depthState);
+            glm::mat4 world_matrix = glm::translate(glm::mat4x4(), model.origin);
+            world_matrix *= glm::translate(glm::mat4x4(), origin);
+            Rendering::GPU::gpu.setUniform("world_matrix", world_matrix);
+            renderNode(model.headNodeIndices[0], -1);
 
-            switch (render_mode) {
+            switch (renderMode) {
                 case RenderMode::TEXTURE:
                 case RenderMode::ADDITIVE:
-                    Rendering::GPU::gpu.set_uniform("alpha", 1.0f);
+                    Rendering::GPU::gpu.setUniform("alpha", 1.0f);
                     break;
                 case RenderMode::SOLID:
-                    Rendering::GPU::gpu.set_uniform("should_test_alpha", 0);
+                    Rendering::GPU::gpu.setUniform("should_test_alpha", 0);
                     break;
                 default:
                     break;
             }
 
-            Rendering::GPU::gpu.depth.pop_state();
-            Rendering::GPU::gpu.blend.pop_state();
+            Rendering::GPU::gpu.depth.popState();
+            Rendering::GPU::gpu.blend.popState();
         };
 
-        render_stats.reset();
+        this->renderStats.reset();
 
-        //depth
-        auto depth_state = Rendering::GPU::gpu.depth.get_state();
-        depth_state.should_test = true;
-        Rendering::GPU::gpu.depth.push_state(depth_state);
-        render_node(0, camera_leaf_index);
-        Rendering::GPU::gpu.depth.pop_state();
+        //Depth
+        GPU::Gpu::Depth::State depthState = Rendering::GPU::gpu.depth.getState();
+        depthState.shouldTest = true;
+        Rendering::GPU::gpu.depth.pushState(depthState);
+        renderNode(0, cameraLeafIndex);
+        Rendering::GPU::gpu.depth.popState();
 
-        for (unsigned long brush_entity_index : brush_entity_indices) {
-            render_brush_entity(brush_entity_index);
+        for (unsigned long brushEntityIndex : this->brushEntityIndices) {
+            renderBrushEntity(brushEntityIndex);
         }
 
         Rendering::GPU::gpu.programs.pop();
         Rendering::GPU::gpu.buffers.pop(Rendering::GPU::Gpu::BufferTarget::ELEMENT_ARRAY);
         Rendering::GPU::gpu.buffers.pop(Rendering::GPU::Gpu::BufferTarget::ARRAY);
-        Rendering::GPU::gpu.culling.pop_state();
-        Rendering::GPU::gpu.blend.pop_state();
+        Rendering::GPU::gpu.culling.popState();
+        Rendering::GPU::gpu.blend.popState();
     }
 
-    int BSP::get_leaf_index_from_location(const glm::vec3& location) const {
-        NodeIndexType node_index = 0;
+    int BSP::getLeafIndexFromLocation(const glm::vec3& location) const {
+        NodeIndexType nodeIndex = 0;
 
-        while (node_index >= 0) {
-            const Node& node = nodes[node_index];
-            const ::Scene::Structure::Plane3<float>& plane = planes[node.plane_index].plane;
+        while (nodeIndex >= 0) {
+            const Node& node = this->nodes[nodeIndex];
+            const ::Scene::Structure::Plane3<float>& plane = this->planes[node.planeIndex].plane;
 
             if (glm::dot(plane.normal, (location - plane.origin())) >= 0) {
-                node_index = node.child_indices[0];
+                nodeIndex = node.childIndices[0];
             } else {
-                node_index = node.child_indices[1];
+                nodeIndex = node.childIndices[1];
             }
         }
 
-        return ~node_index;
+        return ~nodeIndex;
     }
 }

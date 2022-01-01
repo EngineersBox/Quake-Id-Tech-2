@@ -55,42 +55,42 @@ class BSP: public Resources::Resource {
 
         struct Node {
             static const auto CHILD_COUNT = 2;
-            int plane_index = 0;
-            std::array<short, CHILD_COUNT> child_indices;
+            int planeIndex = 0;
+            std::array<short, CHILD_COUNT> childIndices;
             ::Scene::Structure::AABB3<short> aabb;
-            unsigned short face_start_index = 0;
-            unsigned short face_count = 0;
+            unsigned short faceStartIndex = 0;
+            unsigned short faceCount = 0;
         };
 
         struct Face {
             typedef unsigned char LightingStyleType;
             static const auto LIGHTING_STYLE_COUNT = 4;
             static const LightingStyleType LIGHTING_STYLE_NONE = 255;
-            unsigned short plane_index = 0;
-            unsigned short plane_side = 0;
-            unsigned int surface_edge_start_index = 0;
-            unsigned short surface_edge_count = 0;
-            unsigned short texture_info_index = 0;
-            std::array<LightingStyleType, LIGHTING_STYLE_COUNT> lighting_styles;
-            unsigned int lightmap_offset = 0;
+            unsigned short planeIndex = 0;
+            unsigned short planeSide = 0;
+            unsigned int surfaceEdgeStartIndex = 0;
+            unsigned short surfaceEdgeCount = 0;
+            unsigned short textureInfoIndex = 0;
+            std::array<LightingStyleType, LIGHTING_STYLE_COUNT> lightingStyles;
+            unsigned int lightmapOffset = 0;
         };
 
         struct Leaf {
             static const auto AMBIENT_SOUND_LEVEL_COUNT = 4;
             typedef unsigned char AmbientSoundLevelType;
             typedef ::Scene::Structure::AABB3<short> AABBType;
-            ContentType content_type = ContentType::EMPTY;
-            int visibility_offset = 0;
+            ContentType contentType = ContentType::EMPTY;
+            int visibilityOffset = 0;
             AABBType aabb;
-            unsigned short mark_surface_start_index = 0;
-            unsigned short mark_surface_count = 0;
-            std::array<AmbientSoundLevelType, AMBIENT_SOUND_LEVEL_COUNT> ambient_sound_levels;
+            unsigned short markSurfaceStartIndex = 0;
+            unsigned short markSurfaceCount = 0;
+            std::array<AmbientSoundLevelType, AMBIENT_SOUND_LEVEL_COUNT> ambientSoundLevels;
         };
 
         struct Edge {
             typedef unsigned short VertexIndexType;
             static const auto VERTEX_INDEX_COUNT = 2;
-            std::array<VertexIndexType, VERTEX_INDEX_COUNT> vertex_indices;
+            std::array<VertexIndexType, VERTEX_INDEX_COUNT> vertexIndices;
         };
 
         struct TextureInfo {
@@ -98,32 +98,32 @@ class BSP: public Resources::Resource {
                 glm::vec3 axis;
                 float offset = 0;
             } s, t;
-            unsigned int texture_index = 0;
+            unsigned int textureIndex = 0;
             unsigned int flags = 0;
         };
 
         struct ClipNode {
             static const auto CHILD_COUNT = 2;
             typedef short ChildIndexType;
-            int plane_index = 0;
-            std::array<ChildIndexType, CHILD_COUNT> child_indices;
+            int planeIndex = 0;
+            std::array<ChildIndexType, CHILD_COUNT> childIndices;
         };
 
         struct Model {
             static const auto HEAD_NODE_INDEX_COUNT = 4;
             ::Scene::Structure::AABB3<float> aabb;
             glm::vec3 origin;
-            std::array<NodeIndexType, HEAD_NODE_INDEX_COUNT> head_node_indices;
-            int vis_leafs = 0;
-            int face_start_index = 0;
-            int face_count = 0;
+            std::array<NodeIndexType, HEAD_NODE_INDEX_COUNT> headNodeIndices;
+            int visLeafs = 0;
+            int faceStartIndex = 0;
+            int faceCount = 0;
         };
 
         struct BSPTexture {
             static const auto MIPMAP_OFFSET_COUNT = 4;
             unsigned int width;
             unsigned int height;
-            unsigned int mipmap_offsets[MIPMAP_OFFSET_COUNT];
+            unsigned int mipmapOffsets[MIPMAP_OFFSET_COUNT];
         };
 
         struct BSPPlane {
@@ -150,8 +150,8 @@ class BSP: public Resources::Resource {
         };
 
         struct TraceResult {
-            bool did_hit = false;
-            bool is_all_solid = false;
+            bool didHit = false;
+            bool isAllSolid = false;
             glm::vec3 location;
             ::Scene::Structure::Plane3<float> plane;
             float ratio = 0.0f;
@@ -162,43 +162,43 @@ class BSP: public Resources::Resource {
         };
 
         struct RenderStats {
-            unsigned int face_count = 0;
-            unsigned int leaf_count = 0;
-            unsigned int leaf_index = 0;
+            unsigned int faceCount = 0;
+            unsigned int leafCount = 0;
+            unsigned int leafIndex = 0;
             void reset() {
-                face_count = 0;
-                leaf_count = 0;
-                leaf_index = 0;
+                this->faceCount = 0;
+                this->leafCount = 0;
+                this->leafIndex = 0;
             }
         };
 
         BSP(std::istream& istream);
-        void render(const View::CameraParameters& camera_parameters);
-        [[nodiscard]] int get_leaf_index_from_location(const glm::vec3& location) const;
-        [[nodiscard]] const RenderStats& geRenderStats() const { return render_stats; }
-        RenderSettings render_settings;  //TODO: sort this out elsewhere
+        void render(const View::CameraParameters& cameraParameters);
+        [[nodiscard]] int getLeafIndexFromLocation(const glm::vec3& location) const;
+        [[nodiscard]] const RenderStats& geRenderStats() const { return this->renderStats; }
+        RenderSettings renderSettings;  //TODO: sort this out elsewhere
 
     private:
         std::vector<BSPPlane> planes;
         std::vector<Edge> edges;
         std::vector<Face> faces;
-        std::vector<int> surface_edges;
+        std::vector<int> surfaceEdges;
         std::vector<Node> nodes;
-        std::vector<Leaf> leafs;
-        std::vector<unsigned short> mark_surfaces;
-        std::vector<TextureInfo> texture_infos;
-        std::vector<boost::shared_ptr<Resources::Texture>> face_lightmap_textures;
-        std::vector<ClipNode> clip_nodes;
+        std::vector<Leaf> leaves;
+        std::vector<unsigned short> markSurfaces;
+        std::vector<TextureInfo> textureInfos;
+        std::vector<boost::shared_ptr<Resources::Texture>> faceLightmapTextures;
+        std::vector<ClipNode> clipNodes;
         std::vector<Model> models;
         std::vector<BSPEntity> entities;
-        std::vector<size_t> brush_entity_indices;
-        std::map<size_t, boost::dynamic_bitset<>> leaf_pvs_map;
-        std::vector<size_t> face_start_indices;
-        size_t vis_leaf_count = 0;
+        std::vector<size_t> brushEntityIndices;
+        std::map<size_t, boost::dynamic_bitset<>> leafPvsMap;
+        std::vector<size_t> faceStartIndices;
+        size_t visLeafCount = 0;
         std::vector<boost::shared_ptr<Resources::Texture>> textures;
-        RenderStats render_stats;
-        boost::shared_ptr<VertexBufferType> vertex_buffer;
-        boost::shared_ptr<IndexBufferType> index_buffer;
+        RenderStats renderStats;
+        boost::shared_ptr<VertexBufferType> vertexBuffer;
+        boost::shared_ptr<IndexBufferType> indexBuffer;
 
         BSP(const BSP&) = delete;
         BSP& operator=(const BSP&) = delete;

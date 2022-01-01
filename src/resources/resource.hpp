@@ -10,15 +10,15 @@ namespace Resources {
 		typedef ClockType::time_point TimePointType;
 
 		std::string name;
-		TimePointType last_access_time;
+		TimePointType lastAccessTime;
 
-		[[nodiscard]] const TimePointType& get_creation_time() const { return creation_time; }
+		[[nodiscard]] const TimePointType& getCreationTime() const { return this->creationTime; }
 
     protected:
 		Resource();
 
     private:
-		TimePointType creation_time;
+		TimePointType creationTime;
 
 		Resource(const Resource&) = delete;
 		Resource& operator=(const Resource&) = delete;

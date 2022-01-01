@@ -10,11 +10,9 @@
 #include <spdlog/spdlog.h>
 
 #include "opengl.hpp"
-#include "shader/gpu_program.hpp"
+#include "shaders/shader.hpp"
 #include "buffers/frameBuffer.hpp"
-#include "../../resources/texture.hpp"
 #include "buffers/gpuBuffer.hpp"
-#include "../../resources/image.hpp"
 #include "../../store/cache.hpp"
 #include "../../resources/io/io.hpp"
 
@@ -22,7 +20,7 @@
 namespace Rendering::GPU {
     Gpu gpu;
 
-    inline GLenum get_buffer_target(Gpu::BufferTarget buffer_target) {
+    inline GLenum getBufferTarget(Gpu::BufferTarget buffer_target) {
         switch (buffer_target) {
         case Gpu::BufferTarget::ARRAY:
             return GL_ARRAY_BUFFER;
@@ -51,7 +49,7 @@ namespace Rendering::GPU {
         }
     }
 
-    inline GLenum get_buffer_usage(Gpu::BufferUsage buffer_usage) {
+    inline GLenum getBufferUsage(Gpu::BufferUsage buffer_usage) {
         switch (buffer_usage) {
         case Gpu::BufferUsage::STREAM_DRAW:
             return GL_STREAM_DRAW;
@@ -76,7 +74,7 @@ namespace Rendering::GPU {
         }
     }
 
-    inline GLenum get_primitive_type(Gpu::PrimitiveType primitive_type) {
+    inline GLenum getPrimitiveType(Gpu::PrimitiveType primitive_type) {
         switch (primitive_type) {
         case Gpu::PrimitiveType::POINTS:
             return GL_POINTS;
@@ -241,7 +239,7 @@ namespace Rendering::GPU {
         }
     }
 
-    inline GLenum get_data_type(GpuDataTypes data_type) {
+    inline GLenum getDataType(GpuDataTypes data_type) {
         switch (data_type) {
 		case GpuDataTypes::BYTE:
             return GL_BYTE;
@@ -264,7 +262,7 @@ namespace Rendering::GPU {
         }
     }
 
-    inline GLenum get_shader_type(Gpu::ShaderType shader_type) {
+    inline GLenum getShaderType(Gpu::ShaderType shader_type) {
         switch (shader_type) {
 		case Gpu::ShaderType::FRAGMENT:
             return GL_FRAGMENT_SHADER;
@@ -275,7 +273,7 @@ namespace Rendering::GPU {
         }
     }
 
-	void get_texture_formats(ColorType color_type, Resources::Texture::FormatType& internal_format, Resources::Texture::FormatType& format, Resources::Texture::TypeType& type) {
+	void getTextureFormats(ColorType color_type, Resources::Texture::FormatType& internal_format, Resources::Texture::FormatType& format, Resources::Texture::TypeType& type) {
         switch (color_type) {
 		case ColorType::G:
             format = GL_LUMINANCE;
@@ -312,7 +310,7 @@ namespace Rendering::GPU {
         }
     }
 
-    size_t get_bytes_per_pixel(ColorType color_type) {
+    size_t getBytesPerPixel(ColorType color_type) {
         switch (color_type) {
 		case ColorType::G:
             return 1;
@@ -331,91 +329,91 @@ namespace Rendering::GPU {
         }
     }
 
-    void Gpu::clear(const GpuClearFlagType clear_flags) const {
-        GLbitfield clear_mask = 0;
+    void Gpu::clear(const GpuClearFlagType clearFlags) const {
+        GLbitfield clearMask = 0;
 
-        auto build_clear_mask = [&](const GpuClearFlagType clear_flag) -> void {
-            if ((clear_flags & clear_flag) == clear_flag) {
-                clear_mask |= get_clear_flag_mask(clear_flag);
+        auto buildClearMask = [&](const GpuClearFlagType clearFlag) -> void {
+            if ((clearFlags & clearFlag) == clearFlag) {
+                clearMask |= get_clear_flag_mask(clearFlag);
             }
         };
 
-        build_clear_mask(CLEAR_FLAG_COLOR);
-        build_clear_mask(CLEAR_FLAG_DEPTH);
-        build_clear_mask(CLEAR_FLAG_ACCUM);
-        build_clear_mask(CLEAR_FLAG_STENCIL);
+        buildClearMask(CLEAR_FLAG_COLOR);
+        buildClearMask(CLEAR_FLAG_DEPTH);
+        buildClearMask(CLEAR_FLAG_ACCUM);
+        buildClearMask(CLEAR_FLAG_STENCIL);
 
-        glClear(clear_mask); glCheckError();
+        glClear(clearMask); glCheckError();
     }
 
-    GpuId Gpu::create_buffer() {
+    GpuId Gpu::createBuffer() {
         GpuId id;
         glGenBuffers(1, &id); glCheckError();
         return id;
     }
 
-    void Gpu::destroy_buffer(GpuId id) {
+    void Gpu::destroyBuffer(GpuId id) {
         glDeleteBuffers(1, &id); glCheckError();
     }
 
-	GpuId Gpu::create_frame_buffer(GpuFrameBufferType type, const GpuFrameBufferSizeType& size, boost::shared_ptr<Resources::Texture>& color_texture, boost::shared_ptr<Resources::Texture>& depth_stencil_texture, boost::shared_ptr<Resources::Texture>& depth_texture) {
+	GpuId Gpu::createFrameBuffer(GpuFrameBufferType type, const GpuFrameBufferSizeType& size, boost::shared_ptr<Resources::Texture>& colorTexture, boost::shared_ptr<Resources::Texture>& depthStencilTexture, boost::shared_ptr<Resources::Texture>& depthTexture) {
         GpuId id;
 
         glGenFramebuffers(1, &id); glCheckError();
         glBindFramebuffer(GL_FRAMEBUFFER, id); glCheckError();
 
-        GpuFrameBufferTypeFlagsType type_flags = static_cast<GpuFrameBufferTypeFlagsType>(type);
+        GpuFrameBufferTypeFlagsType typeFlags = static_cast<GpuFrameBufferTypeFlagsType>(type);
 
         //color
-		if ((type_flags & GPU_FRAME_BUFFER_TYPE_FLAG_COLOR) == GPU_FRAME_BUFFER_TYPE_FLAG_COLOR) {
-			color_texture = boost::make_shared<Resources::Texture>(ColorType::RGB, size, nullptr);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_texture->get_id(), 0); glCheckError();
+		if ((typeFlags & GPU_FRAME_BUFFER_TYPE_FLAG_COLOR) == GPU_FRAME_BUFFER_TYPE_FLAG_COLOR) {
+            colorTexture = boost::make_shared<Resources::Texture>(ColorType::RGB, size, nullptr);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture->get_id(), 0); glCheckError();
         } else {
             glDrawBuffer(GL_NONE); glCheckError();
             glReadBuffer(GL_NONE); glCheckError();
         }
 
-        //depth & stencil
-		if ((type_flags & (GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH | GPU_FRAME_BUFFER_TYPE_FLAG_STENCIL)) == (GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH | GPU_FRAME_BUFFER_TYPE_FLAG_STENCIL)) {
-            depth_stencil_texture = boost::make_shared<Resources::Texture>(ColorType::DEPTH_STENCIL, size, nullptr);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depth_stencil_texture->get_id(), 0); glCheckError();
-        } else if ((type_flags & GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH) == GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH) {
-            //depth
-			depth_texture = boost::make_shared<Resources::Texture>(ColorType::DEPTH, size, nullptr);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_texture->get_id(), 0); glCheckError();
+        //Depth & stencil
+		if ((typeFlags & (GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH | GPU_FRAME_BUFFER_TYPE_FLAG_STENCIL)) == (GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH | GPU_FRAME_BUFFER_TYPE_FLAG_STENCIL)) {
+            depthStencilTexture = boost::make_shared<Resources::Texture>(ColorType::DEPTH_STENCIL, size, nullptr);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthStencilTexture->get_id(), 0); glCheckError();
+        } else if ((typeFlags & GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH) == GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH) {
+            //Depth
+			depthTexture = boost::make_shared<Resources::Texture>(ColorType::DEPTH, size, nullptr);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->get_id(), 0); glCheckError();
         }
 
         //restore previously bound frame buffer
-        boost::optional<boost::weak_ptr<Buffers::FrameBuffer>> frame_buffer = gpu.frame_buffers.top();
-        glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer ? (int) frame_buffer->lock()->get_id() : 0); glCheckError();
+        boost::optional<boost::weak_ptr<Buffers::FrameBuffer>> frameBuffer = gpu.frameBufferManager.top();
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer ? (int) frameBuffer->lock()->getId() : 0); glCheckError();
 
         return id;
     }
 
-    void Gpu::destroy_frame_buffer(GpuId id) {
+    void Gpu::destroyFrameBuffer(GpuId id) {
         glDeleteFramebuffers(1, &id);
     }
 
-    GpuId Gpu::create_texture(ColorType color_type, glm::uvec2 size, const void* data) {
+    GpuId Gpu::createTexture(ColorType color_type, glm::uvec2 size, const void* data) {
         size = glm::max(glm::uvec2(1), size);
 
         GpuId id;
         glGenTextures(1, &id); glCheckError();
         glBindTexture(GL_TEXTURE_2D, id); glCheckError();
 
-        GLint unpack_alignment;
-        glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack_alignment); glCheckError();
+        GLint unpackAlignment;
+        glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpackAlignment); glCheckError();
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1); glCheckError();
 
-        Resources::Texture::FormatType internal_format, format;
+        Resources::Texture::FormatType internalFormat, format;
         Resources::Texture::TypeType type;
-        get_texture_formats(color_type, internal_format, format, type);
+        getTextureFormats(color_type, internalFormat, format, type);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); glCheckError();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); glCheckError();
         glTexImage2D(
             GL_TEXTURE_2D,
             0,
-            internal_format,
+            internalFormat,
             size.x,
             size.y,
             0,
@@ -423,136 +421,145 @@ namespace Rendering::GPU {
             type,
             data
         ); glCheckError();
-        glPixelStorei(GL_UNPACK_ALIGNMENT, unpack_alignment); glCheckError();
+        glPixelStorei(GL_UNPACK_ALIGNMENT, unpackAlignment); glCheckError();
         glBindTexture(GL_TEXTURE_2D, 0); glCheckError();
 
         return id;
     }
 
-    void Gpu::resize_texture(const boost::shared_ptr<Resources::Texture>& texture, glm::uvec2 size) {
-        Resources::Texture::FormatType internal_format, format;
+    void Gpu::resizeTexture(const boost::shared_ptr<Resources::Texture>& texture, glm::uvec2 size) {
+        Resources::Texture::FormatType internalFormat, format;
         Resources::Texture::TypeType type;
         size = glm::max(glm::uvec2(1), size);
-        get_texture_formats(texture->get_color_type(), internal_format, format, type);
+        getTextureFormats(texture->getColorType(), internalFormat, format, type);
         glBindTexture(GL_TEXTURE_2D, texture->get_id()); glCheckError();
-        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, size.x, size.y, 0, format, type, nullptr); glCheckError();
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            internalFormat,
+            size.x,
+            size.y,
+            0,
+            format,
+            type,
+            nullptr
+        ); glCheckError();
         glBindTexture(GL_TEXTURE_2D, 0); glCheckError();
     }
 
-    void Gpu::destroy_texture(GpuId id) {
+    void Gpu::destroyTexture(GpuId id) {
         glDeleteTextures(1, &id); glCheckError();
     }
 
-    GpuLocation Gpu::get_uniform_location(GpuId program_id, const char* name) const {
-        int uniform_location = glGetUniformLocation(program_id, name); glCheckError();
-        return uniform_location;
+    GpuLocation Gpu::getUniformLocation(GpuId program_id, const char* name) const {
+        int uniformLocation = glGetUniformLocation(program_id, name); glCheckError();
+        return uniformLocation;
     }
 
-    GpuLocation Gpu::get_attribute_location(GpuId program_id, const char* name) const {
-        int attribute_location = glGetAttribLocation(program_id, name); glCheckError();
-
-        return attribute_location;
+    GpuLocation Gpu::getAttributeLocation(GpuId program_id, const char* name) const {
+        int attributeLocation = glGetAttribLocation(program_id, name); glCheckError();
+        return attributeLocation;
     }
 
-	void Gpu::get_uniform(const char* name, std::vector<glm::mat4>& params, size_t count) {
+	void Gpu::getUniform(const char* name, std::vector<glm::mat4>& params, size_t count) {
 		params.resize(count);
-		const auto program_id = programs.top()->lock()->get_id();
-		glGetnUniformfvARB(program_id, get_uniform_location(program_id, name), static_cast<GLsizei>(count * sizeof(glm::mat4)), reinterpret_cast<GLfloat*>(&params[0]));
+		const auto programId = this->programs.top()->lock()->getId();
+		glGetnUniformfvARB(programId, getUniformLocation(programId, name), static_cast<GLsizei>(count * sizeof(glm::mat4)), reinterpret_cast<GLfloat*>(&params[0]));
 	}
 
-    void Gpu::enable_vertex_attribute_array(GpuLocation location) {
+    void Gpu::enableVertexAttributeArray(GpuLocation location) {
         glEnableVertexAttribArray(location); glCheckError();
     }
 
-    void Gpu::disable_vertex_attribute_array(GpuLocation location) {
+    void Gpu::disableVertexAttributeArray(GpuLocation location) {
         glDisableVertexAttribArray(location); glCheckError();
     }
 
-    void Gpu::set_vertex_attrib_pointer(GpuLocation location, int size, GpuDataTypes data_type, bool is_normalized, int stride, const void* pointer) {
-        glVertexAttribPointer(location, size, get_data_type(data_type), is_normalized, stride, pointer); glCheckError();
+    void Gpu::setVertexAttribPointer(GpuLocation location, int size, GpuDataTypes dataType, bool isNormalized, int stride, const void* pointer) {
+        glVertexAttribPointer(location, size, getDataType(dataType), isNormalized, stride, pointer); glCheckError();
     }
 
-	void Gpu::set_vertex_attrib_pointer(GpuLocation location, int size, GpuDataTypes data_type, int stride, const void * pointer) {
-        glVertexAttribIPointer(location, size, get_data_type(data_type), stride, pointer); glCheckError();
+	void Gpu::setVertexAttribPointer(GpuLocation location, int size, GpuDataTypes dataType, int stride, const void * pointer) {
+        glVertexAttribIPointer(location, size, getDataType(dataType), stride, pointer); glCheckError();
     }
 
-    void Gpu::set_uniform(const char* name, const glm::mat3& value, bool should_transpose) const {
-        glUniformMatrix3fv(get_uniform_location(programs.top()->lock()->get_id(), name), 1, should_transpose, glm::value_ptr(value)); glCheckError();
+    void Gpu::setUniform(const char* name, const glm::mat3& value, bool shouldTranpose) const {
+        glUniformMatrix3fv(getUniformLocation(this->programs.top()->lock()->getId(), name), 1, shouldTranpose, glm::value_ptr(value)); glCheckError();
     }
 
-    void Gpu::set_uniform(const char* name, const glm::mat4& value, bool should_transpose) const {
-        glUniformMatrix4fv(get_uniform_location(programs.top()->lock()->get_id(), name), 1, should_transpose, glm::value_ptr(value)); glCheckError();
+    void Gpu::setUniform(const char* name, const glm::mat4& value, bool shouldTranpose) const {
+        glUniformMatrix4fv(getUniformLocation(this->programs.top()->lock()->getId(), name), 1, shouldTranpose, glm::value_ptr(value)); glCheckError();
     }
 
-    void Gpu::set_uniform(const char* name, int value) const {
-        glUniform1i(get_uniform_location(programs.top()->lock()->get_id(), name), value); glCheckError();
+    void Gpu::setUniform(const char* name, int value) const {
+        glUniform1i(getUniformLocation(this->programs.top()->lock()->getId(), name), value); glCheckError();
     }
 
-    void Gpu::set_uniform(const char* name, unsigned int value) const {
-        glUniform1i(get_uniform_location(programs.top()->lock()->get_id(), name), value); glCheckError();
+    void Gpu::setUniform(const char* name, unsigned int value) const {
+        glUniform1i(getUniformLocation(this->programs.top()->lock()->getId(), name), value); glCheckError();
     }
 
-    void Gpu::set_uniform(const char* name, float value) const {
-        glUniform1f(get_uniform_location(programs.top()->lock()->get_id(), name), value); glCheckError();
+    void Gpu::setUniform(const char* name, float value) const {
+        glUniform1f(getUniformLocation(this->programs.top()->lock()->getId(), name), value); glCheckError();
     }
 
-    void Gpu::set_uniform(const char* name, const glm::vec2& value) const {
-        glUniform2fv(get_uniform_location(programs.top()->lock()->get_id(), name), 1, glm::value_ptr(value)); glCheckError();
+    void Gpu::setUniform(const char* name, const glm::vec2& value) const {
+        glUniform2fv(getUniformLocation(this->programs.top()->lock()->getId(), name), 1, glm::value_ptr(value)); glCheckError();
     }
 
-    void Gpu::set_uniform(const char* name, const glm::vec3& value) const {
-        glUniform3fv(get_uniform_location(programs.top()->lock()->get_id(), name), 1, glm::value_ptr(value)); glCheckError();
+    void Gpu::setUniform(const char* name, const glm::vec3& value) const {
+        glUniform3fv(getUniformLocation(this->programs.top()->lock()->getId(), name), 1, glm::value_ptr(value)); glCheckError();
     }
 
-    void Gpu::set_uniform(const char* name, const glm::vec4& value) const {
-        glUniform4fv(get_uniform_location(programs.top()->lock()->get_id(), name), 1, glm::value_ptr(value)); glCheckError();
+    void Gpu::setUniform(const char* name, const glm::vec4& value) const {
+        glUniform4fv(getUniformLocation(this->programs.top()->lock()->getId(), name), 1, glm::value_ptr(value)); glCheckError();
     }
 
-    void Gpu::set_uniform(const char* name, const std::vector<glm::mat4>& matrices, bool should_transpose) const {
-		const GLfloat* f = reinterpret_cast<const GLfloat*>(matrices.data());
+    void Gpu::setUniform(const char* name, const std::vector<glm::mat4>& value, bool shouldTranspose) const {
+		const GLfloat* f = reinterpret_cast<const GLfloat*>(value.data());
 		float d = f[17];
-		auto loc = get_uniform_location(programs.top()->lock()->get_id(), name);
-		glUniformMatrix4fv(loc, static_cast<GLsizei>(matrices.size()), should_transpose ? GL_TRUE : GL_FALSE, f); glCheckError();
+		auto loc = getUniformLocation(this->programs.top()->lock()->getId(), name);
+		glUniformMatrix4fv(loc, static_cast<GLsizei>(value.size()), shouldTranspose ? GL_TRUE : GL_FALSE, f); glCheckError();
     }
 
-    void Gpu::set_uniform_subroutine(ShaderType shader_type, GpuIndex index) {
-        glUniformSubroutinesuiv(get_shader_type(shader_type), 1, &index); glCheckError();
+    void Gpu::setUniformSubroutine(ShaderType shaderType, GpuIndex index) {
+        glUniformSubroutinesuiv(getShaderType(shaderType), 1, &index); glCheckError();
     }
 
-    void Gpu::set_clear_color(glm::vec4 & color) {
-        glClearColor(color.r, color.g, color.b, color.a); glCheckError();
+    void Gpu::setClearColor(glm::vec4 & _color) {
+        glClearColor(_color.r, _color.g, _color.b, _color.a); glCheckError();
     }
 
-    glm::vec4 Gpu::get_clear_color() {
-        glm::vec4 clear_color;
-        glGetFloatv(GL_COLOR_CLEAR_VALUE, glm::value_ptr(clear_color)); glCheckError();
-        return clear_color;
+    glm::vec4 Gpu::getClearColor() {
+        glm::vec4 clearColor;
+        glGetFloatv(GL_COLOR_CLEAR_VALUE, glm::value_ptr(clearColor)); glCheckError();
+        return clearColor;
     }
 
-    GpuLocation Gpu::get_subroutine_uniform_location(GpuId program_id, ShaderType shader_type, const std::string& name) {
-        int location = glGetSubroutineUniformLocation(program_id, get_shader_type(shader_type), name.c_str()); glCheckError();
+    GpuLocation Gpu::getSubroutineUniformLocation(GpuId programId, ShaderType shaderType, const std::string& name) {
+        int location = glGetSubroutineUniformLocation(programId, getShaderType(shaderType), name.c_str()); glCheckError();
         return location;
     }
 
-	GpuIndex Gpu::get_subroutine_index(GpuId program_id, ShaderType shader_type, const std::string& name) {
-        unsigned int index = glGetSubroutineIndex(program_id, get_shader_type(shader_type), name.c_str()); glCheckError();
+	GpuIndex Gpu::getSubroutineIndex(GpuId programId, ShaderType shaderType, const std::string& name) {
+        unsigned int index = glGetSubroutineIndex(programId, getShaderType(shaderType), name.c_str()); glCheckError();
         return index;
     }
 
     boost::optional<Gpu::ProgramManager::WeakType> Gpu::ProgramManager::top() const {
-        boost::optional<WeakType> gpu_program;
+        boost::optional<WeakType> gpuShader;
         if (!programs.empty()) {
-            gpu_program = programs.top();
+            gpuShader = programs.top();
         }
-        return gpu_program;
+        return gpuShader;
     }
 
     void Gpu::ProgramManager::push(const Gpu::ProgramManager::WeakType& program) {
         if (programs.empty() || program.lock() != programs.top().lock()) {
-            glUseProgram(program.lock()->get_id()); glCheckError();
+            glUseProgram(program.lock()->getId()); glCheckError();
         }
         programs.push(program);
-        program.lock()->on_bind();
+        program.lock()->onBind();
     }
 
     Gpu::ProgramManager::WeakType Gpu::ProgramManager::pop() {
@@ -560,81 +567,81 @@ namespace Rendering::GPU {
             throw std::exception();
         }
 
-        boost::weak_ptr<Shaders::Shader> previous_program = programs.top();
+        boost::weak_ptr<Shaders::Shader> previousProgram = programs.top();
         programs.pop();
-        previous_program.lock()->on_unbind();
+        previousProgram.lock()->onUnbind();
 
         if (programs.empty()) {
             glUseProgram(0); glCheckError();
             return {};
         } else {
-            glUseProgram(programs.top().lock()->get_id()); glCheckError();
+            glUseProgram(programs.top().lock()->getId()); glCheckError();
             return programs.top();
         }
     }
 
     boost::optional<Gpu::FrameBufferManager::WeakType> Gpu::FrameBufferManager::top() const {
-        boost::optional<WeakType> frame_buffer;
-        if (!frame_buffers.empty()) {
-            frame_buffer = frame_buffers.top();
+        boost::optional<WeakType> frameBuffer;
+        if (!frameBuffers.empty()) {
+            frameBuffer = frameBuffers.top();
         }
-        return frame_buffer;
+        return frameBuffer;
     }
 
     void Gpu::FrameBufferManager::push(const Gpu::FrameBufferManager::SharedType& frame_buffer) {
-        if (frame_buffers.empty() || frame_buffer != frame_buffers.top()) {
-            glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer->get_id()); glCheckError();
+        if (frameBuffers.empty() || frame_buffer != frameBuffers.top()) {
+            glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer->getId()); glCheckError();
             frame_buffer->on_bind();
         }
-        frame_buffers.push(frame_buffer);
+        frameBuffers.push(frame_buffer);
     }
 
     Gpu::FrameBufferManager::WeakType Gpu::FrameBufferManager::pop() {
-        if (frame_buffers.empty()) {
+        if (frameBuffers.empty()) {
             throw std::out_of_range("");
         }
 
-        frame_buffers.pop();
-        if (frame_buffers.empty()) {
+        frameBuffers.pop();
+        if (frameBuffers.empty()) {
             glBindFramebuffer(GL_FRAMEBUFFER, 0); glCheckError();
             glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); glCheckError();
             glDepthMask(GL_TRUE); glCheckError();
             //TODO: stencil mask
             return {};
         } else {
-            glBindFramebuffer(GL_FRAMEBUFFER, frame_buffers.top()->get_id()); glCheckError();
-            frame_buffers.top()->on_bind();
-            return frame_buffers.top();
+            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.top()->getId()); glCheckError();
+            frameBuffers.top()->on_bind();
+            return frameBuffers.top();
         }
     }
 
     Gpu::TextureManager::WeakType Gpu::TextureManager::get(IndexType index) const {
-        if (index < 0 || index >= texture_count) {
+        if (index < 0 || index >= textureCount) {
             throw std::out_of_range("");
         }
         return textures[index];
     }
 
 	Gpu::TextureManager::WeakType Gpu::TextureManager::bind(IndexType index, const SharedType& texture) {
-        const boost::shared_ptr<Resources::Texture>& previous_texture = textures[index];
-        if (previous_texture == texture) return previous_texture;
+        const boost::shared_ptr<Resources::Texture>& previousTexture = textures[index];
+        if (previousTexture == texture) return previousTexture;
 
         glActiveTexture(GL_TEXTURE0 + index); glCheckError();
         glBindTexture(GL_TEXTURE_2D, texture != nullptr ? (int) texture->get_id() : 0); glCheckError();
         textures[index] = texture;
-        return previous_texture;
+        return previousTexture;
     }
 
 	Gpu::TextureManager::WeakType Gpu::TextureManager::unbind(IndexType index) {
-        const boost::shared_ptr<Resources::Texture>& previous_texture = textures[index];
-        if (previous_texture == nullptr) return previous_texture;
+        const boost::shared_ptr<Resources::Texture>& previousTexture = textures[index];
+        if (previousTexture == nullptr) return previousTexture;
         glActiveTexture(GL_TEXTURE0 + index); glCheckError();
         glBindTexture(GL_TEXTURE_2D, 0); glCheckError();
         textures[index] = nullptr;
-        return previous_texture;
+        return previousTexture;
     }
 
-    GpuViewportType Gpu::viewport_mgr::top() const {
+    GpuViewportType Gpu::ViewportManager::top() const {
         if (viewports.empty()) {
             glm::ivec4 viewport;
             glGetIntegerv(GL_VIEWPORT, glm::value_ptr(viewport)); glCheckError();
@@ -643,7 +650,7 @@ namespace Rendering::GPU {
         return viewports.top();
     }
 
-    void Gpu::viewport_mgr::push(const GpuViewportType& viewport) {
+    void Gpu::ViewportManager::push(const GpuViewportType& viewport) {
         viewports.push(viewport);
 
         glViewport(
@@ -654,19 +661,19 @@ namespace Rendering::GPU {
         ); glCheckError();
     }
 
-    GpuViewportType Gpu::viewport_mgr::pop() {
+    GpuViewportType Gpu::ViewportManager::pop() {
         if (viewports.empty()) throw std::exception();
-        const Scene::Structure::Rectangle<float>& previous_viewport = viewports.top();
+        const Scene::Structure::Rectangle<float>& previousViewport = viewports.top();
 
         viewports.pop();
-		const Scene::Structure::Rectangle<int> top_viewport = static_cast<Scene::Structure::Rectangle<int>>(top());
+		const Scene::Structure::Rectangle<int> topViewport = static_cast<Scene::Structure::Rectangle<int>>(top());
         glViewport(
-            top_viewport.x,
-            top_viewport.y,
-            top_viewport.width,
-            top_viewport.height
+            topViewport.x,
+            topViewport.y,
+            topViewport.width,
+            topViewport.height
         ); glCheckError();
-        return previous_viewport;
+        return previousViewport;
     }
 
 	void Gpu::BufferManager::put(BufferType & buffer) {
@@ -678,38 +685,38 @@ namespace Rendering::GPU {
     }
     
 	void Gpu::BufferManager::push(BufferTarget target, BufferType buffer) {
-        if (target_buffers.find(target) == target_buffers.end()) {
-			target_buffers.emplace(std::make_pair(target, std::stack<BufferType>()));
+        if (targetBuffers.find(target) == targetBuffers.end()) {
+			targetBuffers.emplace(std::make_pair(target, std::stack<BufferType>()));
         }
-        target_buffers[target].push(buffer);
-        glBindBuffer(get_buffer_target(target), buffer->get_id()); glCheckError();
+        targetBuffers[target].push(buffer);
+        glBindBuffer(getBufferTarget(target), buffer->get_id()); glCheckError();
     }
 
 	Gpu::BufferManager::BufferType Gpu::BufferManager::pop(BufferTarget target) {
-        auto target_buffers_itr = target_buffers.find(target);
-        if (target_buffers_itr == target_buffers.end()) {
+        auto targetBuffersItr = targetBuffers.find(target);
+        if (targetBuffersItr == targetBuffers.end()) {
             throw std::out_of_range("");
         }
 
-        std::stack<boost::shared_ptr<Buffers::GpuBuffer>>& _buffers = target_buffers_itr->second;
+        std::stack<boost::shared_ptr<Buffers::GpuBuffer>>& _buffers = targetBuffersItr->second;
         if (_buffers.empty()) {
             throw std::out_of_range("");
         }
 
         _buffers.pop();
-        glBindBuffer(get_buffer_target(target), _buffers.empty() ? 0 : (int) _buffers.top()->get_id()); glCheckError();
+        glBindBuffer(getBufferTarget(target), _buffers.empty() ? 0 : (int) _buffers.top()->get_id()); glCheckError();
         return _buffers.empty() ? BufferType() : _buffers.top();
     }
 
 
 	Gpu::BufferManager::BufferType Gpu::BufferManager::top(BufferTarget target) const {
-        auto target_buffers_itr = target_buffers.find(target);
+        auto targetBuffersItr = targetBuffers.find(target);
 
-        if (target_buffers_itr == target_buffers.end()) {
+        if (targetBuffersItr == targetBuffers.end()) {
             throw std::out_of_range("");
         }
 
-        const std::stack<boost::shared_ptr<Buffers::GpuBuffer>>& _buffers = target_buffers_itr->second;
+        const std::stack<boost::shared_ptr<Buffers::GpuBuffer>>& _buffers = targetBuffersItr->second;
         if (_buffers.empty()) {
             throw std::out_of_range("");
         }
@@ -717,16 +724,21 @@ namespace Rendering::GPU {
     }
 
 	void Gpu::BufferManager::data(BufferTarget target, const void* data, size_t size, BufferUsage usage) {
-        glBufferData(get_buffer_target(target), size, data, get_buffer_usage(usage)); glCheckError();
+        glBufferData(getBufferTarget(target), size, data, getBufferUsage(usage)); glCheckError();
     }
     
-    //TODO: infer index_data_type from bound index buffer
-    void Gpu::draw_elements(PrimitiveType primitive_type, size_t count, GpuDataTypes index_data_type, size_t offset) const {
-        glDrawElements(get_primitive_type(primitive_type), static_cast<GLsizei>(count), get_data_type(index_data_type), reinterpret_cast<GLvoid*>(offset)); glCheckError();
+    //TODO: infer indexDataType from bound index buffer
+    void Gpu::drawElements(PrimitiveType primitiveType, size_t count, GpuDataTypes indexDataType, size_t offset) const {
+        glDrawElements(
+            getPrimitiveType(primitiveType),
+            static_cast<GLsizei>(count),
+            getDataType(indexDataType),
+            reinterpret_cast<GLvoid*>(offset)
+        ); glCheckError();
     }
 
-    GpuId Gpu::create_program(const std::string& vertex_shader_source, const std::string& fragment_shader_source) const {
-        auto create_shader = [&](GLenum type, const std::string& source) -> GLint {
+    GpuId Gpu::createProgram(const std::string& vertexShaderSource, const std::string& fragmentShaderSource) const {
+        auto createShader = [&](GLenum type, const std::string& source) -> GLint {
             //create shaders
             GpuId id = glCreateShader(type); glCheckError();
 
@@ -736,16 +748,16 @@ namespace Rendering::GPU {
             glShaderSource(id, 1, &strings, &lengths[0]); glCheckError();
             glCompileShader(id); glCheckError();
 
-            GLsizei compile_status;
-            glGetShaderiv(id, GL_COMPILE_STATUS, &compile_status); glCheckError();
+            GLsizei compileStatus;
+            glGetShaderiv(id, GL_COMPILE_STATUS, &compileStatus); glCheckError();
 
-            if (compile_status == GL_FALSE) {
+            if (compileStatus == GL_FALSE) {
 #if defined(DEBUG)
-                GLsizei shader_info_log_length = 0;
-                GLchar shader_info_log[GL_INFO_LOG_LENGTH] = { '\0' };
+                GLsizei shaderInfoLogLength = 0;
+                GLchar shaderInfoLog[GL_INFO_LOG_LENGTH] = { '\0' };
 
-                glGetShaderInfoLog(id, GL_INFO_LOG_LENGTH, &shader_info_log_length, &shader_info_log[0]); glCheckError();
-                spdlog::debug(shader_info_log);
+                glGetShaderInfoLog(id, GL_INFO_LOG_LENGTH, &shaderInfoLogLength, &shaderInfoLog[0]); glCheckError();
+                spdlog::debug(shaderInfoLog);
 #endif
                 glDeleteShader(id); glCheckError();
                 throw std::exception();
@@ -757,168 +769,168 @@ namespace Rendering::GPU {
         //create program
         const unsigned int id = glCreateProgram(); glCheckError();
         boost::crc_32_type crc32;
-        crc32.process_bytes(vertex_shader_source.data(), vertex_shader_source.size());
-        crc32.process_bytes(fragment_shader_source.data(), fragment_shader_source.size());
-        unsigned int source_checksum = crc32.checksum();
+        crc32.process_bytes(vertexShaderSource.data(), vertexShaderSource.size());
+        crc32.process_bytes(fragmentShaderSource.data(), fragmentShaderSource.size());
+        unsigned int sourceChecksum = crc32.checksum();
 
         //TODO: give these programs proper names
-        std::unique_ptr<std::basic_ifstream<char>> ifstream = Store::cache.get(std::to_string(source_checksum));
+        std::unique_ptr<std::basic_ifstream<char>> ifstream = Store::cache.get(std::to_string(sourceChecksum));
 
         if (ifstream->is_open()) {
-            GLenum binary_format;
-            GLsizei binary_length;
+            GLenum binaryFormat;
+            GLsizei binaryLength;
             std::vector<char> binary;
 
-            Resources::IO::read(*ifstream, binary_format);
-            Resources::IO::read(*ifstream, binary_length);
-            Resources::IO::read(*ifstream, binary, binary_length);
+            Resources::IO::read(*ifstream, binaryFormat);
+            Resources::IO::read(*ifstream, binaryLength);
+            Resources::IO::read(*ifstream, binary, binaryLength);
 
-            glProgramBinary(id, binary_format, binary.data(), binary_length); glCheckError();
+            glProgramBinary(id, binaryFormat, binary.data(), binaryLength); glCheckError();
 
             //link status
-            GLint link_status;
-            glGetProgramiv(id, GL_LINK_STATUS, &link_status); glCheckError();
-            if (link_status == GL_TRUE) return id;
+            GLint linkStatus;
+            glGetProgramiv(id, GL_LINK_STATUS, &linkStatus); glCheckError();
+            if (linkStatus == GL_TRUE) return id;
 
-            GLint program_info_log_length = 0;
-            glGetProgramiv(id, GL_INFO_LOG_LENGTH, &program_info_log_length); glCheckError();
+            GLint programInfoLogLength = 0;
+            glGetProgramiv(id, GL_INFO_LOG_LENGTH, &programInfoLogLength); glCheckError();
 
-            if (program_info_log_length > 0) {
-                std::string program_info_log;
-                program_info_log.resize(program_info_log_length);
-                glGetProgramInfoLog(id, program_info_log_length, nullptr, &program_info_log[0]); glCheckError();
-                spdlog::debug(program_info_log);
+            if (programInfoLogLength > 0) {
+                std::string programInfoLog;
+                programInfoLog.resize(programInfoLogLength);
+                glGetProgramInfoLog(id, programInfoLogLength, nullptr, &programInfoLog[0]); glCheckError();
+                spdlog::debug(programInfoLog);
             }
         }
 
-        const int vertex_shader = create_shader(GL_VERTEX_SHADER, vertex_shader_source);
-        const int fragment_shader = create_shader(GL_FRAGMENT_SHADER, fragment_shader_source);
+        const int vertexShader = createShader(GL_VERTEX_SHADER, vertexShaderSource);
+        const int fragmentShader = createShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
 
-        glAttachShader(id, vertex_shader); glCheckError();
-        glAttachShader(id, fragment_shader); glCheckError();
+        glAttachShader(id, vertexShader); glCheckError();
+        glAttachShader(id, fragmentShader); glCheckError();
         glLinkProgram(id); glCheckError();
 
-        GLint link_status;
-        glGetProgramiv(id, GL_LINK_STATUS, &link_status); glCheckError();
+        GLint linkStatus;
+        glGetProgramiv(id, GL_LINK_STATUS, &linkStatus); glCheckError();
 
-        if (link_status == GL_FALSE) {
-            GLint program_info_log_length = 0;
-            glGetProgramiv(id, GL_INFO_LOG_LENGTH, &program_info_log_length); glCheckError();
+        if (linkStatus == GL_FALSE) {
+            GLint programInfoLogLength = 0;
+            glGetProgramiv(id, GL_INFO_LOG_LENGTH, &programInfoLogLength); glCheckError();
 
-            if (program_info_log_length > 0) {
-                std::string program_info_log;
-                program_info_log.resize(program_info_log_length);
-                glGetProgramInfoLog(id, program_info_log_length, nullptr, &program_info_log[0]); glCheckError();
-                spdlog::debug(program_info_log);
+            if (programInfoLogLength > 0) {
+                std::string programInfoLog;
+                programInfoLog.resize(programInfoLogLength);
+                glGetProgramInfoLog(id, programInfoLogLength, nullptr, &programInfoLog[0]); glCheckError();
+                spdlog::debug(programInfoLog);
             }
             glDeleteProgram(id); glCheckError();
             throw std::exception();
         }
 
-        glDetachShader(id, vertex_shader); glCheckError();
-        glDetachShader(id, fragment_shader); glCheckError();
+        glDetachShader(id, vertexShader); glCheckError();
+        glDetachShader(id, fragmentShader); glCheckError();
 
-        GLsizei binary_length = 0;
-        glGetProgramiv(id, GL_PROGRAM_BINARY_LENGTH, &binary_length); glCheckError();
+        GLsizei binaryLength = 0;
+        glGetProgramiv(id, GL_PROGRAM_BINARY_LENGTH, &binaryLength); glCheckError();
 
-        GLenum binary_format = 0;
-        std::vector<unsigned char> program_binary_data(binary_length);
-        glGetProgramBinary(id, static_cast<GLsizei>(program_binary_data.size()), &binary_length, &binary_format, static_cast<GLvoid*>(program_binary_data.data())); glCheckError();
+        GLenum binaryFormat = 0;
+        std::vector<unsigned char> programBinaryData(binaryLength);
+        glGetProgramBinary(id, static_cast<GLsizei>(programBinaryData.size()), &binaryLength, &binaryFormat, static_cast<GLvoid*>(programBinaryData.data())); glCheckError();
 
         std::stringstream stringstream;
-        Resources::IO::write(stringstream, binary_format);
-        Resources::IO::write(stringstream, binary_length);
-        Resources::IO::write(stringstream, program_binary_data);
+        Resources::IO::write(stringstream, binaryFormat);
+        Resources::IO::write(stringstream, binaryLength);
+        Resources::IO::write(stringstream, programBinaryData);
         std::string data = stringstream.str();
 
-        Store::cache.put_buffer(std::to_string(source_checksum), data.data(), data.size());
+        Store::cache.put_buffer(std::to_string(sourceChecksum), data.data(), data.size());
         return id;
     }
 
-    void Gpu::destroy_program(GpuId id) {
+    void Gpu::destroyProgram(GpuId id) {
         glDeleteProgram(id); glCheckError();
     }
 
     //blend
-    Gpu::BlendStateManager::BlendState Gpu::BlendStateManager::get_state() const {
+    Gpu::BlendStateManager::BlendState Gpu::BlendStateManager::getState() const {
         if (!states.empty()) return states.top();
 		return {};
     }
 
-	void Gpu::BlendStateManager::push_state(const Gpu::BlendStateManager::BlendState& state) {
-        apply_state(state);
+	void Gpu::BlendStateManager::pushState(const Gpu::BlendStateManager::BlendState& state) {
+        applyState(state);
         states.push(state);
     }
 
-    void Gpu::BlendStateManager::pop_state() {
+    void Gpu::BlendStateManager::popState() {
         states.pop();
-        apply_state(get_state());
+        applyState(getState());
     }
 
-	void Gpu::BlendStateManager::apply_state(const Gpu::BlendStateManager::BlendState& state) {
-        if (state.is_enabled) {
+	void Gpu::BlendStateManager::applyState(const Gpu::BlendStateManager::BlendState& state) {
+        if (state.isEnabled) {
             glEnable(GL_BLEND); glCheckError();
         } else {
             glDisable(GL_BLEND); glCheckError();
         }
-        glBlendFunc(get_blend_factor(state.src_factor), get_blend_factor(state.dst_factor)); glCheckError();
+        glBlendFunc(get_blend_factor(state.srcFactor), get_blend_factor(state.dstFactor)); glCheckError();
         glBlendEquation(get_blend_equation(state.equation)); glCheckError();
     }
 
-    //depth
-    Gpu::depth::state Gpu::depth::get_state() const {
+    //Depth
+    Gpu::Depth::State Gpu::Depth::getState() const {
         if (!states.empty()) {
             return states.top();
         }
         return {};
     }
 
-    void Gpu::depth::push_state(const state& state) {
+    void Gpu::Depth::pushState(const State& state) {
         apply_state(state);
         states.push(state);
     }
 
-    void Gpu::depth::pop_state() {
+    void Gpu::Depth::popState() {
         states.pop();
-        apply_state(get_state());
+        apply_state(getState());
     }
 
-    void Gpu::depth::apply_state(const state& state) {
-        if (state.should_test) {
+    void Gpu::Depth::apply_state(const State& state) {
+        if (state.shouldTest) {
             glEnable(GL_DEPTH_TEST); glCheckError();
         } else {
             glDisable(GL_DEPTH_TEST); glCheckError();
         }
-        glDepthMask(state.should_write_mask ? GL_TRUE : GL_FALSE); glCheckError();
+        glDepthMask(state.shouldWriteMask ? GL_TRUE : GL_FALSE); glCheckError();
         glDepthFunc(get_depth_function(state.function)); glCheckError();
     }
 
     //culling
-	Gpu::CullingStateManager::CullingState Gpu::CullingStateManager::get_state() const {
+	Gpu::CullingStateManager::CullingState Gpu::CullingStateManager::getState() const {
         if (!states.empty()) {
             return states.top();
         }
 		return {};
     }
 
-	void Gpu::CullingStateManager::push_state(const CullingState& state) {
-        apply_state(state);
+	void Gpu::CullingStateManager::pushState(const CullingState& state) {
+        applyState(state);
         states.push(state);
     }
 
-	void Gpu::CullingStateManager::pop_state() {
+	void Gpu::CullingStateManager::popState() {
         states.pop();
-        apply_state(get_state());
+        applyState(getState());
     }
 
-	void Gpu::CullingStateManager::apply_state(const CullingState& state) {
-        if (state.is_enabled) {
+	void Gpu::CullingStateManager::applyState(const CullingState& state) {
+        if (state.isEnabled) {
             glEnable(GL_CULL_FACE); glCheckError();
         } else {
             glDisable(GL_CULL_FACE); glCheckError();
         }
 
-        switch (state.front_face) {
+        switch (state.frontFace) {
         case CullingFrontFace::CCW:
             glFrontFace(GL_CCW); glCheckError();
             break;
@@ -941,25 +953,25 @@ namespace Rendering::GPU {
     }
 
     //stencil
-	Gpu::StencilStateManager::StencilState Gpu::StencilStateManager::get_state() const {
+	Gpu::StencilStateManager::StencilState Gpu::StencilStateManager::getState() const {
         if (!states.empty()) {
             return states.top();
         }
 		return {};
     }
 
-	void Gpu::StencilStateManager::push_state(const StencilState& state) {
-        apply_state(state);
+	void Gpu::StencilStateManager::pushState(const StencilState& state) {
+        applyState(state);
         states.push(state);
     }
 
-	void Gpu::StencilStateManager::pop_state() {
+	void Gpu::StencilStateManager::popState() {
         states.pop();
-        apply_state(get_state());
+        applyState(getState());
     }
 
-	void Gpu::StencilStateManager::apply_state(const StencilState& state) {
-        if (state.is_enabled) {
+	void Gpu::StencilStateManager::applyState(const StencilState& state) {
+        if (state.isEnabled) {
             glEnable(GL_STENCIL_TEST); glCheckError();
         } else {
             glDisable(GL_STENCIL_TEST); glCheckError();
@@ -971,24 +983,24 @@ namespace Rendering::GPU {
     }
 
     //color
-	Gpu::ColorStateManager::ColorState Gpu::ColorStateManager::get_state() const {
+	Gpu::ColorStateManager::ColorState Gpu::ColorStateManager::getState() const {
         if (!states.empty()) {
             return states.top();
         }
 		return {};
     }
 
-	void Gpu::ColorStateManager::push_state(const ColorState& state) {
-        apply_state(state);
+	void Gpu::ColorStateManager::pushState(const ColorState& state) {
+        applyState(state);
         states.push(state);
     }
 
-	void Gpu::ColorStateManager::pop_state() {
+	void Gpu::ColorStateManager::popState() {
         states.pop();
-        apply_state(get_state());
+        applyState(getState());
     }
 
-	void Gpu::ColorStateManager::apply_state(const ColorState& state) {
+	void Gpu::ColorStateManager::applyState(const ColorState& state) {
         glColorMask(
             state.mask.r ? GL_TRUE : GL_FALSE,
             state.mask.g ? GL_TRUE : GL_FALSE,
@@ -997,43 +1009,43 @@ namespace Rendering::GPU {
         ); glCheckError();
     }
 
-    const std::string& Gpu::get_vendor() const {
+    const std::string& Gpu::getVendor() const {
         static const std::string VENDOR = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
         return VENDOR;
     }
 
-    const std::string& Gpu::get_renderer() const {
+    const std::string& Gpu::getRenderer() const {
         static const std::string RENDERER = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
         return RENDERER;
     }
 
-    const std::string& Gpu::get_version() const {
+    const std::string& Gpu::getVersion() const {
         static const std::string VERSION = reinterpret_cast<const char*>(glGetString(GL_VERSION));
         return VERSION;
     }
 
-    const std::string& Gpu::get_shading_language_version() const {
+    const std::string& Gpu::getShadingLanguageVersion() const {
         static const std::string SHADING_LANGUAGE_VERISON = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
         return SHADING_LANGUAGE_VERISON;
     }
 
-    const std::string& Gpu::get_extensions() const {
+    const std::string& Gpu::getExtensions() const {
         static const std::string EXTENSIONS = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
         return EXTENSIONS;
     }
 
-    void Gpu::get_texture_data(const boost::shared_ptr<Resources::Texture>& texture, std::vector<unsigned char>& data, int level) {
-        int internal_format, format, type;
-        get_texture_formats(texture->get_color_type(), internal_format, format, type);
-        const unsigned long bytes_per_pixel = get_bytes_per_pixel(texture->get_color_type());
-        data.resize(texture->get_width() * texture->get_height() * bytes_per_pixel);
-        textures.bind(0, texture);
+    void Gpu::getTextureData(const boost::shared_ptr<Resources::Texture>& texture, std::vector<unsigned char>& data, int level) {
+        int internalFormat, format, type;
+        getTextureFormats(texture->getColorType(), internalFormat, format, type);
+        const unsigned long bytes_per_pixel = getBytesPerPixel(texture->getColorType());
+        data.resize(texture->getWidth() * texture->getHeight() * bytes_per_pixel);
+        this->textures.bind(0, texture);
         glGetTexImage(GL_TEXTURE_2D, level, format, type, data.data());
-        textures.unbind(0);
+        this->textures.unbind(0);
     }
 
-	std::unique_ptr<unsigned char[]> Gpu::get_backbuffer_pixels(int& width, int& height) {
-		Scene::Structure::Rectangle<float> viewport = viewports.top();
+	std::unique_ptr<unsigned char[]> Gpu::getBackbufferPixels(int& width, int& height) {
+		Scene::Structure::Rectangle<float> viewport = this->viewports.top();
 		width = static_cast<int>(viewport.width);
 		height = static_cast<int>(viewport.height);
 		std::unique_ptr<unsigned char[]> pixels(new unsigned char[width * height * 4]);

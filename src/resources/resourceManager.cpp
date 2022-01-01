@@ -12,14 +12,14 @@ namespace Resources {
 	size_t ResourceManager::count() const {
         //TODO: this could be replaced, whenever a resource is added or removed we can just increment or decrement a counter
         size_t count = 0;
-        for (const auto& _resources : type_resources) {
+        for (const auto& _resources : typeResources) {
             count += _resources.second.size();
         }
         return count;
     }
 
 	void ResourceManager::prune() {
-        for (auto& type_resource : type_resources) {
+        for (auto& type_resource : typeResources) {
             auto& _resources = type_resource.second;
             auto resources_itr = _resources.begin();
             while (resources_itr != _resources.end()) {
@@ -41,6 +41,6 @@ namespace Resources {
             }
         }
 #endif
-        type_resources.clear();
+        typeResources.clear();
     }
 }

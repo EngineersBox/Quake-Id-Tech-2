@@ -18,10 +18,10 @@ namespace Rendering::Scene {
         template<typename T = std::string>
         boost::optional<T> getOptional(const std::string& key) const {
             boost::optional<T> property = boost::none;
-            auto properties_itr = properties.find(key);
-            if (properties_itr != properties.end()) {
+            auto propertiesItr = this->properties.find(key);
+            if (propertiesItr != this->properties.end()) {
                 try{
-                    property = boost::lexical_cast<T>(properties_itr->second);
+                    property = boost::lexical_cast<T>(propertiesItr->second);
                 } catch (boost::bad_lexical_cast& e) {}
             }
             return property;
@@ -29,7 +29,7 @@ namespace Rendering::Scene {
 
         template<typename T = std::string>
         T get(const std::string& key) const {
-            return boost::lexical_cast<T>(properties.at(key));
+            return boost::lexical_cast<T>(this->properties.at(key));
         }
 
     private:

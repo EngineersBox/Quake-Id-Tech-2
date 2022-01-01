@@ -48,7 +48,7 @@ namespace Core::Logger {
             spdlog::set_default_logger(combinedLogger);
             combinedLogger->set_level(spdlog::level::trace);
 
-            spdlog::set_error_handler(Core::Logger::generalErrorHandler)
+            spdlog::set_error_handler(Core::Logger::generalErrorHandler);
         } catch (const spdlog::spdlog_ex& ex) {
             std::cout << "Logger init failed: " << ex.what() << std::endl;
             exit(1);

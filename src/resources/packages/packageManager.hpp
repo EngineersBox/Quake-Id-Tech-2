@@ -7,9 +7,9 @@
 namespace Resources::Packages {
     struct PackageManager {
         void mount(const std::string& path);
-        void unmount_all();
+        void unmountAll();
 
-        boost::shared_ptr<std::istream> extract(const std::string& file_name);
+        boost::shared_ptr<std::istream> extract(const std::string& fileName);
 
     private:
         std::recursive_mutex mutex;

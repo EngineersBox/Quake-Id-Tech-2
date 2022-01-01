@@ -2,6 +2,6 @@
 
 namespace Resources {
 	Resource::Resource() :
-        creation_time(ClockType::now()),
-		last_access_time(ClockType::now()) {}
+            creationTime(ClockType::now()),
+            lastAccessTime(ClockType::now()) {}
 }

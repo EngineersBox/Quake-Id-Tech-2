@@ -51,84 +51,84 @@ namespace Rendering {
 
             void set(const VectorType &origin, const VectorType &left, const VectorType &up, const VectorType &forward,
                      ScalarType fov, ScalarType near, ScalarType far, ScalarType aspect) {
-                const auto tangent = glm::tan(glm::radians(fov) / 2);
-                const auto near_height = near * tangent;
-                const auto near_width = near_height * aspect;
+                const glm::vec2 tangent = glm::tan(glm::radians(fov) / 2);
+                const auto nearHeight = near * tangent;
+                const auto nearWidth = nearHeight * aspect;
 
-                const auto far_plane_half_height = tangent * far;
-                const auto near_plane_half_height = tangent * near;
-                const auto far_plane_half_width = far_plane_half_height * aspect;
-                const auto near_plane_half_width = near_plane_half_height * aspect;
+                const auto farPlaneHalfHeight = tangent * far;
+                const auto nearPlaneHalfHeight = tangent * near;
+                const auto farPlaneHalfWidth = farPlaneHalfHeight * aspect;
+                const auto nearPlaneHalfWidth = nearPlaneHalfHeight * aspect;
 
-                const auto far_plane_center = origin + (forward * far);
-                const auto far_plane_right = far_plane_center + (left * far_plane_half_width);
-                const auto far_plane_left = far_plane_center - (left * far_plane_half_width);
-                const auto far_plane_top = far_plane_center + (up * far_plane_half_height);
-                const auto far_plane_bottom = far_plane_center - (up * far_plane_half_height);
+                const auto farPlaneCenter = origin + (forward * far);
+                const auto farPlaneRight = farPlaneCenter + (left * farPlaneHalfWidth);
+                const auto farPlaneLeft = farPlaneCenter - (left * farPlaneHalfWidth);
+                const auto farPlaneTop = farPlaneCenter + (up * farPlaneHalfHeight);
+                const auto farPlaneBottom = farPlaneCenter - (up * farPlaneHalfHeight);
 
-                const auto near_plane_center = origin + (forward * near);
+                const auto nearPlaneCenter = origin + (forward * near);
 
                 //corners
-                corners[FRUSTUM_CORNER_INDEX_LEFT_TOP_NEAR] =
-                        near_plane_center + (left * near_plane_half_width) + (up * near_plane_half_height);
-                corners[FRUSTUM_CORNER_INDEX_LEFT_TOP_FAR] =
-                        far_plane_center + (left * far_plane_half_width) + (up * far_plane_half_height);
-                corners[FRUSTUM_CORNER_INDEX_LEFT_BOTTOM_NEAR] =
-                        near_plane_center + (left * near_plane_half_width) - (up * near_plane_half_height);
-                corners[FRUSTUM_CORNER_INDEX_LEFT_BOTTOM_FAR] =
-                        far_plane_center + (left * far_plane_half_width) - (up * far_plane_half_height);
-                corners[FRUSTUM_CORNER_INDEX_RIGHT_TOP_NEAR] =
-                        near_plane_center - (left * near_plane_half_width) + (up * near_plane_half_height);
-                corners[FRUSTUM_CORNER_INDEX_RIGHT_TOP_FAR] =
-                        far_plane_center - (left * far_plane_half_width) + (up * far_plane_half_height);
-                corners[FRUSTUM_CORNER_INDEX_RIGHT_BOTTOM_NEAR] =
-                        near_plane_center - (left * near_plane_half_width) - (up * near_plane_half_height);
-                corners[FRUSTUM_CORNER_INDEX_RIGHT_BOTTOM_FAR] =
-                        far_plane_center - (left * far_plane_half_width) - (up * far_plane_half_height);
+                this->corners[FRUSTUM_CORNER_INDEX_LEFT_TOP_NEAR] =
+                        nearPlaneCenter + (left * nearPlaneHalfWidth) + (up * nearPlaneHalfHeight);
+                this->corners[FRUSTUM_CORNER_INDEX_LEFT_TOP_FAR] =
+                        farPlaneCenter + (left * farPlaneHalfWidth) + (up * farPlaneHalfHeight);
+                this->corners[FRUSTUM_CORNER_INDEX_LEFT_BOTTOM_NEAR] =
+                        nearPlaneCenter + (left * nearPlaneHalfWidth) - (up * nearPlaneHalfHeight);
+                this->corners[FRUSTUM_CORNER_INDEX_LEFT_BOTTOM_FAR] =
+                        farPlaneCenter + (left * farPlaneHalfWidth) - (up * farPlaneHalfHeight);
+                this->corners[FRUSTUM_CORNER_INDEX_RIGHT_TOP_NEAR] =
+                        nearPlaneCenter - (left * nearPlaneHalfWidth) + (up * nearPlaneHalfHeight);
+                this->corners[FRUSTUM_CORNER_INDEX_RIGHT_TOP_FAR] =
+                        farPlaneCenter - (left * farPlaneHalfWidth) + (up * farPlaneHalfHeight);
+                this->corners[FRUSTUM_CORNER_INDEX_RIGHT_BOTTOM_NEAR] =
+                        nearPlaneCenter - (left * nearPlaneHalfWidth) - (up * nearPlaneHalfHeight);
+                this->corners[FRUSTUM_CORNER_INDEX_RIGHT_BOTTOM_FAR] =
+                        farPlaneCenter - (left * farPlaneHalfWidth) - (up * farPlaneHalfHeight);
 
                 //aabb
-                aabb = corners;
+                this->aabb = this->corners;
 
                 //planes
-                const auto a = glm::normalize(far_plane_right - origin);
-                const auto b = glm::normalize(far_plane_left - origin);
-                const auto c = glm::normalize(far_plane_top - origin);
-                const auto d = glm::normalize(far_plane_bottom - origin);
+                const auto a = glm::normalize(farPlaneRight - origin);
+                const auto b = glm::normalize(farPlaneLeft - origin);
+                const auto c = glm::normalize(farPlaneTop - origin);
+                const auto d = glm::normalize(farPlaneBottom - origin);
 
-                const auto right_plane_normal = -glm::cross(up, a);
-                const auto left_plane_normal = -glm::cross(b, up);
-                const auto top_plane_normal = -glm::cross(c, left);
-                const auto bottom_plane_normal = -glm::cross(left, d);
+                const glm::quat rightPlaneNormal = -glm::cross(up, a);
+                const glm::quat leftPlaneNormal = -glm::cross(b, up);
+                const glm::quat topPlaneNormal = -glm::cross(c, left);
+                const glm::quat bottomPlaneNormal = -glm::cross(left, d);
 
-                planes[FRUSTUM_PLANE_INDEX_LEFT] = PlaneType(origin, left_plane_normal);
-                planes[FRUSTUM_PLANE_INDEX_RIGHT] = PlaneType(origin, right_plane_normal);
-                planes[FRUSTUM_PLANE_INDEX_TOP] = PlaneType(origin, top_plane_normal);
-                planes[FRUSTUM_PLANE_INDEX_BOTTOM] = PlaneType(origin, bottom_plane_normal);
-                planes[FRUSTUM_PLANE_INDEX_NEAR] = PlaneType(near_plane_center, forward);
-                planes[FRUSTUM_PLANE_INDEX_FAR] = PlaneType(far_plane_center, -forward);
+                this->planes[FRUSTUM_PLANE_INDEX_LEFT] = PlaneType(origin, leftPlaneNormal);
+                this->planes[FRUSTUM_PLANE_INDEX_RIGHT] = PlaneType(origin, rightPlaneNormal);
+                this->planes[FRUSTUM_PLANE_INDEX_TOP] = PlaneType(origin, topPlaneNormal);
+                this->planes[FRUSTUM_PLANE_INDEX_BOTTOM] = PlaneType(origin, bottomPlaneNormal);
+                this->planes[FRUSTUM_PLANE_INDEX_NEAR] = PlaneType(nearPlaneCenter, forward);
+                this->planes[FRUSTUM_PLANE_INDEX_FAR] = PlaneType(farPlaneCenter, -forward);
 
                 //TODO: verify correctness
                 //sphere
-                auto view_length = far - near;
-                auto far_height = view_length * glm::tan(fov / 2);
-                auto far_width = far_height;
+                auto viewLength = far - near;
+                auto farHeight = viewLength * glm::tan(fov / 2);
+                auto farWidth = farHeight;
 
                 //TODO: simplify
-                auto p = VectorType(ScalarType(0), ScalarType(0), near + (view_length / 2));
-                auto q = VectorType(far_width, far_height, view_length);
+                auto p = VectorType(ScalarType(0), ScalarType(0), near + (viewLength / 2));
+                auto q = VectorType(farWidth, farHeight, viewLength);
                 auto r = q - p;
 
-                sphere.radius = glm::length(r);
-                sphere.origin = origin + (forward * (view_length / 2) + near);
+                this->sphere.radius = glm::length(r);
+                this->sphere.origin = origin + (forward * (viewLength / 2) + near);
             }
 
-            const PlanesType &get_planes() const { return planes; }
+            const PlanesType &get_planes() const { return this->planes; }
 
-            const CornersType &get_corners() const { return corners; }
+            const CornersType &get_corners() const { return this->corners; }
 
-            const AABBType &get_aabb() const { return aabb; }
+            const AABBType &get_aabb() const { return this->aabb; }
 
-            const SphereType &get_sphere() const { return sphere; }
+            const SphereType &get_sphere() const { return this->sphere; }
 
         private:
             PlanesType planes;

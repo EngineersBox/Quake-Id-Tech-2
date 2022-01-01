@@ -20,28 +20,28 @@ namespace Resources {
 
         Image() = default;
         Image(std::istream& istream);
-        Image(const SizeType& size, BitDepthType bit_depth, Rendering::GPU::ColorType color_type, const unsigned char* data_ptr, size_t data_size);
+        Image(const SizeType& size, BitDepthType bitDepth, Rendering::GPU::ColorType colorType, const unsigned char* dataPtr, size_t dataSize);
 
-        [[nodiscard]] BitDepthType get_bit_depth() const { return bit_depth; }
-        [[nodiscard]] Rendering::GPU::ColorType get_color_type() const { return color_type; }
-        [[nodiscard]] const DataType& get_data() const { return data; }
-        [[nodiscard]] const SizeType& get_size() const { return size; }
-        [[nodiscard]] unsigned int get_width() const { return static_cast<unsigned int>(size.x); }
-        [[nodiscard]] unsigned int get_height() const { return static_cast<unsigned int>(size.y); }
-        [[nodiscard]] size_t get_pixel_stride() const { return pixel_stride; }
-        [[nodiscard]] size_t get_channel_count() const;
-        std::mutex& get_data_mutex() { return data_mutex; }
+        [[nodiscard]] BitDepthType getBitDepth() const { return this->bitDepth; }
+        [[nodiscard]] Rendering::GPU::ColorType getColorType() const { return this->colorType; }
+        [[nodiscard]] const DataType& getData() const { return this->data; }
+        [[nodiscard]] const SizeType& getSize() const { return this->size; }
+        [[nodiscard]] unsigned int getWidth() const { return static_cast<unsigned int>(this->size.x); }
+        [[nodiscard]] unsigned int getHeight() const { return static_cast<unsigned int>(this->size.y); }
+        [[nodiscard]] size_t getPixelStride() const { return this->pixelStride; }
+        [[nodiscard]] size_t getChannelCount() const;
+        std::mutex& getDataMutex() { return this->dataMutex; }
 
     private:
         Image(const Image&) = delete;
         Image& operator=(const Image&) = delete;
 
         SizeType size;
-        BitDepthType bit_depth = 0;
-        Rendering::GPU::ColorType color_type = Rendering::GPU::ColorType::G;
+        BitDepthType bitDepth = 0;
+        Rendering::GPU::ColorType colorType = Rendering::GPU::ColorType::G;
         DataType data;
-        size_t pixel_stride = 1;
-        std::mutex data_mutex;
+        size_t pixelStride = 1;
+        std::mutex dataMutex;
 
         friend std::ostream& operator<<(std::ostream& ostream, Image& image);
     };

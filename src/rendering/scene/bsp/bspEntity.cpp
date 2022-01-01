@@ -16,9 +16,9 @@ namespace Rendering::Scene {
             std::string value = string.substr(begin + 1, end - begin - 1);
 
             if (key == "classname") {
-                classname = value;
+                this->classname = value;
             } else {
-                properties.insert(std::make_pair(key, value));
+                this->properties.insert(std::make_pair(key, value));
             }
         }
     }

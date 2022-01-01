@@ -15,7 +15,7 @@
 
 namespace Resources {
     struct ResourceManager : public Packages::PackageManager {
-        typedef std::map<std::string, boost::shared_ptr<Resource>> resource_map_type;
+        typedef std::map<std::string, boost::shared_ptr<Resource>> ResourceMap;
 
         [[nodiscard]] size_t count() const;
 
@@ -23,30 +23,30 @@ namespace Resources {
         size_t count() {
             static const std::type_index TYPE_INDEX = typeid(T);
             std::lock_guard<std::recursive_mutex> lock(mutex);
-            const auto type_resources_itr = type_resources.find(TYPE_INDEX);
+            const auto typeResourcesItr = this->typeResources.find(TYPE_INDEX);
 
-            if (type_resources_itr == type_resources.end()) return 0;
-            return type_resources_itr->second.size();
+            if (typeResourcesItr == this->typeResources.end()) return 0;
+            return typeResourcesItr->second.size();
         }
 
         template<typename T, std::enable_if_t<IsResource<T>::value, bool> = true>
         boost::shared_ptr<T> get(const std::string& name) {
             static const std::type_index TYPE_INDEX = typeid(T);
             std::lock_guard<std::recursive_mutex> lock(mutex);
-            const auto type_resources_itr = type_resources.find(TYPE_INDEX);
+            const auto typeResourcesItr = this->typeResources.find(TYPE_INDEX);
 
-			if (type_resources_itr == type_resources.end()) {
+			if (typeResourcesItr == this->typeResources.end()) {
 				//no resources of this type have yet been allocated
-				type_resources.insert(std::make_pair(TYPE_INDEX, resource_map_type()));
+                this->typeResources.insert(std::make_pair(TYPE_INDEX, ResourceMap()));
 			}
 
-            auto& resources = type_resources[TYPE_INDEX];
-			auto resources_itr = resources.find(name);
+            ResourceMap& resources = this->typeResources[TYPE_INDEX];
+			auto resourcesItr = resources.find(name);
 
-            if (resources_itr != resources.end()) {
+            if (resourcesItr != resources.end()) {
                 //resource already exists
-                boost::shared_ptr<Resource>& resource = resources_itr->second;
-                resource->last_access_time = Resource::ClockType::now();
+                boost::shared_ptr<Resource>& resource = resourcesItr->second;
+                resource->lastAccessTime = Resource::ClockType::now();
                 return boost::static_pointer_cast<T, Resource>(resource);
             }
 
@@ -75,28 +75,28 @@ namespace Resources {
         void put(boost::shared_ptr<T> resource) {
             static const std::type_index TYPE_INDEX = typeid(T);
             std::lock_guard<std::recursive_mutex> lock(mutex);
-            const auto type_resources_itr = type_resources.find(TYPE_INDEX);
+            const auto typeResourcesItr = this->typeResources.find(TYPE_INDEX);
 
-            if (type_resources_itr == type_resources.end()) {
+            if (typeResourcesItr == this->typeResources.end()) {
                 //no resources of this type allocated
-                type_resources.insert(std::make_pair(TYPE_INDEX, resource_map_type()));
+                this->typeResources.insert(std::make_pair(TYPE_INDEX, ResourceMap()));
             }
 
-            auto& resources = type_resources[TYPE_INDEX];
-            const auto resources_itr = std::find_if(resources.begin(), resources.end(), [&](const std::pair<std::string, boost::shared_ptr<Resource>>& pair) {
+            ResourceMap& resources = this->typeResources[TYPE_INDEX];
+            const auto resourcesItr = std::find_if(resources.begin(), resources.end(), [&](const std::pair<std::string, boost::shared_ptr<Resource>>& pair) {
                 return resource == pair.second;
             });
 
-            if (resources_itr != resources.end()) {
+            if (resourcesItr != resources.end()) {
                 std::ostringstream oss;
-				oss << "resource " << resources_itr->first << " already exists";
+				oss << "resource " << resourcesItr->first << " already exists";
 				throw std::runtime_error(oss.str().c_str());
             }
 
 			// generate a globally unique identifier for this new resource.
-			static boost::uuids::random_generator random_generator;
-			resource->name = boost::uuids::to_string(random_generator());
-            resource->last_access_time = std::chrono::system_clock::now();
+			static boost::uuids::random_generator randomUuidGenerator;
+			resource->name = boost::uuids::to_string(randomUuidGenerator());
+            resource->lastAccessTime = std::chrono::system_clock::now();
             resources.emplace(resource->name, resource);
         }
 
@@ -105,7 +105,7 @@ namespace Resources {
 
     private:
         std::recursive_mutex mutex;
-        std::map<std::type_index, resource_map_type> type_resources;
+        std::map<std::type_index, ResourceMap> typeResources;
     };
 
     extern ResourceManager resources;

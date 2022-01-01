@@ -23,17 +23,17 @@ namespace Resources {
         Texture(std::istream& istream);
         virtual ~Texture();
 
-        Rendering::GPU::ColorType get_color_type() const { return color_type; }
-        const glm::vec2& get_size() const { return size; }
-        unsigned int get_width() const { return static_cast<unsigned int>(size.x); }
-        unsigned int get_height() const { return static_cast<unsigned int>(size.y); }
+        Rendering::GPU::ColorType getColorType() const { return this->colorType; }
+        const glm::vec2& get_size() const { return this->size; }
+        unsigned int getWidth() const { return static_cast<unsigned int>(this->size.x); }
+        unsigned int getHeight() const { return static_cast<unsigned int>(this->size.y); }
 
-        IdType get_id() const { return id; }
+        IdType get_id() const { return this->id; }
 
-        void set_size(const glm::vec2& size);
+        void set_size(const glm::vec2& _size);
 
     private:
-        Rendering::GPU::ColorType color_type;
+        Rendering::GPU::ColorType colorType;
         glm::vec2 size;
         IdType id = 0;
 

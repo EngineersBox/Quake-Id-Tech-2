@@ -16,30 +16,28 @@ namespace Resources::Packages {
         std::array<char, PACK_MAGIC_LENGTH> magic;
         IO::read(istream, magic);
         if (magic != PACK_MAGIC) {
-            throw std::exception();
+            throw std::runtime_error("Invalid package magic string: " + std::string(std::begin(magic), std::end(magic)));
         }
 
         //version
         unsigned int version = 0;
         IO::read(istream, version);
 
-        if (version != PACK_VERSION)
-        {
-            throw std::exception();
+        if (version != PACK_VERSION) {
+            throw std::runtime_error("Invalid package version: " + std::to_string(version));
         }
 
         //file count
-        unsigned int file_count = 0;
-        IO::read(istream, file_count);
+        unsigned int fileCount = 0;
+        IO::read(istream, fileCount);
 
-        for(unsigned int i = 0; i < file_count; ++i) {
+        for(unsigned int i = 0; i < fileCount; ++i) {
             File file;
-
             std::getline(istream, file.name, '\0');
 
-            read(istream, file.offset);
-            read(istream, file.length);
-            read(istream, file.crc32);
+            IO::read(istream, file.offset);
+            IO::read(istream, file.length);
+            IO::read(istream, file.crc32);
 
             auto files_itr = files.emplace(file.name, std::forward<Package::File>(file));
 
@@ -48,18 +46,18 @@ namespace Resources::Packages {
             }
         }
 
-        mapped_file_source = boost::iostreams::mapped_file_source(path);
+        this->mappedFileSource = boost::iostreams::mapped_file_source(path);
     }
 
 	Package::Package(Package&& copy) :
         path(std::move(copy.path)),
         files(std::move(copy.files)),
-        mapped_file_source(std::move(copy.mapped_file_source)) {}
+        mappedFileSource(std::move(copy.mappedFileSource)) {}
 
 	Package& Package::operator=(Package&& copy) {
         path = std::move(copy.path);
         files = std::move(copy.files);
-        mapped_file_source = std::move(copy.mapped_file_source);
+        this->mappedFileSource = std::move(copy.mappedFileSource);
 
         return *this;
     }

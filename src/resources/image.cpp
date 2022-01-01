@@ -6,39 +6,39 @@
 namespace Resources {
     Image::Image(std::istream& istream) {
         //TODO: determine what the stream actually contains (don't assume PNG!)
-        png_struct_def* png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
-        if (png_ptr == nullptr) throw std::exception();
+        png_struct_def* pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+        if (pngPtr == nullptr) throw std::runtime_error("Could not create PNG read struct");
 
-        png_info_def* info_ptr = png_create_info_struct(png_ptr);
-        if (info_ptr == nullptr) {
-            png_destroy_read_struct(&png_ptr, nullptr, nullptr);
-            throw std::exception();
+        png_info_def* infoPtr = png_create_info_struct(pngPtr);
+        if (infoPtr == nullptr) {
+            png_destroy_read_struct(&pngPtr, nullptr, nullptr);
+            throw std::runtime_error("Could not create PNG info struct");
         }
 
-        if (setjmp(png_jmpbuf(png_ptr))) {
-            png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
-            throw std::exception();
+        if (setjmp(png_jmpbuf(pngPtr))) {
+            png_destroy_read_struct(&pngPtr, &infoPtr, nullptr);
+            throw std::runtime_error("Could not destroy PNG read struct");
         }
 
-        png_set_read_fn(png_ptr, static_cast<png_voidp>(&istream), [](png_structp png_ptr, png_bytep data, png_size_t length) {
-            void* png_io_ptr = png_get_io_ptr(png_ptr);
-            static_cast<std::istream*>(png_io_ptr)->read(reinterpret_cast<char*>(data), length);
+        png_set_read_fn(pngPtr, static_cast<png_voidp>(&istream), [](png_structp png_ptr, png_bytep _data, png_size_t length) {
+            void* pngIoPtr = png_get_io_ptr(png_ptr);
+            static_cast<std::istream*>(pngIoPtr)->read(reinterpret_cast<char*>(_data), length);
         });
 
-        png_uint_32 sig_read = 0;
-        png_set_sig_bytes(png_ptr, sig_read);
-        png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_PACKING | PNG_TRANSFORM_EXPAND, nullptr);
+        png_uint_32 sigRead = 0;
+        png_set_sig_bytes(pngPtr, sigRead);
+        png_read_png(pngPtr, infoPtr, PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_PACKING | PNG_TRANSFORM_EXPAND, nullptr);
 
-        int png_color_type;
-        png_int_32 interlace_method;
+        int pngColorType;
+        png_int_32 interlaceMethod;
         png_uint_32 width, height;
 
-        png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &png_color_type, &interlace_method, nullptr, nullptr);
+        png_get_IHDR(pngPtr, infoPtr, &width, &height, &bitDepth, &pngColorType, &interlaceMethod, nullptr, nullptr);
 
-        size.x = static_cast<float>(width);
-        size.y = static_cast<float>(height);
+        this->size.x = static_cast<float>(width);
+        this->size.y = static_cast<float>(height);
 
-        auto get_color_type = [](int png_color_type) -> Rendering::GPU::ColorType {
+        auto getColorType = [](int png_color_type) -> Rendering::GPU::ColorType {
             switch (png_color_type) {
                 case PNG_COLOR_TYPE_GRAY: return Rendering::GPU::ColorType::G;
                 case PNG_COLOR_TYPE_RGB: return Rendering::GPU::ColorType::RGB;
@@ -49,32 +49,32 @@ namespace Resources {
             }
         };
 
-        color_type = get_color_type(png_color_type);
-        unsigned long row_bytes = png_get_rowbytes(png_ptr, info_ptr);
-        pixel_stride = row_bytes / get_width();
-        unsigned long data_length = row_bytes * get_height();
-        data.resize(data_length);
-        unsigned char** row_pointers = png_get_rows(png_ptr, info_ptr);
+        this->colorType = getColorType(pngColorType);
+        unsigned long rowBytes = png_get_rowbytes(pngPtr, infoPtr);
+        this->pixelStride = rowBytes / getWidth();
+        unsigned long dataLength = rowBytes * getHeight();
+        this->data.resize(dataLength);
+        unsigned char** rowPointers = png_get_rows(pngPtr, infoPtr);
 
         for (unsigned int i = 0; i < size.y; ++i) {
-            memcpy(data.data() + (row_bytes * (get_height() - 1 - i)), row_pointers[i], row_bytes);
+            memcpy(data.data() + (rowBytes * (getHeight() - 1 - i)), rowPointers[i], rowBytes);
         }
 
-        png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
+        png_destroy_read_struct(&pngPtr, &infoPtr, nullptr);
     }
 
-    Image::Image(const SizeType& size, BitDepthType bit_depth, Rendering::GPU::ColorType color_type, const unsigned char* data_ptr, size_t data_size) :
+    Image::Image(const SizeType& size, BitDepthType bitDepth, Rendering::GPU::ColorType colorType, const unsigned char* dataPtr, size_t dataSize) :
             size(size),
-            bit_depth(bit_depth),
-            color_type(color_type) {
-        data.resize(data_size);
-        if (data_size <= data.size())
-            memcpy(data.data(), data_ptr, data_size);
+            bitDepth(bitDepth),
+            colorType(colorType) {
+        data.resize(dataSize);
+        if (dataSize <= data.size())
+            memcpy(data.data(), dataPtr, dataSize);
     }
 
 
-    size_t Image::get_channel_count() const {
-        switch (color_type) {
+    size_t Image::getChannelCount() const {
+        switch (colorType) {
             case Rendering::GPU::ColorType::G:
             case Rendering::GPU::ColorType::PALETTE:
                 return 1;
@@ -85,33 +85,33 @@ namespace Resources {
         }
     }
 
-    std::string png_error_message;
+    std::string pngErrorMessage;
     std::ostream& operator<<(std::ostream& ostream, Image& image) {
-        png_struct_def* png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
-        if (!png_ptr) {
-            throw std::exception();
+        png_struct_def* pngPtr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+        if (!pngPtr) {
+            throw std::runtime_error("Could not create PNG write struct");
         }
 
-        png_info_def* info_ptr = png_create_info_struct(png_ptr);
+        png_info_def* info_ptr = png_create_info_struct(pngPtr);
         if (!info_ptr) {
-            png_destroy_write_struct(&png_ptr, nullptr);
-            throw std::exception();
+            png_destroy_write_struct(&pngPtr, nullptr);
+            throw std::runtime_error("Could not create PNG info struct");
         }
 
         std::exception exception;
-        png_error_ptr error_fn = [](png_structp png_ptr, png_const_charp message) {
-            png_error_message = message;
+        png_error_ptr errorFn = [](png_structp png_ptr, png_const_charp message) {
+            pngErrorMessage = message;
         };
 
-        png_set_error_fn(png_ptr, png_get_error_ptr(png_ptr), error_fn, NULL);
+        png_set_error_fn(pngPtr, png_get_error_ptr(pngPtr), errorFn, NULL);
 
-        if (setjmp(png_jmpbuf(png_ptr))) {
-            void* error_ptr = png_get_error_ptr(png_ptr);
-            png_destroy_write_struct(&png_ptr, &info_ptr);
-            throw std::runtime_error(png_error_message.c_str());
+        if (setjmp(png_jmpbuf(pngPtr))) {
+            void* errorPtr = png_get_error_ptr(pngPtr);
+            png_destroy_write_struct(&pngPtr, &info_ptr);
+            throw std::runtime_error(pngErrorMessage.c_str());
         }
 
-        auto get_png_color_type = [](Rendering::GPU::ColorType color_type) -> int {
+        auto getPngColorType = [](Rendering::GPU::ColorType color_type) -> int {
             switch (color_type) {
                 case Rendering::GPU::ColorType::G: return PNG_COLOR_TYPE_GRAY;
                 case Rendering::GPU::ColorType::RGB: return PNG_COLOR_TYPE_RGB;
@@ -123,47 +123,47 @@ namespace Resources {
             }
         };
 
-        int png_color_type = get_png_color_type(image.get_color_type());
+        int pngColorType = getPngColorType(image.getColorType());
         png_set_IHDR(
-            png_ptr,
+            pngPtr,
             info_ptr,
-            image.get_width(),
-            image.get_height(),
-            image.get_bit_depth(),
-            png_color_type,
+            image.getWidth(),
+            image.getHeight(),
+            image.getBitDepth(),
+            pngColorType,
             PNG_INTERLACE_NONE,
             PNG_COMPRESSION_TYPE_DEFAULT,
             PNG_FILTER_TYPE_DEFAULT
         );
 
-        std::unique_lock<std::mutex> image_data_lock(image.get_data_mutex());
-        const unsigned char* data_ptr = image.get_data().data();
-        png_bytepp rows = static_cast<png_bytepp>(png_malloc(png_ptr, image.get_height() * sizeof(png_bytep)));
+        std::unique_lock<std::mutex> imageDataLock(image.getDataMutex());
+        const unsigned char* dataPtr = image.getData().data();
+        png_bytepp rows = static_cast<png_bytepp>(png_malloc(pngPtr, image.getHeight() * sizeof(png_bytep)));
 
-        unsigned long bytes_per_pixel = image.get_bit_depth() * image.get_channel_count() / 8;
-        bytes_per_pixel = bytes_per_pixel >= 1 ? bytes_per_pixel : 1;
-        const unsigned long row_size = (image.get_width() * bytes_per_pixel);
+        unsigned long bytesPerPixel = image.getBitDepth() * image.getChannelCount() / 8;
+        bytesPerPixel = bytesPerPixel >= 1 ? bytesPerPixel : 1;
+        const unsigned long rowSize = (image.getWidth() * bytesPerPixel);
 
-        for (unsigned int y = 0; y < image.get_size().y; ++y) {
-            auto row = static_cast<png_bytep>(png_malloc(png_ptr, row_size));
-            for (unsigned int x = 0; x < image.get_size().x; ++x) {
-                memcpy(row, data_ptr + (row_size * y), row_size);
+        for (unsigned int y = 0; y < image.getSize().y; ++y) {
+            auto row = static_cast<png_bytep>(png_malloc(pngPtr, rowSize));
+            for (unsigned int x = 0; x < image.getSize().x; ++x) {
+                memcpy(row, dataPtr + (rowSize * y), rowSize);
             }
-            rows[image.get_height() - y - 1] = row;
+            rows[image.getHeight() - y - 1] = row;
         }
 
-        image_data_lock.unlock();
+        imageDataLock.unlock();
 
-        png_set_rows(png_ptr, info_ptr, rows);
+        png_set_rows(pngPtr, info_ptr, rows);
         png_set_write_fn(
-            png_ptr,
+            pngPtr,
             static_cast<png_voidp>(&ostream),
             [](png_structp png_ptr, png_bytep data, png_size_t size) -> void {
                 static_cast<std::ostream*>(png_get_io_ptr(png_ptr))->write(reinterpret_cast<char*>(data), size);
             },
             nullptr
         );
-        png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, nullptr);
+        png_write_png(pngPtr, info_ptr, PNG_TRANSFORM_IDENTITY, nullptr);
 
         return ostream;
     }

@@ -8,10 +8,10 @@ namespace Rendering::GPU::Shaders {
 	struct Shader : boost::enable_shared_from_this<Shader> {
 		virtual ~Shader();
 
-        virtual void on_bind() = 0;
-        virtual void on_unbind() = 0;
+        virtual void onBind() = 0;
+        virtual void onUnbind() = 0;
 
-        GpuId get_id() const { return id; }
+        GpuId getId() const { return id; }
 
     protected:
 		Shader(const std::string& vertex_shader_source, const std::string& fragment_shader_source);

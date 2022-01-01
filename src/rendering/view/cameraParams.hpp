@@ -6,8 +6,8 @@
 
 namespace Rendering::View {
     struct CameraParameters {
-        glm::mat4 view_matrix;
-        glm::mat4 projection_matrix;
+        glm::mat4 viewMatrix;
+        glm::mat4 projectionMatrix;
         glm::vec3 location;
         Frustum<float> frustum;
     };

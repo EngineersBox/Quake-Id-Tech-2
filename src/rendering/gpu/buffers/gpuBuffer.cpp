@@ -3,10 +3,10 @@
 
 namespace Rendering::GPU::Buffers {
 	GpuBuffer::GpuBuffer() {
-        id = gpu.create_buffer();
+        id = gpu.createBuffer();
     }
 
 	GpuBuffer::~GpuBuffer() {
-        gpu.destroy_buffer(id);
+        gpu.destroyBuffer(id);
     }
 }
