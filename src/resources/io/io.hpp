@@ -56,7 +56,7 @@ namespace Resources::IO {
 
     template<typename T>
     inline void write(std::ostream& ostream, const T* data, size_t count) {
-        ostream.write(unsafe_cast<char*>(data), count);
+        ostream.write((char*) data, count);
     }
 
     template<typename T>

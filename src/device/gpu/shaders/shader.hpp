@@ -5,8 +5,8 @@
 #include "../gpu.hpp"
 
 namespace Device::GPU::Shaders {
-	struct Shader : boost::enable_shared_from_this<Shader> {
-		virtual ~Shader();
+    struct Shader : boost::enable_shared_from_this<Shader> {
+        virtual ~Shader();
 
         virtual void onBind() = 0;
         virtual void onUnbind() = 0;
@@ -14,18 +14,18 @@ namespace Device::GPU::Shaders {
         GpuId getId() const { return id; }
 
     protected:
-		Shader(const std::string& vertex_shader_source, const std::string& fragment_shader_source);
+        Shader(const std::string& vertex_shader_source, const std::string& fragment_shader_source);
 
     private:
-		GpuId id;
+        GpuId id;
 
-		Shader(const Shader&) = delete;
-		Shader& operator=(const Shader&) = delete;
+        Shader(const Shader&) = delete;
+        Shader& operator=(const Shader&) = delete;
     };
 
     template<typename T, typename Enable = void>
     struct IsGpuProgram : std::false_type {};
 
     template<typename T>
-	struct IsGpuProgram<T, typename std::enable_if<std::is_base_of<Shader, T>::value>::type> : std::true_type {};
+    struct IsGpuProgram<T, typename std::enable_if<std::is_base_of<Shader, T>::value>::type> : std::true_type {};
 }

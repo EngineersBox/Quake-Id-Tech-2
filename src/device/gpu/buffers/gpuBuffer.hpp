@@ -5,7 +5,7 @@
 
 namespace Device::GPU::Buffers {
 	struct GpuBuffer : boost::enable_shared_from_this<GpuBuffer> {
-        GpuId get_id() const { return id; }
+        GpuId getId() const { return id; }
 		virtual ~GpuBuffer();
     protected:
 		GpuBuffer();

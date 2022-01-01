@@ -90,12 +90,12 @@ namespace Core {
         glfwGetMonitorPos(monitor, &display->position.x, &display->position.y);
 
         glm::vec2 physicalSize(
-            static_cast<float>(width) / std::milli::den,
-            static_cast<float>(height) / std::milli::den
+                static_cast<float>(width) / std::milli::den,
+                static_cast<float>(height) / std::milli::den
         );
         physicalSize *= boost::units::conversion_factor(
-            boost::units::si::meter_base_unit::unit_type(),
-            boost::units::imperial::inch_base_unit::unit_type()
+                boost::units::si::meter_base_unit::unit_type(),
+                boost::units::imperial::inch_base_unit::unit_type()
         );
 
         const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);

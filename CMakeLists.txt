@@ -46,3 +46,25 @@ target_link_libraries(Quake PRIVATE glm::glm)
 # spdlog
 find_package(spdlog CONFIG REQUIRED)
 target_link_libraries(Quake PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
+
+# boost
+find_package(Boost REQUIRED COMPONENTS filesystem iostreams)
+if (NOT TARGET Boost::filesystem)
+    add_library(Boost::filesystem IMPORTED INTERFACE)
+    set_property(TARGET Boost::filesystem PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
+    set_property(TARGET Boost::filesystem PROPERTY
+            INTERFACE_LINK_LIBRARIES ${Boost_LIBRARIES})
+endif()
+if (NOT TARGET Boost::iostreams)
+    add_library(Boost::iostreams IMPORTED INTERFACE)
+    set_property(TARGET Boost::iostreams PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
+    set_property(TARGET Boost::iostreams PROPERTY
+            INTERFACE_LINK_LIBRARIES ${Boost_LIBRARIES})
+endif()
+target_link_libraries(Quake PRIVATE Boost::filesystem Boost::iostreams)
+
+# libpng
+find_package(libpng CONFIG REQUIRED)
+target_link_libraries(Quake PRIVATE png_static)

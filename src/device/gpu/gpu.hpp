@@ -16,10 +16,13 @@
 #include "colorTypes.hpp"
 #include "../../resources/texture.hpp"
 #include "buffers/frameBuffer.hpp"
-#include "shaders/shader.hpp"
+//#include "shaders/shader.hpp"
 #include "buffers/gpuBuffer.hpp"
 
 namespace Device::GPU {
+    namespace Shaders {
+        struct Shader;
+    }
 
     struct Gpu {
         enum class BufferTarget {
@@ -156,12 +159,12 @@ namespace Device::GPU {
         //programs
         struct ProgramManager {
             typedef boost::weak_ptr<Shaders::Shader> WeakType;
-			[[nodiscard]] boost::optional<WeakType> top() const;
-			void push(const WeakType& data);
-			WeakType pop();
+            [[nodiscard]] boost::optional<WeakType> top() const;
+            void push(const WeakType& data);
+            WeakType pop();
 
         private:
-			std::stack<WeakType> programs;
+            std::stack<WeakType> programs;
         } programs;
 
         //frame buffers

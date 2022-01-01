@@ -432,11 +432,11 @@ namespace Rendering::Scene {
                 int lightingDataSize = 3 * static_cast<int>(textureSize.x) * static_cast<int>(textureSize.y);
 
                 boost::shared_ptr<Resources::Image> image = boost::make_shared<Resources::Image>(
-                    static_cast<Resources::Image::SizeType>(textureSize),
-                    8,
-                    Device::GPU::ColorType::RGB,
-                    lightingData.data() + face.lightmapOffset,
-                    lightingDataSize
+                        static_cast<Resources::Image::SizeType>(textureSize),
+                        8,
+                        Device::GPU::ColorType::RGB,
+                        lightingData.data() + face.lightmapOffset,
+                        lightingDataSize
                 );
 
                 boost::shared_ptr<Resources::Texture> lightmapTexture = boost::make_shared<Resources::Texture>(image);
@@ -505,9 +505,9 @@ namespace Rendering::Scene {
 
         Device::GPU::gpu.setUniform("world_matrix", glm::mat4());
         Device::GPU::gpu.setUniform(
-            "view_projection_matrix",
-            cameraParameters.projectionMatrix * cameraParameters.viewMatrix
-       );
+                "view_projection_matrix",
+                cameraParameters.projectionMatrix * cameraParameters.viewMatrix
+        );
         Device::GPU::gpu.setUniform("diffuse_texture", DIFFUSE_TEXTURE_INDEX);
         Device::GPU::gpu.setUniform("lightmap_texture", LIGHTMAP_TEXTURE_INDEX);
         Device::GPU::gpu.setUniform("lightmap_gamma", renderSettings.lightmap_gamma);
@@ -659,6 +659,7 @@ namespace Rendering::Scene {
 
             Device::GPU::gpu.blend.pushState(_blendState);
             Device::GPU::gpu.depth.pushState(depthState);
+
             glm::mat4 world_matrix = glm::translate(glm::mat4x4(), model.origin);
             world_matrix *= glm::translate(glm::mat4x4(), origin);
             Device::GPU::gpu.setUniform("world_matrix", world_matrix);

@@ -106,8 +106,8 @@ void main() {
 
 
     private:
-        GPU::GpuLocation locationLocation;
-        GPU::GpuLocation diffuseTexcoordLocation;
-        GPU::GpuLocation lightmapTexcoordLocation;
+        Device::GPU::GpuLocation locationLocation;
+        Device::GPU::GpuLocation diffuseTexcoordLocation;
+        Device::GPU::GpuLocation lightmapTexcoordLocation;
     };
 }

@@ -2,17 +2,17 @@
 #include "../gpu.hpp"
 
 namespace Device::GPU::Buffers {
-	FrameBuffer::FrameBuffer(GpuFrameBufferType type, const GpuFrameBufferSizeType& size) :
-        type(type),
-        size(size) {
+    FrameBuffer::FrameBuffer(GpuFrameBufferType type, const GpuFrameBufferSizeType& size):
+            type(type),
+            size(size) {
         id = gpu.createFrameBuffer(type, size, colorTexture, depthStencilTexture, depthTexture);
     }
 
-	FrameBuffer::~FrameBuffer() {
+    FrameBuffer::~FrameBuffer() {
         gpu.destroyFrameBuffer(id);
     }
 
-	void FrameBuffer::on_bind() const {
+    void FrameBuffer::on_bind() const {
         //NOTE: setting these flags on binding could have unforseen consequences
         Gpu::ColorStateManager::ColorState gpu_color_state = gpu.color.getState();
         Gpu::Depth::State gpu_depth_state = gpu.depth.getState();
@@ -23,7 +23,7 @@ namespace Device::GPU::Buffers {
         gpu_color_state.mask.b = maskValue;
         gpu_color_state.mask.a = maskValue;
 
-		if ((static_cast<GpuFrameBufferTypeFlagsType>(type) & GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH) == GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH) {
+        if ((static_cast<GpuFrameBufferTypeFlagsType>(type) & GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH) == GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH) {
             gpu_depth_state.shouldWriteMask = true;
         } else {
             gpu_depth_state.shouldWriteMask = false;
@@ -35,7 +35,7 @@ namespace Device::GPU::Buffers {
         //TODO: stencil mask
     }
 
-	void FrameBuffer::setSize(const GpuFrameBufferSizeType& _size) {
+    void FrameBuffer::setSize(const GpuFrameBufferSizeType& _size) {
         if (_size == getSize()) return;
 
         if (colorTexture != nullptr) colorTexture->set_size(_size);

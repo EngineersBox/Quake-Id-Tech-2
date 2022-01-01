@@ -22,310 +22,310 @@ namespace Device::GPU {
 
     inline GLenum getBufferTarget(Gpu::BufferTarget buffer_target) {
         switch (buffer_target) {
-        case Gpu::BufferTarget::ARRAY:
-            return GL_ARRAY_BUFFER;
-        case Gpu::BufferTarget::ATOMIC_COUNTER:
-            return GL_ATOMIC_COUNTER_BUFFER;
-        case Gpu::BufferTarget::COPY_READ:
-            return GL_COPY_READ_BUFFER;
-        case Gpu::BufferTarget::COPY_WRITE:
-            return GL_COPY_WRITE_BUFFER;
-        case Gpu::BufferTarget::DISPATCH_INDIRECT:
-            return GL_DISPATCH_INDIRECT_BUFFER;
-        case Gpu::BufferTarget::DRAW_INDRECT:
-            return GL_DRAW_INDIRECT_BUFFER;
-        case Gpu::BufferTarget::ELEMENT_ARRAY:
-            return GL_ELEMENT_ARRAY_BUFFER;
-        case Gpu::BufferTarget::PIXEL_PACK:
-            return GL_PIXEL_PACK_BUFFER;
-        case Gpu::BufferTarget::PIXEL_UNPACK:
-            return GL_PIXEL_UNPACK_BUFFER;
-        case Gpu::BufferTarget::QUERY:
-            return GL_QUERY_BUFFER;
-        case Gpu::BufferTarget::SHADER_STORAGE:
-            return GL_SHADER_STORAGE_BUFFER;
-        default:
-            throw std::invalid_argument("");
+            case Gpu::BufferTarget::ARRAY:
+                return GL_ARRAY_BUFFER;
+            case Gpu::BufferTarget::ATOMIC_COUNTER:
+                return GL_ATOMIC_COUNTER_BUFFER;
+            case Gpu::BufferTarget::COPY_READ:
+                return GL_COPY_READ_BUFFER;
+            case Gpu::BufferTarget::COPY_WRITE:
+                return GL_COPY_WRITE_BUFFER;
+            case Gpu::BufferTarget::DISPATCH_INDIRECT:
+                return GL_DISPATCH_INDIRECT_BUFFER;
+            case Gpu::BufferTarget::DRAW_INDRECT:
+                return GL_DRAW_INDIRECT_BUFFER;
+            case Gpu::BufferTarget::ELEMENT_ARRAY:
+                return GL_ELEMENT_ARRAY_BUFFER;
+            case Gpu::BufferTarget::PIXEL_PACK:
+                return GL_PIXEL_PACK_BUFFER;
+            case Gpu::BufferTarget::PIXEL_UNPACK:
+                return GL_PIXEL_UNPACK_BUFFER;
+            case Gpu::BufferTarget::QUERY:
+                return GL_QUERY_BUFFER;
+            case Gpu::BufferTarget::SHADER_STORAGE:
+                return GL_SHADER_STORAGE_BUFFER;
+            default:
+                throw std::invalid_argument("");
         }
     }
 
     inline GLenum getBufferUsage(Gpu::BufferUsage buffer_usage) {
         switch (buffer_usage) {
-        case Gpu::BufferUsage::STREAM_DRAW:
-            return GL_STREAM_DRAW;
-        case Gpu::BufferUsage::STREAM_READ:
-            return GL_STREAM_READ;
-        case Gpu::BufferUsage::STREAM_COPY:
-            return GL_STREAM_COPY;
-        case Gpu::BufferUsage::STATIC_DRAW:
-            return GL_STATIC_DRAW;
-        case Gpu::BufferUsage::STATIC_READ:
-            return GL_STATIC_READ;
-        case Gpu::BufferUsage::STATIC_COPY:
-            return GL_STATIC_COPY;
-        case Gpu::BufferUsage::DYNAMIC_DRAW:
-            return GL_DYNAMIC_DRAW;
-        case Gpu::BufferUsage::DYNAMIC_READ:
-            return GL_DYNAMIC_READ;
-        case Gpu::BufferUsage::DYNAMIC_COPY:
-            return GL_DYNAMIC_COPY;
-        default:
-            throw std::invalid_argument("");
+            case Gpu::BufferUsage::STREAM_DRAW:
+                return GL_STREAM_DRAW;
+            case Gpu::BufferUsage::STREAM_READ:
+                return GL_STREAM_READ;
+            case Gpu::BufferUsage::STREAM_COPY:
+                return GL_STREAM_COPY;
+            case Gpu::BufferUsage::STATIC_DRAW:
+                return GL_STATIC_DRAW;
+            case Gpu::BufferUsage::STATIC_READ:
+                return GL_STATIC_READ;
+            case Gpu::BufferUsage::STATIC_COPY:
+                return GL_STATIC_COPY;
+            case Gpu::BufferUsage::DYNAMIC_DRAW:
+                return GL_DYNAMIC_DRAW;
+            case Gpu::BufferUsage::DYNAMIC_READ:
+                return GL_DYNAMIC_READ;
+            case Gpu::BufferUsage::DYNAMIC_COPY:
+                return GL_DYNAMIC_COPY;
+            default:
+                throw std::invalid_argument("");
         }
     }
 
     inline GLenum getPrimitiveType(Gpu::PrimitiveType primitive_type) {
         switch (primitive_type) {
-        case Gpu::PrimitiveType::POINTS:
-            return GL_POINTS;
-        case Gpu::PrimitiveType::LINES:
-            return GL_LINES;
-        case Gpu::PrimitiveType::LINE_LOOP:
-            return GL_LINE_LOOP;
-        case Gpu::PrimitiveType::LINE_STRIP:
-            return GL_LINE_STRIP;
-        case Gpu::PrimitiveType::TRIANGLES:
-            return GL_TRIANGLES;
-        case Gpu::PrimitiveType::TRIANGLE_STRIP:
-            return GL_TRIANGLE_STRIP;
-        case Gpu::PrimitiveType::TRIANGLE_FAN:
-            return GL_TRIANGLE_FAN;
-        case Gpu::PrimitiveType::QUADS:
-            return GL_QUADS;
-        case Gpu::PrimitiveType::QUAD_STRIP:
-            return GL_QUAD_STRIP;
-        case Gpu::PrimitiveType::POLYGON:
-            return GL_POLYGON;
-        default:
-            throw std::invalid_argument("");
+            case Gpu::PrimitiveType::POINTS:
+                return GL_POINTS;
+            case Gpu::PrimitiveType::LINES:
+                return GL_LINES;
+            case Gpu::PrimitiveType::LINE_LOOP:
+                return GL_LINE_LOOP;
+            case Gpu::PrimitiveType::LINE_STRIP:
+                return GL_LINE_STRIP;
+            case Gpu::PrimitiveType::TRIANGLES:
+                return GL_TRIANGLES;
+            case Gpu::PrimitiveType::TRIANGLE_STRIP:
+                return GL_TRIANGLE_STRIP;
+            case Gpu::PrimitiveType::TRIANGLE_FAN:
+                return GL_TRIANGLE_FAN;
+            case Gpu::PrimitiveType::QUADS:
+                return GL_QUADS;
+            case Gpu::PrimitiveType::QUAD_STRIP:
+                return GL_QUAD_STRIP;
+            case Gpu::PrimitiveType::POLYGON:
+                return GL_POLYGON;
+            default:
+                throw std::invalid_argument("");
         }
     }
 
     inline GLenum get_blend_factor(Gpu::BlendFactor blend_factor) {
         switch (blend_factor) {
-        case Gpu::BlendFactor::ZERO:
-            return GL_ZERO;
-        case Gpu::BlendFactor::ONE:
-            return GL_ONE;
-        case Gpu::BlendFactor::SRC_COLOR:
-            return GL_SRC_COLOR;
-        case Gpu::BlendFactor::ONE_MINUS_SRC_COLOR:
-            return GL_ONE_MINUS_SRC_COLOR;
-        case Gpu::BlendFactor::DST_COLOR:
-            return GL_DST_COLOR;
-        case Gpu::BlendFactor::ONE_MINUS_DST_COLOR:
-            return GL_ONE_MINUS_DST_COLOR;
-        case Gpu::BlendFactor::SRC_ALPHA:
-            return GL_SRC_ALPHA;
-        case Gpu::BlendFactor::ONE_MINUS_SRC_ALPHA:
-            return GL_ONE_MINUS_SRC_ALPHA;
-        case Gpu::BlendFactor::DST_ALPHA:
-            return GL_DST_ALPHA;
-        case Gpu::BlendFactor::ONE_MINUS_DST_ALPHA:
-            return GL_ONE_MINUS_DST_ALPHA;
-        case Gpu::BlendFactor::CONSTANT_COLOR:
-            return GL_CONSTANT_COLOR;
-        case Gpu::BlendFactor::ONE_MINUS_CONSTANT_COLOR:
-            return GL_ONE_MINUS_CONSTANT_COLOR;
-        case Gpu::BlendFactor::CONSTANT_ALPHA:
-            return GL_CONSTANT_ALPHA;
-        case Gpu::BlendFactor::ONE_MINUS_CONSTANT_ALPHA:
-            return GL_ONE_MINUS_CONSTANT_ALPHA;
-        case Gpu::BlendFactor::SRC_ALPHA_SATURATE:
-            return GL_SRC_ALPHA_SATURATE;
-        default:
-            throw std::invalid_argument("");
+            case Gpu::BlendFactor::ZERO:
+                return GL_ZERO;
+            case Gpu::BlendFactor::ONE:
+                return GL_ONE;
+            case Gpu::BlendFactor::SRC_COLOR:
+                return GL_SRC_COLOR;
+            case Gpu::BlendFactor::ONE_MINUS_SRC_COLOR:
+                return GL_ONE_MINUS_SRC_COLOR;
+            case Gpu::BlendFactor::DST_COLOR:
+                return GL_DST_COLOR;
+            case Gpu::BlendFactor::ONE_MINUS_DST_COLOR:
+                return GL_ONE_MINUS_DST_COLOR;
+            case Gpu::BlendFactor::SRC_ALPHA:
+                return GL_SRC_ALPHA;
+            case Gpu::BlendFactor::ONE_MINUS_SRC_ALPHA:
+                return GL_ONE_MINUS_SRC_ALPHA;
+            case Gpu::BlendFactor::DST_ALPHA:
+                return GL_DST_ALPHA;
+            case Gpu::BlendFactor::ONE_MINUS_DST_ALPHA:
+                return GL_ONE_MINUS_DST_ALPHA;
+            case Gpu::BlendFactor::CONSTANT_COLOR:
+                return GL_CONSTANT_COLOR;
+            case Gpu::BlendFactor::ONE_MINUS_CONSTANT_COLOR:
+                return GL_ONE_MINUS_CONSTANT_COLOR;
+            case Gpu::BlendFactor::CONSTANT_ALPHA:
+                return GL_CONSTANT_ALPHA;
+            case Gpu::BlendFactor::ONE_MINUS_CONSTANT_ALPHA:
+                return GL_ONE_MINUS_CONSTANT_ALPHA;
+            case Gpu::BlendFactor::SRC_ALPHA_SATURATE:
+                return GL_SRC_ALPHA_SATURATE;
+            default:
+                throw std::invalid_argument("");
         }
     }
 
     inline GLenum get_blend_equation(Gpu::BlendEquation blend_equation) {
         switch (blend_equation) {
-        case Gpu::BlendEquation::ADD:
-            return GL_FUNC_ADD;
-        case Gpu::BlendEquation::SUBTRACT:
-            return GL_FUNC_SUBTRACT;
-        case Gpu::BlendEquation::SUBTRACT_REVERSE:
-            return GL_FUNC_REVERSE_SUBTRACT;
-        case Gpu::BlendEquation::MIN:
-            return GL_MIN;
-        case Gpu::BlendEquation::MAX:
-            return GL_MAX;
-        default:
-            throw std::invalid_argument("");
+            case Gpu::BlendEquation::ADD:
+                return GL_FUNC_ADD;
+            case Gpu::BlendEquation::SUBTRACT:
+                return GL_FUNC_SUBTRACT;
+            case Gpu::BlendEquation::SUBTRACT_REVERSE:
+                return GL_FUNC_REVERSE_SUBTRACT;
+            case Gpu::BlendEquation::MIN:
+                return GL_MIN;
+            case Gpu::BlendEquation::MAX:
+                return GL_MAX;
+            default:
+                throw std::invalid_argument("");
         }
     }
 
     inline GLenum get_depth_function(Gpu::DepthFunction depth_function) {
         switch (depth_function) {
-        case Gpu::DepthFunction::NEVER:
-            return GL_NEVER;
-        case Gpu::DepthFunction::LESS:
-            return GL_LESS;
-        case Gpu::DepthFunction::EQUAL:
-            return GL_EQUAL;
-        case Gpu::DepthFunction::LEQUAL:
-            return GL_LEQUAL;
-        case Gpu::DepthFunction::GREATER:
-            return GL_GREATER;
-        case Gpu::DepthFunction::NOTEQUAL:
-            return GL_NOTEQUAL;
-        case Gpu::DepthFunction::GEQUAL:
-            return GL_GEQUAL;
-        case Gpu::DepthFunction::ALWAYS:
-            return GL_ALWAYS;
-        default:
-            return GL_LESS;
+            case Gpu::DepthFunction::NEVER:
+                return GL_NEVER;
+            case Gpu::DepthFunction::LESS:
+                return GL_LESS;
+            case Gpu::DepthFunction::EQUAL:
+                return GL_EQUAL;
+            case Gpu::DepthFunction::LEQUAL:
+                return GL_LEQUAL;
+            case Gpu::DepthFunction::GREATER:
+                return GL_GREATER;
+            case Gpu::DepthFunction::NOTEQUAL:
+                return GL_NOTEQUAL;
+            case Gpu::DepthFunction::GEQUAL:
+                return GL_GEQUAL;
+            case Gpu::DepthFunction::ALWAYS:
+                return GL_ALWAYS;
+            default:
+                return GL_LESS;
         }
     }
 
     inline GLbitfield get_clear_flag_mask(GpuClearFlagType clear_flag) {
         switch (clear_flag) {
-        case Gpu::CLEAR_FLAG_COLOR:
-            return GL_COLOR_BUFFER_BIT;
-        case Gpu::CLEAR_FLAG_DEPTH:
-            return GL_DEPTH_BUFFER_BIT;
-        case Gpu::CLEAR_FLAG_ACCUM:
-            return GL_ACCUM_BUFFER_BIT;
-        case Gpu::CLEAR_FLAG_STENCIL:
-            return GL_STENCIL_BUFFER_BIT;
-        default:
-            throw std::invalid_argument("");
+            case Gpu::CLEAR_FLAG_COLOR:
+                return GL_COLOR_BUFFER_BIT;
+            case Gpu::CLEAR_FLAG_DEPTH:
+                return GL_DEPTH_BUFFER_BIT;
+            case Gpu::CLEAR_FLAG_ACCUM:
+                return GL_ACCUM_BUFFER_BIT;
+            case Gpu::CLEAR_FLAG_STENCIL:
+                return GL_STENCIL_BUFFER_BIT;
+            default:
+                throw std::invalid_argument("");
         }
     }
 
     inline GLenum get_stencil_function(Gpu::StencilFunction stencil_function) {
         switch (stencil_function) {
-        case Gpu::StencilFunction::ALWAYS:
-            return GL_ALWAYS;
-        case Gpu::StencilFunction::EQUAL:
-            return GL_EQUAL;
-        case Gpu::StencilFunction::GEQUAL:
-            return GL_GEQUAL;
-        case Gpu::StencilFunction::GREATER:
-            return GL_GREATER;
-        case Gpu::StencilFunction::LEQUAL:
-            return GL_LEQUAL;
-        case Gpu::StencilFunction::LESS:
-            return GL_LESS;
-        case Gpu::StencilFunction::NEVER:
-            return GL_NEVER;
-        case Gpu::StencilFunction::NOTEQUAL:
-            return GL_NOTEQUAL;
-        default:
-            throw std::invalid_argument("");
+            case Gpu::StencilFunction::ALWAYS:
+                return GL_ALWAYS;
+            case Gpu::StencilFunction::EQUAL:
+                return GL_EQUAL;
+            case Gpu::StencilFunction::GEQUAL:
+                return GL_GEQUAL;
+            case Gpu::StencilFunction::GREATER:
+                return GL_GREATER;
+            case Gpu::StencilFunction::LEQUAL:
+                return GL_LEQUAL;
+            case Gpu::StencilFunction::LESS:
+                return GL_LESS;
+            case Gpu::StencilFunction::NEVER:
+                return GL_NEVER;
+            case Gpu::StencilFunction::NOTEQUAL:
+                return GL_NOTEQUAL;
+            default:
+                throw std::invalid_argument("");
         }
     }
 
     inline GLenum get_stencil_operation(Gpu::StencilOperation stencil_operation) {
         switch (stencil_operation) {
-        case Gpu::StencilOperation::DECR:
-            return GL_DECR;
-        case Gpu::StencilOperation::DECR_WRAP:
-            return GL_DECR_WRAP;
-        case Gpu::StencilOperation::INCR:
-            return GL_INCR;
-        case Gpu::StencilOperation::INCR_WRAP:
-            return GL_INCR_WRAP;
-        case Gpu::StencilOperation::INVERT:
-            return GL_INVERT;
-        case Gpu::StencilOperation::KEEP:
-            return GL_KEEP;
-        case Gpu::StencilOperation::REPLACE:
-            return GL_REPLACE;
-        case Gpu::StencilOperation::ZERO:
-            return GL_ZERO;
-        default:
-            throw std::invalid_argument("");
+            case Gpu::StencilOperation::DECR:
+                return GL_DECR;
+            case Gpu::StencilOperation::DECR_WRAP:
+                return GL_DECR_WRAP;
+            case Gpu::StencilOperation::INCR:
+                return GL_INCR;
+            case Gpu::StencilOperation::INCR_WRAP:
+                return GL_INCR_WRAP;
+            case Gpu::StencilOperation::INVERT:
+                return GL_INVERT;
+            case Gpu::StencilOperation::KEEP:
+                return GL_KEEP;
+            case Gpu::StencilOperation::REPLACE:
+                return GL_REPLACE;
+            case Gpu::StencilOperation::ZERO:
+                return GL_ZERO;
+            default:
+                throw std::invalid_argument("");
         }
     }
 
     inline GLenum getDataType(GpuDataTypes data_type) {
         switch (data_type) {
-		case GpuDataTypes::BYTE:
-            return GL_BYTE;
-		case GpuDataTypes::UNSIGNED_BYTE:
-            return GL_UNSIGNED_BYTE;
-		case GpuDataTypes::SHORT:
-            return GL_SHORT;
-		case GpuDataTypes::UNSIGNED_SHORT:
-            return GL_UNSIGNED_SHORT;
-		case GpuDataTypes::INT:
-            return GL_INT;
-		case GpuDataTypes::UNSIGNED_INT:
-            return GL_UNSIGNED_INT;
-		case GpuDataTypes::FLOAT:
-            return GL_FLOAT;
-		case GpuDataTypes::DOUBLE:
-            return GL_DOUBLE;
-        default:
-            throw std::invalid_argument("");
+            case GpuDataTypes::BYTE:
+                return GL_BYTE;
+            case GpuDataTypes::UNSIGNED_BYTE:
+                return GL_UNSIGNED_BYTE;
+            case GpuDataTypes::SHORT:
+                return GL_SHORT;
+            case GpuDataTypes::UNSIGNED_SHORT:
+                return GL_UNSIGNED_SHORT;
+            case GpuDataTypes::INT:
+                return GL_INT;
+            case GpuDataTypes::UNSIGNED_INT:
+                return GL_UNSIGNED_INT;
+            case GpuDataTypes::FLOAT:
+                return GL_FLOAT;
+            case GpuDataTypes::DOUBLE:
+                return GL_DOUBLE;
+            default:
+                throw std::invalid_argument("");
         }
     }
 
     inline GLenum getShaderType(Gpu::ShaderType shader_type) {
         switch (shader_type) {
-		case Gpu::ShaderType::FRAGMENT:
-            return GL_FRAGMENT_SHADER;
-		case Gpu::ShaderType::VERTEX:
-            return GL_VERTEX_SHADER;
-        default:
-            throw std::invalid_argument("");
+            case Gpu::ShaderType::FRAGMENT:
+                return GL_FRAGMENT_SHADER;
+            case Gpu::ShaderType::VERTEX:
+                return GL_VERTEX_SHADER;
+            default:
+                throw std::invalid_argument("");
         }
     }
 
-	void getTextureFormats(ColorType color_type, Resources::Texture::FormatType& internal_format, Resources::Texture::FormatType& format, Resources::Texture::TypeType& type) {
+    void getTextureFormats(ColorType color_type, Resources::Texture::FormatType& internal_format, Resources::Texture::FormatType& format, Resources::Texture::TypeType& type) {
         switch (color_type) {
-		case ColorType::G:
-            format = GL_LUMINANCE;
-            internal_format = 1;
-            type = GL_UNSIGNED_BYTE;
-            break;
-		case ColorType::RGB:
-            format = GL_RGB;
-            internal_format = GL_RGB;
-            type = GL_UNSIGNED_BYTE;
-            break;
-		case ColorType::RGBA:
-            format = GL_RGBA;
-            internal_format = GL_RGBA;
-            type = GL_UNSIGNED_BYTE;
-            break;
-		case ColorType::GA:
-            format = GL_LUMINANCE_ALPHA;
-            internal_format = 2;
-            type = GL_UNSIGNED_BYTE;
-            break;
-		case ColorType::DEPTH:
-            format = GL_DEPTH_COMPONENT;
-            internal_format = GL_DEPTH_COMPONENT;
-            type = GL_UNSIGNED_BYTE;
-            break;
-		case ColorType::DEPTH_STENCIL:
-            format = GL_DEPTH_STENCIL;
-            internal_format = GL_DEPTH24_STENCIL8;
-            type = GL_UNSIGNED_INT_24_8;
-            break;
-        default:
-            throw std::exception();
+            case ColorType::G:
+                format = GL_LUMINANCE;
+                internal_format = 1;
+                type = GL_UNSIGNED_BYTE;
+                break;
+            case ColorType::RGB:
+                format = GL_RGB;
+                internal_format = GL_RGB;
+                type = GL_UNSIGNED_BYTE;
+                break;
+            case ColorType::RGBA:
+                format = GL_RGBA;
+                internal_format = GL_RGBA;
+                type = GL_UNSIGNED_BYTE;
+                break;
+            case ColorType::GA:
+                format = GL_LUMINANCE_ALPHA;
+                internal_format = 2;
+                type = GL_UNSIGNED_BYTE;
+                break;
+            case ColorType::DEPTH:
+                format = GL_DEPTH_COMPONENT;
+                internal_format = GL_DEPTH_COMPONENT;
+                type = GL_UNSIGNED_BYTE;
+                break;
+            case ColorType::DEPTH_STENCIL:
+                format = GL_DEPTH_STENCIL;
+                internal_format = GL_DEPTH24_STENCIL8;
+                type = GL_UNSIGNED_INT_24_8;
+                break;
+            default:
+                throw std::exception();
         }
     }
 
     size_t getBytesPerPixel(ColorType color_type) {
         switch (color_type) {
-		case ColorType::G:
-            return 1;
-		case ColorType::RGB:
-            return 3;
-		case ColorType::RGBA:
-            return 4;
-		case ColorType::GA:
-            return 2;
-		case ColorType::DEPTH:
-            return 1;
-		case ColorType::DEPTH_STENCIL:
-            return 4;
-        default:
-            throw std::exception();
+            case ColorType::G:
+                return 1;
+            case ColorType::RGB:
+                return 3;
+            case ColorType::RGBA:
+                return 4;
+            case ColorType::GA:
+                return 2;
+            case ColorType::DEPTH:
+                return 1;
+            case ColorType::DEPTH_STENCIL:
+                return 4;
+            default:
+                throw std::exception();
         }
     }
 
@@ -356,7 +356,7 @@ namespace Device::GPU {
         glDeleteBuffers(1, &id); glCheckError();
     }
 
-	GpuId Gpu::createFrameBuffer(GpuFrameBufferType type, const GpuFrameBufferSizeType& size, boost::shared_ptr<Resources::Texture>& colorTexture, boost::shared_ptr<Resources::Texture>& depthStencilTexture, boost::shared_ptr<Resources::Texture>& depthTexture) {
+    GpuId Gpu::createFrameBuffer(GpuFrameBufferType type, const GpuFrameBufferSizeType& size, boost::shared_ptr<Resources::Texture>& colorTexture, boost::shared_ptr<Resources::Texture>& depthStencilTexture, boost::shared_ptr<Resources::Texture>& depthTexture) {
         GpuId id;
 
         glGenFramebuffers(1, &id); glCheckError();
@@ -365,7 +365,7 @@ namespace Device::GPU {
         GpuFrameBufferTypeFlagsType typeFlags = static_cast<GpuFrameBufferTypeFlagsType>(type);
 
         //color
-		if ((typeFlags & GPU_FRAME_BUFFER_TYPE_FLAG_COLOR) == GPU_FRAME_BUFFER_TYPE_FLAG_COLOR) {
+        if ((typeFlags & GPU_FRAME_BUFFER_TYPE_FLAG_COLOR) == GPU_FRAME_BUFFER_TYPE_FLAG_COLOR) {
             colorTexture = boost::make_shared<Resources::Texture>(ColorType::RGB, size, nullptr);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture->get_id(), 0); glCheckError();
         } else {
@@ -374,12 +374,12 @@ namespace Device::GPU {
         }
 
         //Depth & stencil
-		if ((typeFlags & (GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH | GPU_FRAME_BUFFER_TYPE_FLAG_STENCIL)) == (GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH | GPU_FRAME_BUFFER_TYPE_FLAG_STENCIL)) {
+        if ((typeFlags & (GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH | GPU_FRAME_BUFFER_TYPE_FLAG_STENCIL)) == (GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH | GPU_FRAME_BUFFER_TYPE_FLAG_STENCIL)) {
             depthStencilTexture = boost::make_shared<Resources::Texture>(ColorType::DEPTH_STENCIL, size, nullptr);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthStencilTexture->get_id(), 0); glCheckError();
         } else if ((typeFlags & GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH) == GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH) {
             //Depth
-			depthTexture = boost::make_shared<Resources::Texture>(ColorType::DEPTH, size, nullptr);
+            depthTexture = boost::make_shared<Resources::Texture>(ColorType::DEPTH, size, nullptr);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->get_id(), 0); glCheckError();
         }
 
@@ -411,15 +411,15 @@ namespace Device::GPU {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); glCheckError();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); glCheckError();
         glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            internalFormat,
-            size.x,
-            size.y,
-            0,
-            format,
-            type,
-            data
+                GL_TEXTURE_2D,
+                0,
+                internalFormat,
+                size.x,
+                size.y,
+                0,
+                format,
+                type,
+                data
         ); glCheckError();
         glPixelStorei(GL_UNPACK_ALIGNMENT, unpackAlignment); glCheckError();
         glBindTexture(GL_TEXTURE_2D, 0); glCheckError();
@@ -434,15 +434,15 @@ namespace Device::GPU {
         getTextureFormats(texture->getColorType(), internalFormat, format, type);
         glBindTexture(GL_TEXTURE_2D, texture->get_id()); glCheckError();
         glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            internalFormat,
-            size.x,
-            size.y,
-            0,
-            format,
-            type,
-            nullptr
+                GL_TEXTURE_2D,
+                0,
+                internalFormat,
+                size.x,
+                size.y,
+                0,
+                format,
+                type,
+                nullptr
         ); glCheckError();
         glBindTexture(GL_TEXTURE_2D, 0); glCheckError();
     }
@@ -461,11 +461,11 @@ namespace Device::GPU {
         return attributeLocation;
     }
 
-	void Gpu::getUniform(const char* name, std::vector<glm::mat4>& params, size_t count) {
-		params.resize(count);
-		const auto programId = this->programs.top()->lock()->getId();
-		glGetnUniformfvARB(programId, getUniformLocation(programId, name), static_cast<GLsizei>(count * sizeof(glm::mat4)), reinterpret_cast<GLfloat*>(&params[0]));
-	}
+    void Gpu::getUniform(const char* name, std::vector<glm::mat4>& params, size_t count) {
+        params.resize(count);
+        const auto programId = this->programs.top()->lock()->getId();
+        glGetnUniformfvARB(programId, getUniformLocation(programId, name), static_cast<GLsizei>(count * sizeof(glm::mat4)), reinterpret_cast<GLfloat*>(&params[0]));
+    }
 
     void Gpu::enableVertexAttributeArray(GpuLocation location) {
         glEnableVertexAttribArray(location); glCheckError();
@@ -479,7 +479,7 @@ namespace Device::GPU {
         glVertexAttribPointer(location, size, getDataType(dataType), isNormalized, stride, pointer); glCheckError();
     }
 
-	void Gpu::setVertexAttribPointer(GpuLocation location, int size, GpuDataTypes dataType, int stride, const void * pointer) {
+    void Gpu::setVertexAttribPointer(GpuLocation location, int size, GpuDataTypes dataType, int stride, const void * pointer) {
         glVertexAttribIPointer(location, size, getDataType(dataType), stride, pointer); glCheckError();
     }
 
@@ -516,10 +516,10 @@ namespace Device::GPU {
     }
 
     void Gpu::setUniform(const char* name, const std::vector<glm::mat4>& value, bool shouldTranspose) const {
-		const GLfloat* f = reinterpret_cast<const GLfloat*>(value.data());
-		float d = f[17];
-		auto loc = getUniformLocation(this->programs.top()->lock()->getId(), name);
-		glUniformMatrix4fv(loc, static_cast<GLsizei>(value.size()), shouldTranspose ? GL_TRUE : GL_FALSE, f); glCheckError();
+        const GLfloat* f = reinterpret_cast<const GLfloat*>(value.data());
+        float d = f[17];
+        auto loc = getUniformLocation(this->programs.top()->lock()->getId(), name);
+        glUniformMatrix4fv(loc, static_cast<GLsizei>(value.size()), shouldTranspose ? GL_TRUE : GL_FALSE, f); glCheckError();
     }
 
     void Gpu::setUniformSubroutine(ShaderType shaderType, GpuIndex index) {
@@ -541,7 +541,7 @@ namespace Device::GPU {
         return location;
     }
 
-	GpuIndex Gpu::getSubroutineIndex(GpuId programId, ShaderType shaderType, const std::string& name) {
+    GpuIndex Gpu::getSubroutineIndex(GpuId programId, ShaderType shaderType, const std::string& name) {
         unsigned int index = glGetSubroutineIndex(programId, getShaderType(shaderType), name.c_str()); glCheckError();
         return index;
     }
@@ -622,7 +622,7 @@ namespace Device::GPU {
         return textures[index];
     }
 
-	Gpu::TextureManager::WeakType Gpu::TextureManager::bind(IndexType index, const SharedType& texture) {
+    Gpu::TextureManager::WeakType Gpu::TextureManager::bind(IndexType index, const SharedType& texture) {
         const boost::shared_ptr<Resources::Texture>& previousTexture = textures[index];
         if (previousTexture == texture) return previousTexture;
 
@@ -632,7 +632,7 @@ namespace Device::GPU {
         return previousTexture;
     }
 
-	Gpu::TextureManager::WeakType Gpu::TextureManager::unbind(IndexType index) {
+    Gpu::TextureManager::WeakType Gpu::TextureManager::unbind(IndexType index) {
         const boost::shared_ptr<Resources::Texture>& previousTexture = textures[index];
         if (previousTexture == nullptr) return previousTexture;
         glActiveTexture(GL_TEXTURE0 + index); glCheckError();
@@ -652,12 +652,11 @@ namespace Device::GPU {
 
     void Gpu::ViewportManager::push(const GpuViewportType& viewport) {
         viewports.push(viewport);
-
         glViewport(
-            static_cast<GLint>(viewport.x),
-            static_cast<GLint>(viewport.y),
-            static_cast<GLint>(viewport.width),
-            static_cast<GLint>(viewport.height)
+                static_cast<GLint>(viewport.x),
+                static_cast<GLint>(viewport.y),
+                static_cast<GLint>(viewport.width),
+                static_cast<GLint>(viewport.height)
         ); glCheckError();
     }
 
@@ -666,33 +665,33 @@ namespace Device::GPU {
         const Scene::Structure::Rectangle<float>& previousViewport = viewports.top();
 
         viewports.pop();
-		const Scene::Structure::Rectangle<int> topViewport = static_cast<Scene::Structure::Rectangle<int>>(top());
+        const Scene::Structure::Rectangle<int> topViewport = static_cast<Scene::Structure::Rectangle<int>>(top());
         glViewport(
-            topViewport.x,
-            topViewport.y,
-            topViewport.width,
-            topViewport.height
+                topViewport.x,
+                topViewport.y,
+                topViewport.width,
+                topViewport.height
         ); glCheckError();
         return previousViewport;
     }
 
-	void Gpu::BufferManager::put(BufferType & buffer) {
+    void Gpu::BufferManager::put(BufferType & buffer) {
         buffers.insert(buffer);
     }
 
-	void Gpu::BufferManager::erase(BufferType & buffer) {
+    void Gpu::BufferManager::erase(BufferType & buffer) {
         buffers.erase(buffer);
     }
     
-	void Gpu::BufferManager::push(BufferTarget target, BufferType buffer) {
+    void Gpu::BufferManager::push(BufferTarget target, BufferType buffer) {
         if (targetBuffers.find(target) == targetBuffers.end()) {
-			targetBuffers.emplace(std::make_pair(target, std::stack<BufferType>()));
+            targetBuffers.emplace(std::make_pair(target, std::stack<BufferType>()));
         }
         targetBuffers[target].push(buffer);
-        glBindBuffer(getBufferTarget(target), buffer->get_id()); glCheckError();
+        glBindBuffer(getBufferTarget(target), buffer->getId()); glCheckError();
     }
 
-	Gpu::BufferManager::BufferType Gpu::BufferManager::pop(BufferTarget target) {
+    Gpu::BufferManager::BufferType Gpu::BufferManager::pop(BufferTarget target) {
         auto targetBuffersItr = targetBuffers.find(target);
         if (targetBuffersItr == targetBuffers.end()) {
             throw std::out_of_range("");
@@ -704,12 +703,12 @@ namespace Device::GPU {
         }
 
         _buffers.pop();
-        glBindBuffer(getBufferTarget(target), _buffers.empty() ? 0 : (int) _buffers.top()->get_id()); glCheckError();
+        glBindBuffer(getBufferTarget(target), _buffers.empty() ? 0 : (int) _buffers.top()->getId()); glCheckError();
         return _buffers.empty() ? BufferType() : _buffers.top();
     }
 
 
-	Gpu::BufferManager::BufferType Gpu::BufferManager::top(BufferTarget target) const {
+    Gpu::BufferManager::BufferType Gpu::BufferManager::top(BufferTarget target) const {
         auto targetBuffersItr = targetBuffers.find(target);
 
         if (targetBuffersItr == targetBuffers.end()) {
@@ -723,17 +722,17 @@ namespace Device::GPU {
         return _buffers.top();
     }
 
-	void Gpu::BufferManager::data(BufferTarget target, const void* data, size_t size, BufferUsage usage) {
+    void Gpu::BufferManager::data(BufferTarget target, const void* data, size_t size, BufferUsage usage) {
         glBufferData(getBufferTarget(target), size, data, getBufferUsage(usage)); glCheckError();
     }
     
     //TODO: infer indexDataType from bound index buffer
     void Gpu::drawElements(PrimitiveType primitiveType, size_t count, GpuDataTypes indexDataType, size_t offset) const {
         glDrawElements(
-            getPrimitiveType(primitiveType),
-            static_cast<GLsizei>(count),
-            getDataType(indexDataType),
-            reinterpret_cast<GLvoid*>(offset)
+                getPrimitiveType(primitiveType),
+                static_cast<GLsizei>(count),
+                getDataType(indexDataType),
+                reinterpret_cast<GLvoid*>(offset)
         ); glCheckError();
     }
 
@@ -854,7 +853,7 @@ namespace Device::GPU {
     //blend
     Gpu::BlendStateManager::BlendState Gpu::BlendStateManager::getState() const {
         if (!states.empty()) return states.top();
-		return {};
+        return {};
     }
 
 	void Gpu::BlendStateManager::pushState(const Gpu::BlendStateManager::BlendState& state) {
@@ -867,7 +866,7 @@ namespace Device::GPU {
         applyState(getState());
     }
 
-	void Gpu::BlendStateManager::applyState(const Gpu::BlendStateManager::BlendState& state) {
+    void Gpu::BlendStateManager::applyState(const Gpu::BlendStateManager::BlendState& state) {
         if (state.isEnabled) {
             glEnable(GL_BLEND); glCheckError();
         } else {
@@ -906,24 +905,24 @@ namespace Device::GPU {
     }
 
     //culling
-	Gpu::CullingStateManager::CullingState Gpu::CullingStateManager::getState() const {
+    Gpu::CullingStateManager::CullingState Gpu::CullingStateManager::getState() const {
         if (!states.empty()) {
             return states.top();
         }
-		return {};
+        return {};
     }
 
-	void Gpu::CullingStateManager::pushState(const CullingState& state) {
+    void Gpu::CullingStateManager::pushState(const CullingState& state) {
         applyState(state);
         states.push(state);
     }
 
-	void Gpu::CullingStateManager::popState() {
+    void Gpu::CullingStateManager::popState() {
         states.pop();
         applyState(getState());
     }
 
-	void Gpu::CullingStateManager::applyState(const CullingState& state) {
+    void Gpu::CullingStateManager::applyState(const CullingState& state) {
         if (state.isEnabled) {
             glEnable(GL_CULL_FACE); glCheckError();
         } else {
@@ -931,46 +930,46 @@ namespace Device::GPU {
         }
 
         switch (state.frontFace) {
-        case CullingFrontFace::CCW:
-            glFrontFace(GL_CCW); glCheckError();
-            break;
-		case CullingFrontFace::CW:
-            glFrontFace(GL_CW); glCheckError();
-            break;
+            case CullingFrontFace::CCW:
+                glFrontFace(GL_CCW); glCheckError();
+                break;
+            case CullingFrontFace::CW:
+                glFrontFace(GL_CW); glCheckError();
+                break;
         }
         
         switch (state.mode) {
-        case CullingMode::BACK:
-            glCullFace(GL_BACK); glCheckError();
-            break;
-		case CullingMode::FRONT:
-            glCullFace(GL_FRONT); glCheckError();
-            break;
-		case CullingMode::FRONT_AND_BACK:
-            glCullFace(GL_FRONT_AND_BACK); glCheckError();
-            break;
+            case CullingMode::BACK:
+                glCullFace(GL_BACK); glCheckError();
+                break;
+            case CullingMode::FRONT:
+                glCullFace(GL_FRONT); glCheckError();
+                break;
+            case CullingMode::FRONT_AND_BACK:
+                glCullFace(GL_FRONT_AND_BACK); glCheckError();
+                break;
         }
     }
 
     //stencil
-	Gpu::StencilStateManager::StencilState Gpu::StencilStateManager::getState() const {
+    Gpu::StencilStateManager::StencilState Gpu::StencilStateManager::getState() const {
         if (!states.empty()) {
             return states.top();
         }
-		return {};
+        return {};
     }
 
-	void Gpu::StencilStateManager::pushState(const StencilState& state) {
+    void Gpu::StencilStateManager::pushState(const StencilState& state) {
         applyState(state);
         states.push(state);
     }
 
-	void Gpu::StencilStateManager::popState() {
+    void Gpu::StencilStateManager::popState() {
         states.pop();
         applyState(getState());
     }
 
-	void Gpu::StencilStateManager::applyState(const StencilState& state) {
+    void Gpu::StencilStateManager::applyState(const StencilState& state) {
         if (state.isEnabled) {
             glEnable(GL_STENCIL_TEST); glCheckError();
         } else {
@@ -983,29 +982,29 @@ namespace Device::GPU {
     }
 
     //color
-	Gpu::ColorStateManager::ColorState Gpu::ColorStateManager::getState() const {
+    Gpu::ColorStateManager::ColorState Gpu::ColorStateManager::getState() const {
         if (!states.empty()) {
             return states.top();
         }
-		return {};
+        return {};
     }
 
-	void Gpu::ColorStateManager::pushState(const ColorState& state) {
+    void Gpu::ColorStateManager::pushState(const ColorState& state) {
         applyState(state);
         states.push(state);
     }
 
-	void Gpu::ColorStateManager::popState() {
+    void Gpu::ColorStateManager::popState() {
         states.pop();
         applyState(getState());
     }
 
-	void Gpu::ColorStateManager::applyState(const ColorState& state) {
+    void Gpu::ColorStateManager::applyState(const ColorState& state) {
         glColorMask(
-            state.mask.r ? GL_TRUE : GL_FALSE,
-            state.mask.g ? GL_TRUE : GL_FALSE,
-            state.mask.b ? GL_TRUE : GL_FALSE,
-            state.mask.a ? GL_TRUE : GL_FALSE
+                state.mask.r ? GL_TRUE : GL_FALSE,
+                state.mask.g ? GL_TRUE : GL_FALSE,
+                state.mask.b ? GL_TRUE : GL_FALSE,
+                state.mask.a ? GL_TRUE : GL_FALSE
         ); glCheckError();
     }
 
@@ -1044,12 +1043,12 @@ namespace Device::GPU {
         this->textures.unbind(0);
     }
 
-	std::unique_ptr<unsigned char[]> Gpu::getBackbufferPixels(int& width, int& height) {
-		Scene::Structure::Rectangle<float> viewport = this->viewports.top();
-		width = static_cast<int>(viewport.width);
-		height = static_cast<int>(viewport.height);
-		std::unique_ptr<unsigned char[]> pixels(new unsigned char[width * height * 4]);
-		glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, static_cast<GLvoid*>(pixels.get()));
-		return pixels;
-	}
+    std::unique_ptr<unsigned char[]> Gpu::getBackbufferPixels(int& width, int& height) {
+        Scene::Structure::Rectangle<float> viewport = this->viewports.top();
+        width = static_cast<int>(viewport.width);
+        height = static_cast<int>(viewport.height);
+        std::unique_ptr<unsigned char[]> pixels(new unsigned char[width * height * 4]);
+        glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, static_cast<GLvoid*>(pixels.get()));
+        return pixels;
+    }
 }
