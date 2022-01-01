@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../gpu/shaders/shader.hpp"
+#include "../../../device/gpu/shaders/shader.hpp"
 #include <glm/glm.hpp>
 
 namespace Rendering::Scene {
-    struct BSPShader : GPU::Shaders::Shader {
+    struct BSPShader : Device::GPU::Shaders::Shader {
         struct Vertex {
             Vertex() = default;
             Vertex(glm::vec3 location, glm::vec2 diffuse_texcoord, glm::vec2 lightmap_texcoord) {
@@ -70,38 +70,38 @@ void main() {
         discard;
     }
 })") {
-            locationLocation = GPU::gpu.getAttributeLocation(getId(), "location");
-            diffuseTexcoordLocation = GPU::gpu.getAttributeLocation(getId(), "diffuse_texcoord");
-            lightmapTexcoordLocation = GPU::gpu.getAttributeLocation(getId(), "lightmap_texcoord");
+            locationLocation = Device::GPU::gpu.getAttributeLocation(getId(), "location");
+            diffuseTexcoordLocation = Device::GPU::gpu.getAttributeLocation(getId(), "diffuse_texcoord");
+            lightmapTexcoordLocation = Device::GPU::gpu.getAttributeLocation(getId(), "lightmap_texcoord");
         }
 
         void onBind() override {
-            GPU::gpu.enableVertexAttributeArray(locationLocation);
-            GPU::gpu.enableVertexAttributeArray(diffuseTexcoordLocation);
-            GPU::gpu.enableVertexAttributeArray(lightmapTexcoordLocation);
-            GPU::gpu.setVertexAttribPointer(
+            Device::GPU::gpu.enableVertexAttributeArray(locationLocation);
+            Device::GPU::gpu.enableVertexAttributeArray(diffuseTexcoordLocation);
+            Device::GPU::gpu.enableVertexAttributeArray(lightmapTexcoordLocation);
+            Device::GPU::gpu.setVertexAttribPointer(
                 locationLocation, sizeof(glm::vec3) / sizeof(glm::vec3::value_type),
-                GPU::GpuDataType<glm::vec3::value_type>::VALUE, false, sizeof(VertexType),
+                Device::GPU::GpuDataType<glm::vec3::value_type>::VALUE, false, sizeof(VertexType),
                 reinterpret_cast<void *>(offsetof(VertexType, location))
             );
-            GPU::gpu.setVertexAttribPointer(
+            Device::GPU::gpu.setVertexAttribPointer(
                 diffuseTexcoordLocation,
                 sizeof(glm::vec2) / sizeof(glm::vec2::value_type),
-                GPU::GpuDataType<glm::vec2::value_type>::VALUE, false, sizeof(VertexType),
+                Device::GPU::GpuDataType<glm::vec2::value_type>::VALUE, false, sizeof(VertexType),
                 reinterpret_cast<void *>(offsetof(VertexType, diffuseTexcoord))
             );
-            GPU::gpu.setVertexAttribPointer(
+            Device::GPU::gpu.setVertexAttribPointer(
                 lightmapTexcoordLocation,
                 sizeof(glm::vec2) / sizeof(glm::vec2::value_type),
-                GPU::GpuDataType<glm::vec2::value_type>::VALUE, false, sizeof(VertexType),
+                Device::GPU::GpuDataType<glm::vec2::value_type>::VALUE, false, sizeof(VertexType),
                 reinterpret_cast<void *>(offsetof(VertexType, lightmapTexcoord))
             );
         }
 
         void onUnbind() override {
-            GPU::gpu.disableVertexAttributeArray(locationLocation);
-            GPU::gpu.disableVertexAttributeArray(diffuseTexcoordLocation);
-            GPU::gpu.disableVertexAttributeArray(lightmapTexcoordLocation);
+            Device::GPU::gpu.disableVertexAttributeArray(locationLocation);
+            Device::GPU::gpu.disableVertexAttributeArray(diffuseTexcoordLocation);
+            Device::GPU::gpu.disableVertexAttributeArray(lightmapTexcoordLocation);
         }
 
 

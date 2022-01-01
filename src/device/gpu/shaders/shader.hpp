@@ -4,7 +4,7 @@
 
 #include "../gpu.hpp"
 
-namespace Rendering::GPU::Shaders {
+namespace Device::GPU::Shaders {
 	struct Shader : boost::enable_shared_from_this<Shader> {
 		virtual ~Shader();
 

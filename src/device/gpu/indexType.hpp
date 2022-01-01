@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <cstdint>
 
-namespace Rendering::GPU {
+namespace Device::GPU {
     template <std::uintmax_t N>
     struct IndexType {
         using Type = std::conditional_t < N <= 255, unsigned char,

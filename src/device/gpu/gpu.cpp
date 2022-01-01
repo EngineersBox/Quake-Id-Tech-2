@@ -17,7 +17,7 @@
 #include "../../resources/io/io.hpp"
 
 
-namespace Rendering::GPU {
+namespace Device::GPU {
     Gpu gpu;
 
     inline GLenum getBufferTarget(Gpu::BufferTarget buffer_target) {

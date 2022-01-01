@@ -6,7 +6,7 @@
 #include "gpuBuffer.hpp"
 #include "../gpu.hpp"
 
-namespace Rendering::GPU::Buffers {
+namespace Device::GPU::Buffers {
     template<typename Vertex>
 	struct VertexBuffer : GpuBuffer {
         typedef Vertex VertexType;

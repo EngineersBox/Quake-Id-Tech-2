@@ -38,13 +38,13 @@ namespace Resources {
         this->size.x = static_cast<float>(width);
         this->size.y = static_cast<float>(height);
 
-        auto getColorType = [](int png_color_type) -> Rendering::GPU::ColorType {
+        auto getColorType = [](int png_color_type) -> Device::GPU::ColorType {
             switch (png_color_type) {
-                case PNG_COLOR_TYPE_GRAY: return Rendering::GPU::ColorType::G;
-                case PNG_COLOR_TYPE_RGB: return Rendering::GPU::ColorType::RGB;
-                case PNG_COLOR_TYPE_PALETTE: return Rendering::GPU::ColorType::PALETTE;
-                case PNG_COLOR_TYPE_GA: return Rendering::GPU::ColorType::GA;
-                case PNG_COLOR_TYPE_RGBA: return Rendering::GPU::ColorType::RGBA;
+                case PNG_COLOR_TYPE_GRAY: return Device::GPU::ColorType::G;
+                case PNG_COLOR_TYPE_RGB: return Device::GPU::ColorType::RGB;
+                case PNG_COLOR_TYPE_PALETTE: return Device::GPU::ColorType::PALETTE;
+                case PNG_COLOR_TYPE_GA: return Device::GPU::ColorType::GA;
+                case PNG_COLOR_TYPE_RGBA: return Device::GPU::ColorType::RGBA;
                 default: throw std::exception();
             }
         };
@@ -63,7 +63,7 @@ namespace Resources {
         png_destroy_read_struct(&pngPtr, &infoPtr, nullptr);
     }
 
-    Image::Image(const SizeType& size, BitDepthType bitDepth, Rendering::GPU::ColorType colorType, const unsigned char* dataPtr, size_t dataSize) :
+    Image::Image(const SizeType& size, BitDepthType bitDepth, Device::GPU::ColorType colorType, const unsigned char* dataPtr, size_t dataSize) :
             size(size),
             bitDepth(bitDepth),
             colorType(colorType) {
@@ -75,12 +75,12 @@ namespace Resources {
 
     size_t Image::getChannelCount() const {
         switch (colorType) {
-            case Rendering::GPU::ColorType::G:
-            case Rendering::GPU::ColorType::PALETTE:
+            case Device::GPU::ColorType::G:
+            case Device::GPU::ColorType::PALETTE:
                 return 1;
-            case Rendering::GPU::ColorType::GA: return 2;
-            case Rendering::GPU::ColorType::RGB: return 3;
-            case Rendering::GPU::ColorType::RGBA: return 4;
+            case Device::GPU::ColorType::GA: return 2;
+            case Device::GPU::ColorType::RGB: return 3;
+            case Device::GPU::ColorType::RGBA: return 4;
             default: return 0;
         }
     }
@@ -111,14 +111,14 @@ namespace Resources {
             throw std::runtime_error(pngErrorMessage.c_str());
         }
 
-        auto getPngColorType = [](Rendering::GPU::ColorType color_type) -> int {
+        auto getPngColorType = [](Device::GPU::ColorType color_type) -> int {
             switch (color_type) {
-                case Rendering::GPU::ColorType::G: return PNG_COLOR_TYPE_GRAY;
-                case Rendering::GPU::ColorType::RGB: return PNG_COLOR_TYPE_RGB;
-                case Rendering::GPU::ColorType::PALETTE: return PNG_COLOR_TYPE_PALETTE;
-                case Rendering::GPU::ColorType::GA: return PNG_COLOR_TYPE_GA;
-                case Rendering::GPU::ColorType::RGBA: return PNG_COLOR_TYPE_RGBA;
-                case Rendering::GPU::ColorType::DEPTH_STENCIL: return PNG_COLOR_TYPE_RGBA;
+                case Device::GPU::ColorType::G: return PNG_COLOR_TYPE_GRAY;
+                case Device::GPU::ColorType::RGB: return PNG_COLOR_TYPE_RGB;
+                case Device::GPU::ColorType::PALETTE: return PNG_COLOR_TYPE_PALETTE;
+                case Device::GPU::ColorType::GA: return PNG_COLOR_TYPE_GA;
+                case Device::GPU::ColorType::RGBA: return PNG_COLOR_TYPE_RGBA;
+                case Device::GPU::ColorType::DEPTH_STENCIL: return PNG_COLOR_TYPE_RGBA;
                 default: throw std::exception();
             }
         };

@@ -3,7 +3,7 @@
 #ifndef QUAKE_COLORTYPES_HPP
 #define QUAKE_COLORTYPES_HPP
 
-namespace Rendering::GPU {
+namespace Device::GPU {
     enum class ColorType {
         G,
         GA,

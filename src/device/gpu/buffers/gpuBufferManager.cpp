@@ -1,6 +1,6 @@
 #include "gpuBufferManager.hpp"
 
-namespace Rendering::GPU::Buffers {
+namespace Device::GPU::Buffers {
 	GpuBufferManager gpuBuffers;
 	void GpuBufferManager::purge() { buffers.clear(); }
 }

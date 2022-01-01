@@ -19,7 +19,7 @@
 #include "shaders/shader.hpp"
 #include "buffers/gpuBuffer.hpp"
 
-namespace Rendering::GPU {
+namespace Device::GPU {
 
     struct Gpu {
         enum class BufferTarget {

@@ -10,7 +10,7 @@
 #include <glm/glm.hpp>
 
 #include "resource.hpp"
-#include "../rendering/gpu/colorTypes.hpp"
+#include "../device/gpu/colorTypes.hpp"
 
 namespace Resources {
     struct Image : Resource {
@@ -20,10 +20,10 @@ namespace Resources {
 
         Image() = default;
         Image(std::istream& istream);
-        Image(const SizeType& size, BitDepthType bitDepth, Rendering::GPU::ColorType colorType, const unsigned char* dataPtr, size_t dataSize);
+        Image(const SizeType& size, BitDepthType bitDepth, Device::GPU::ColorType colorType, const unsigned char* dataPtr, size_t dataSize);
 
         [[nodiscard]] BitDepthType getBitDepth() const { return this->bitDepth; }
-        [[nodiscard]] Rendering::GPU::ColorType getColorType() const { return this->colorType; }
+        [[nodiscard]] Device::GPU::ColorType getColorType() const { return this->colorType; }
         [[nodiscard]] const DataType& getData() const { return this->data; }
         [[nodiscard]] const SizeType& getSize() const { return this->size; }
         [[nodiscard]] unsigned int getWidth() const { return static_cast<unsigned int>(this->size.x); }
@@ -38,7 +38,7 @@ namespace Resources {
 
         SizeType size;
         BitDepthType bitDepth = 0;
-        Rendering::GPU::ColorType colorType = Rendering::GPU::ColorType::G;
+        Device::GPU::ColorType colorType = Device::GPU::ColorType::G;
         DataType data;
         size_t pixelStride = 1;
         std::mutex dataMutex;

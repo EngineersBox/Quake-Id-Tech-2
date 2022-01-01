@@ -5,7 +5,7 @@
 
 #include "gpuBuffer.hpp"
 
-namespace Rendering::GPU::Buffers {
+namespace Device::GPU::Buffers {
     struct GpuBufferManager {
         template<typename T, std::enable_if_t<IsGpuBuffer<T>::value, bool> = true>
         boost::weak_ptr<T> make() {

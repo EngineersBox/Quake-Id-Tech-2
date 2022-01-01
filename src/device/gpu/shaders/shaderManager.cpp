@@ -1,6 +1,6 @@
 #include "shaderManager.hpp"
 
-namespace Rendering::GPU::Shaders {
+namespace Device::GPU::Shaders {
 	ShaderManager shaders;
 
 	void ShaderManager::purge() {

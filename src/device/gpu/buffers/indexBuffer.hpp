@@ -7,7 +7,7 @@
 #include "../gpu.hpp"
 #include "gpuBuffer.hpp"
 
-namespace Rendering::GPU::Buffers {
+namespace Device::GPU::Buffers {
 	template<typename Index, typename Enable = void>
     struct IndexBuffer;
 

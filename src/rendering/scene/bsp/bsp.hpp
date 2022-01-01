@@ -16,9 +16,9 @@
 #include "../../../scene/structure/line.hpp"
 #include "../../../resources/texture.hpp"
 #include "bspEntity.hpp"
-#include "../../gpu/gpu.hpp"
-#include "../../gpu/buffers/vertexBuffer.hpp"
-#include "../../gpu/buffers/indexBuffer.hpp"
+#include "../../../device/gpu/gpu.hpp"
+#include "../../../device/gpu/buffers/vertexBuffer.hpp"
+#include "../../../device/gpu/buffers/indexBuffer.hpp"
 #include "bspShader.hpp"
 #include "../../view/cameraParams.hpp"
 
@@ -141,9 +141,9 @@ class BSP: public Resources::Resource {
         };
 
         typedef BSPShader::VertexType VertexType;
-        typedef Rendering::GPU::Buffers::VertexBuffer<VertexType> VertexBufferType;
+        typedef Device::GPU::Buffers::VertexBuffer<VertexType> VertexBufferType;
         typedef unsigned int IndexType;
-        typedef Rendering::GPU::Buffers::IndexBuffer<IndexType> IndexBufferType;
+        typedef Device::GPU::Buffers::IndexBuffer<IndexType> IndexBufferType;
 
         struct TraceArgs {
             ::Scene::Structure::Line3<float> line;

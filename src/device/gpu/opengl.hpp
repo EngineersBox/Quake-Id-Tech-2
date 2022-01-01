@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <exception>
 
-namespace Rendering::GPU {
+namespace Device::GPU {
     inline void glCheckError() {
         GLenum error = GL_NO_ERROR;
         error = glGetError();

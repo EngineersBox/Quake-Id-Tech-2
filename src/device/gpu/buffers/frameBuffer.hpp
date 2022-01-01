@@ -6,7 +6,7 @@
 #include "../gpuDefs.hpp"
 #include "../../../resources/texture.hpp"
 
-namespace Rendering::GPU::Buffers {
+namespace Device::GPU::Buffers {
     struct FrameBuffer {
 		[[nodiscard]] GpuId getId() const { return id; }
         [[nodiscard]] const boost::shared_ptr<Resources::Texture>& getColorTexture() const { return colorTexture; }

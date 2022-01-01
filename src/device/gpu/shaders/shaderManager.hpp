@@ -8,7 +8,7 @@
 
 #include "shader.hpp"
 
-namespace Rendering::GPU::Shaders {
+namespace Device::GPU::Shaders {
     struct ShaderManager {
 		template<typename T, std::enable_if_t<IsGpuProgram<T>::value, bool> = true>
         boost::shared_ptr<T> make() {

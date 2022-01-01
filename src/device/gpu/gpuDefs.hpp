@@ -4,7 +4,7 @@
 
 #include "../../scene/structure/rectangle.hpp"
 
-namespace Rendering::GPU {
+namespace Device::GPU {
     template<typename Value, Value Default>
     struct ValueWrapper {
         typedef Value ValueType;
