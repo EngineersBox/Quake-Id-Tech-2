@@ -2,13 +2,13 @@
 
 #include <glm/glm.hpp>
 
-#include "frustum.hpp"
+#include "../../../rendering/view/frustum.hpp"
 
-namespace Rendering::View {
+namespace Platform::Game::Components {
     struct CameraParameters {
         glm::mat4 viewMatrix;
         glm::mat4 projectionMatrix;
         glm::vec3 location;
-        Frustum<float> frustum;
+        Rendering::View::Frustum<float> frustum;
     };
 }

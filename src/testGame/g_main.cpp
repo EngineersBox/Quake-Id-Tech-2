@@ -7,7 +7,9 @@ int main(int, char**) {
 
     Core::Engine* engine = new Core::Engine("Test Game");
     engine->init();
-    engine->tick();
+    for (;;) {
+        engine->tick();
+    }
 
-	return 0;
+    return 0;
 }

@@ -19,8 +19,8 @@
 #include "../../../device/gpu/gpu.hpp"
 #include "../../../device/gpu/buffers/vertexBuffer.hpp"
 #include "../../../device/gpu/buffers/indexBuffer.hpp"
-#include "bspShader.hpp"
-#include "../../view/cameraParams.hpp"
+#include "../../../device/gpu/shaders/programs/bspShader.hpp"
+#include "../../../platform/game/components/cameraParams.hpp"
 
 namespace Rendering::Scene {
 class BSP: public Resources::Resource {

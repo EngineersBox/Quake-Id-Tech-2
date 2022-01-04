@@ -5,6 +5,7 @@
 
 #include "window.hpp"
 #include "logging/logger.hpp"
+#include "../platform/platform.hpp"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -15,7 +16,7 @@
 #include <boost/units/base_units/imperial/inch.hpp>
 
 namespace Core {
-    class Engine {
+    class Engine : Platform::PlatformBase {
     private:
         int width = 1920;
         int height = 1080;
@@ -41,6 +42,8 @@ namespace Core {
 
         Engine() = default;
     };
+
+    extern Engine* engine;
 }
 
 #endif //QUAKE_ENGINE_HPP

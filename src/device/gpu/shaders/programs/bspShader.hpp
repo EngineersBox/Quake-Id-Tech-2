@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../../device/gpu/shaders/shader.hpp"
+#include "../shader.hpp"
 #include <glm/glm.hpp>
 
-namespace Rendering::Scene {
+namespace Device::GPU::Shaders::Programs {
     struct BSPShader : Device::GPU::Shaders::Shader {
         struct Vertex {
             Vertex() = default;

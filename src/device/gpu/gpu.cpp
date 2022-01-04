@@ -463,7 +463,7 @@ namespace Device::GPU {
 
     void Gpu::getUniform(const char* name, std::vector<glm::mat4>& params, size_t count) {
         params.resize(count);
-        const auto programId = this->programs.top()->lock()->getId();
+        const ValueWrapper<unsigned int, 0> programId = this->programs.top()->lock()->getId();
         glGetnUniformfvARB(programId, getUniformLocation(programId, name), static_cast<GLsizei>(count * sizeof(glm::mat4)), reinterpret_cast<GLfloat*>(&params[0]));
     }
 
@@ -518,7 +518,7 @@ namespace Device::GPU {
     void Gpu::setUniform(const char* name, const std::vector<glm::mat4>& value, bool shouldTranspose) const {
         const GLfloat* f = reinterpret_cast<const GLfloat*>(value.data());
         float d = f[17];
-        auto loc = getUniformLocation(this->programs.top()->lock()->getId(), name);
+        ValueWrapper<int, -1> loc = getUniformLocation(this->programs.top()->lock()->getId(), name);
         glUniformMatrix4fv(loc, static_cast<GLsizei>(value.size()), shouldTranspose ? GL_TRUE : GL_FALSE, f); glCheckError();
     }
 

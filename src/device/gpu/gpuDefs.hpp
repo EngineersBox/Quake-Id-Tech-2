@@ -12,16 +12,16 @@ namespace Device::GPU {
 
         ValueWrapper() = default;
         ValueWrapper(const ValueType& value) :
-            value(value) {}
+                value(value) {}
 
-        operator Value() const { return value; }
+        operator Value() const { return this->value; }
 
         Type& operator=(ValueType _value) {
             this->value = _value;
             return *this;
         }
 
-        ValueType* operator&() { return &value; }
+        ValueType* operator&() { return &this->value; }
 
     private:
         ValueType value = Default;

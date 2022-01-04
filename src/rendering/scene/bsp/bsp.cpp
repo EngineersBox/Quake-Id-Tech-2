@@ -5,8 +5,8 @@
 #include <spdlog/spdlog.h>
 
 #include "bsp.hpp"
-#include "../../view/cameraParams.hpp"
-#include "bspShader.hpp"
+#include "../../../platform/game/components/cameraParams.hpp"
+#include "../../../device/gpu/shaders/programs/bspShader.hpp"
 #include "../../../resources/resourceManager.hpp"
 #include "../../../device/gpu/shaders/shaderManager.hpp"
 #include "../../../device/gpu/buffers/gpuBufferManager.hpp"
