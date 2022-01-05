@@ -281,202 +281,150 @@ namespace Platform {
 
     void PlatformImpl::appTickEnd(float dt) {}
 
-    void PlatformImpl::appRenderStart()
-    {
+    void PlatformImpl::appRenderStart() {
     } // TODO: FINISH THIS STUFF
 
-    void PlatformImpl::app_render_end()
-    {
+    void PlatformImpl::appRenderEnd() {
         glfwSwapBuffers(window_ptr);
     }
 
-    bool PlatformImpl::should_exit() const
-    {
+    bool PlatformImpl::shouldExit() const {
         return glfwWindowShouldClose(window_ptr) != 0;
     }
 
-    vec2 PlatformImpl::get_screen_size() const
-    {
-        vec2_i32 screen_size;
-
+    glm::vec2 PlatformImpl::getScreenSize() const {
+        glm::ivec2 screen_size;
         glfwGetWindowSize(window_ptr, &screen_size.x, &screen_size.y);
-
-        return static_cast<vec2>(screen_size);
+        return static_cast<glm::vec2>(screen_size);
     }
 
-    void PlatformImpl::set_screen_size(const vec2& screen_size) const
+    void PlatformImpl::setScreenSize(const glm::vec2& screen_size) const
     {
         glfwSetWindowSize(window_ptr, static_cast<int>(screen_size.x), static_cast<int>(screen_size.y));
     }
 
     // viewport
-    Rectangle PlatformImpl::get_viewport() const
-    {
-        Rectangle viewport;
-        viewport.width = get_screen_size().x;
-        viewport.height = get_screen_size().y;
+    Scene::Structure::Rectangle<float> PlatformImpl::getViewport() const {
+        Scene::Structure::Rectangle<float> viewport;
+        viewport.width = getScreenSize().x;
+        viewport.height = getScreenSize().y;
         return viewport;
     }
 
     //fullscreen
-    bool PlatformImpl::is_fullscreen() const
-    {
+    bool PlatformImpl::isFullscreen() const {
         return window_ptr != nullptr && glfwGetWindowMonitor(window_ptr) != nullptr;
     }
 
-    void PlatformImpl::set_is_fullscreen(bool is_fullscreen)
-    {
-        if (window_ptr == nullptr)
-        {
-            throw std::exception();
-        }
+    void PlatformImpl::setIsFullscreen(bool is_fullscreen) {
+        if (window_ptr == nullptr) throw std::exception();
+        if (is_fullscreen == this->isFullscreen()) return;
 
-        vec2 window_size;
+        glm::vec2 window_size;
 
-        if (is_fullscreen == this->is_fullscreen())
-        {
-            return;
-        }
-
-        if (is_fullscreen)
-        {
-            const auto video_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        if (is_fullscreen) {
+            const GLFWvidmode* video_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
             glfwWindowHint(GLFW_RED_BITS, video_mode->redBits);
             glfwWindowHint(GLFW_GREEN_BITS, video_mode->greenBits);
             glfwWindowHint(GLFW_BLUE_BITS, video_mode->blueBits);
             glfwWindowHint(GLFW_REFRESH_RATE, video_mode->refreshRate);
 
-            old_window_size = get_window_size();
+            old_window_size = getWindowSize();
 
-            window_size.x = static_cast<f32>(video_mode->width);
-            window_size.y = static_cast<f32>(video_mode->height);
-        }
-        else
-        {
+            window_size.x = static_cast<float>(video_mode->width);
+            window_size.y = static_cast<float>(video_mode->height);
+        } else {
             window_size = old_window_size;
         }
 
-        auto new_window_ptr = glfwCreateWindow(static_cast<int>(window_size.x), static_cast<int>(window_size.y), "naga", is_fullscreen ? glfwGetPrimaryMonitor() : nullptr, window_ptr);
+        GLFWwindow* new_window_ptr = glfwCreateWindow(static_cast<int>(window_size.x), static_cast<int>(window_size.y), "naga", is_fullscreen ? glfwGetPrimaryMonitor() : nullptr, window_ptr);
         glfwDestroyWindow(window_ptr);
 
         window_ptr = new_window_ptr;
 
         glfwMakeContextCurrent(window_ptr);
 
-        glfwSetKeyCallback(window_ptr, on_keyboard_key);
-        glfwSetCharCallback(window_ptr, on_keyboard_character);
-        glfwSetMouseButtonCallback(window_ptr, on_mouse_button);
-        glfwSetCursorPosCallback(window_ptr, on_mouse_move);
-        glfwSetScrollCallback(window_ptr, on_mouse_scroll);
-        glfwSetWindowSizeCallback(window_ptr, on_window_resize);
-        glfwSetWindowPosCallback(window_ptr, on_window_move);
+        glfwSetKeyCallback(window_ptr, onKeyboardKey);
+        glfwSetCharCallback(window_ptr, onKeyboardCharacter);
+        glfwSetMouseButtonCallback(window_ptr, onMouseButton);
+        glfwSetCursorPosCallback(window_ptr, onMouseMove);
+        glfwSetScrollCallback(window_ptr, onMouseScroll);
+        glfwSetWindowSizeCallback(window_ptr, onWindowResize);
+        glfwSetWindowPosCallback(window_ptr, onWindowMove);
 
         //HACK: would use set_window_size, but the callback doesn't get triggered
-        on_window_resize(window_ptr, static_cast<int>(window_size.x), static_cast<int>(window_size.y));
+        onWindowResize(window_ptr, static_cast<int>(window_size.x), static_cast<int>(window_size.y));
     }
 
-    bool PlatformImpl::pop_input_event(InputEvent& input_event)
-    {
-        if (input.events.empty())
-        {
-            return false;
-        }
-
+    bool PlatformImpl::popInputEvent(Input::InputEvent& input_event) {
+        if (input.events.empty()) return false;
         input_event = input.events.front();
-        input_event.id = input.event_id;
-
+        input_event.id = input.eventId;
         input.events.pop_front();
-
-        ++input.event_id;
-
+        ++input.eventId;
         return true;
     }
 
-    bool PlatformImpl::pop_window_event(WindowEvent& window_event)
-    {
-        if (window.events.empty())
-        {
-            return false;
-        }
-
+    bool PlatformImpl::popWindowEvent(Core::WindowEvent& window_event) {
+        if (window.events.empty()) return false;
         window_event = window.events.front();
-
         window.events.pop_front();
-
         return true;
     }
 
-    vec2 PlatformImpl::get_cursor_location() const
-    {
-        vec2_f64 cursor_location;
-
+    glm::vec2 PlatformImpl::getCursorLocation() const {
+        glm::dvec2 cursor_location;
         glfwGetCursorPos(window_ptr, &cursor_location.x, &cursor_location.y);
-
-        return static_cast<vec2>(cursor_location);
+        return static_cast<glm::vec2>(cursor_location);
     }
 
-    void PlatformImpl::set_cursor_location(const vec2& cursor_location) const
-    {
+    void PlatformImpl::setCursorLocation(const glm::vec2& cursor_location) const {
         glfwSetCursorPos(window_ptr, cursor_location.x, cursor_location.y);
     }
 
-    bool PlatformImpl::is_cursor_hidden() const
-    {
+    bool PlatformImpl::isCursorHidden() const {
         return glfwGetInputMode(window_ptr, GLFW_CURSOR) == GLFW_CURSOR_HIDDEN;
     }
 
-    void PlatformImpl::set_cursor_hidden(bool is_hidden) const
-    {
+    void PlatformImpl::setCursorHidden(bool is_hidden) const {
         glfwSetInputMode(window_ptr, GLFW_CURSOR, is_hidden ? GLFW_CURSOR_HIDDEN : GLFW_CURSOR_NORMAL);
     }
 
-    std::string PlatformImpl::get_window_title() const
-    {
+    std::string PlatformImpl::getWindowTitle() const {
         //TODO: implement this
         return std::string();
     }
 
-    void PlatformImpl::set_window_title(const std::string& window_title) const
-    {
+    void PlatformImpl::setWindowTitle(const std::string& window_title) const {
         glfwSetWindowTitle(window_ptr, window_title.c_str());
     }
 
-    vec2 PlatformImpl::get_window_size() const
-    {
-        vec2_i32 window_size;
-
+    glm::vec2 PlatformImpl::getWindowSize() const {
+        glm::ivec2 window_size;
         glfwGetWindowSize(window_ptr, &window_size.x, &window_size.y);
-
-        return static_cast<vec2>(window_size);
+        return static_cast<glm::vec2>(window_size);
     }
 
-    void Platform::set_window_size(const vec2& window_size) const
-    {
-        glfwSetWindowSize(window_ptr, static_cast<int>(window_size.x), static_cast<int>(window_size.y));
+    void PlatformImpl::setWindowSize(const glm::vec2& window_size) const {
+        glfwSetWindowSize(this->window_ptr, static_cast<int>(window_size.x), static_cast<int>(window_size.y));
     }
 
-    vec2 PlatformImpl::get_window_location() const
-    {
-        vec2_i32 window_location;
-
+    glm::vec2 PlatformImpl::getWindowLocation() const {
+        glm::ivec2 window_location;
         glfwGetWindowPos(window_ptr, &window_location.x, &window_location.y);
-
-        return static_cast<vec2>(window_location);
+        return static_cast<glm::vec2>(window_location);
     }
 
-    void PlatformImpl::set_window_location(const vec2& window_location) const
-    {
+    void PlatformImpl::setWindowLocation(const glm::vec2& window_location) const {
         glfwSetWindowPos(window_ptr, static_cast<int>(window_location.x), static_cast<int>(window_location.y));
     }
 
-    std::string PlatformImpl::get_clipboard_string() const
-    {
+    std::string PlatformImpl::getClipboardString() const {
         return glfwGetClipboardString(window_ptr);
     }
 
-    void PlatformImpl::set_clipboard_string(const std::string& clipboard_string) const
-    {
+    void PlatformImpl::setClipboardString(const std::string& clipboard_string) const {
         glfwSetClipboardString(window_ptr, clipboard_string.c_str());
     }
 }
