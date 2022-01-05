@@ -32,23 +32,23 @@ namespace Platform {
 
         //screen_size
         virtual glm::vec2 getScreenSize() const override;
-        virtual void setScreenSize(const glm::vec2& screen_size) const override;
+        virtual void setScreenSize(const glm::vec2& screenSize) const override;
 
         //viewport
         virtual Scene::Structure::Rectangle<float> getViewport() const override;
 
         //fullscreen
         virtual bool isFullscreen() const override;
-        virtual void setIsFullscreen(bool is_fullscreen) override;
+        virtual void setIsFullscreen(bool isFullscreen) override;
 
         //pop_input_event
-        virtual bool popInputEvent(Input::InputEvent& input_event) override;
+        virtual bool popInputEvent(Input::InputEvent& inputEvent) override;
 
-        virtual bool popWindowEvent(Core::WindowEvent& window_event) override;
+        virtual bool popWindowEvent(Core::WindowEvent& windowEvent) override;
 
         //cursor_location
         virtual glm::vec2 getCursorLocation() const override;
-        virtual void setCursorLocation(const glm::vec2& cursor_location) const override;
+        virtual void setCursorLocation(const glm::vec2& cursorLocation) const override;
 
         //is_cursor_hidden
         virtual bool isCursorHidden() const override;
@@ -56,15 +56,15 @@ namespace Platform {
 
         //window_title
         virtual std::string getWindowTitle() const override;
-        virtual void setWindowTitle(const std::string& window_title) const override;
+        virtual void setWindowTitle(const std::string& windowTitle) const override;
 
         //window_size
         virtual glm::vec2 getWindowSize() const override;
-        virtual void setWindowSize(const glm::vec2& window_size) const override;
+        virtual void setWindowSize(const glm::vec2& windowSize) const override;
 
         //window_location
         virtual glm::vec2 getWindowLocation() const override;
-        virtual void setWindowLocation(const glm::vec2& window_location) const override;
+        virtual void setWindowLocation(const glm::vec2& windowLocation) const override;
 
         //clipboard
         virtual std::string getClipboardString() const override;
@@ -73,8 +73,10 @@ namespace Platform {
         std::map<GLFWmonitor*, size_t> monitors;
 
     private:
-        GLFWwindow* window_ptr = nullptr;
-        glm::vec2 old_window_size;
+        GLFWwindow* windowPtr = nullptr;
+        glm::vec2 oldWindowSize;
+
+        void bindGLFWCallbacks();
 
         PlatformImpl(const PlatformImpl&) = delete;
         PlatformImpl& operator=(const PlatformImpl&) = delete;
