@@ -14,7 +14,7 @@
 #include "../input/inputEvent.hpp"
 #include "../core/windowEvent.hpp"
 #include "../scene/structure/rectangle.hpp"
-
+#include "platformImpl.hpp"
 
 namespace Platform {
     struct PlatformBase {

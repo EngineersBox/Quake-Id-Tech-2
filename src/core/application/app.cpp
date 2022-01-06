@@ -3,9 +3,8 @@
 
 #include "app.hpp"
 #include "../../platform/game/game.hpp"
-//#include "../../net/httpManager.hpp"
 
-//HACK: this doesn't seem like the right place to put this
+// NOTE: this doesn't seem like the right place to put this
 //#include "../../device/gpu/shaders/programs/modelShader.hpp"
 //#include "../../device/gpu/shaders/programs/guiImageShader.hpp"
 #include "../../device/gpu/shaders/programs/bitmapFontShader.hpp"
@@ -16,10 +15,8 @@
 #include "../../resources/resourceManager.hpp"
 //#include "stringManager.hpp"
 //#include "../../device/audio/audioSystem.hpp"
-//#include "stateSystem.hpp"
 #include "../../device/gpu/buffers/gpuBufferManager.hpp"
 #include "../../resources/image.hpp"
-#include "../engine.hpp"
 
 namespace Core::Application {
     App app;
@@ -28,7 +25,7 @@ namespace Core::Application {
 
         this->runTimePoint = std::chrono::system_clock::now();
     begin:
-        Core::engine->appRunStart();
+        Platform::platform.appRunStart();
 
 //        Device::GPU::Shaders::shaders.make<Device::GPU::Shaders::Programs::GUIImageShader>();
 //        Device::GPU::Shaders::shaders.make<Device::GPU::Shaders::Programs::ModelShader>();
@@ -68,14 +65,12 @@ namespace Core::Application {
         this->game->onRunEnd();
         this->game.reset();
 
-        states.purge();
-        states.tick(0); //TODO: hack to avoid exceptions throwing on close due to unreleased state objects, find a better solution later
         Resources::resources.purge();
-        strings.purge();
+//        strings.purge();
         Device::GPU::Shaders::shaders.purge();
         Device::GPU::Buffers::gpuBuffers.purge();
 
-        platform.appRunEnd();
+        Platform::platform.appRunEnd();
 
         if (this->isResetting) {
             this->isResetting = false;
@@ -118,26 +113,23 @@ namespace Core::Application {
     }
 
     void App::tick(float dt) {
-        platform.appTickStart(dt);
+        Platform::platform.appTickStart(dt);
         this->game->onTickStart(dt);
-        http.tick();
-        states.tick(dt);
-        audio.tick(dt);
+//        audio.tick(dt);
         this->game->onTickEnd(dt);
-        platform.appTickEnd(dt);
+        Platform::platform.appTickEnd(dt);
     }
 
     void App::render() {
-        const auto screenSize = platform.getScreenSize();
+        const auto screenSize = Platform::platform.getScreenSize();
 
         Device::GPU::gpu.viewports.push(Device::GPU::GpuViewportType(0.0f, 0.0f, screenSize.x, screenSize.y));
         Device::GPU::gpu.clear(Device::GPU::Gpu::CLEAR_FLAG_COLOR | Device::GPU::Gpu::CLEAR_FLAG_DEPTH);
 
-        platform.appRenderStart();
+        Platform::platform.appRenderStart();
         this->game->onRenderStart();
-        states.render();
         this->game->onRenderEnd();
-        platform.appRenderEnd();
+        Platform::platform.appRenderEnd();
 
         Device::GPU::gpu.viewports.pop();
     }
@@ -145,32 +137,24 @@ namespace Core::Application {
     void App::handleInputEvents() {
         Input::InputEvent inputEvent;
 
-        while (platform.popInputEvent(inputEvent)) {
+        while (Platform::platform.popInputEvent(inputEvent)) {
             if (inputEvent.type.device == Input::InputDeviceType::KEYBOARD &&
                 inputEvent.type.key == Input::Keyboard::Key::F11 &&
                 inputEvent.type.action == Input::InputActionType::PRESS) {
-                platform.setIsFullscreen(!platform.isFullscreen());
+                Platform::platform.setIsFullscreen(!Platform::platform.isFullscreen());
                 continue;
-            }
-            //TODO: a bit ugly; if we add more things that evaluate the result
-            // of on_input_event, we'll have a nested nightmare. is there a
-            // better way to write this?
-            // perhaps implement an input_handler interface.
-            if (!this->game->onInputEvent(inputEvent)) {
-                states.onInputEvent(inputEvent);
             }
         }
     }
 
     void App::handleWindowEvents() {
         Core::WindowEvent windowEvent;
-        while (platform.popWindowEvent(windowEvent)) {
+        while (Platform::platform.popWindowEvent(windowEvent)) {
             this->game->onWindowEvent(windowEvent);
-            states.onWindowEvent(windowEvent);
         }
     }
 
     bool App::shouldKeepRunning() {
-        return !this->isExiting && !this->isResetting && !platform.shouldExit();
+        return !this->isExiting && !this->isResetting && !Platform::platform.shouldExit();
     }
 }
