@@ -14,7 +14,6 @@
 #include "../input/inputEvent.hpp"
 #include "../core/windowEvent.hpp"
 #include "../scene/structure/rectangle.hpp"
-#include "platformImpl.hpp"
 
 namespace Platform {
     struct PlatformBase {
@@ -101,7 +100,8 @@ namespace Platform {
         [[nodiscard]] const Display& getDisplay(size_t index) const;
 
         std::array<std::unique_ptr<Display>, 8> displays;
+        glm::vec2 windowSize = glm::vec2(640, 480);
     };
 }
-
+#include "platformImpl.hpp"
 #endif //QUAKE_PLATFORM_HPP

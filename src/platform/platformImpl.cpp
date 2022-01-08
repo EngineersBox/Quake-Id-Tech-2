@@ -243,7 +243,7 @@ namespace Platform {
 
         glfwSetErrorCallback(onError);
         bindGLFWCallbacks();
-        this->windowPtr = glfwCreateWindow(1, 1, "naga", nullptr, nullptr);
+        this->windowPtr = glfwCreateWindow(this->windowSize.x, this->windowSize.y, "naga", nullptr, nullptr);
         if (this->windowPtr == nullptr) {
             throw std::runtime_error("Failed to create window!");
         }

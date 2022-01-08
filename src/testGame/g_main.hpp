@@ -11,3 +11,5 @@
 #include "../rendering/scene/bsp/bsp.hpp"
 #include "../core/application/app.hpp"
 #include "../platform/game/components/cameraComponent.cpp"
+#include "../platform/game/game.hpp"
+#include "../platform/state/state.hpp"
