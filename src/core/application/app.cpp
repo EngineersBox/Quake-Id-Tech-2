@@ -1,5 +1,4 @@
 #include <chrono>
-#include <boost/property_tree/json_parser.hpp>
 
 #include "app.hpp"
 #include "../../platform/game/game.hpp"

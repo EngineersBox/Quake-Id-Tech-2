@@ -1,32 +1,34 @@
 #include <boost/make_shared.hpp>
 
 #include <glm/ext.hpp>
+#include <algorithm>
 
 #include "../../device/gpu/opengl.hpp"
 #include "state.hpp"
 #include "../platform.hpp"
 #include "../../device/gpu/gpu.hpp"
-#include "../../gui/guiLayout.hpp"
+#include "../../gui/gui_layout.hpp"
 #include "../../core/windowEvent.hpp"
 
 
-namespace Platform {
+namespace Platform::State {
     State::State() {
         this->layout = boost::make_shared<GUILayout>();
         this->layout->set_dock_mode(GUIDockMode::FILL);
     }
 
     void State::tick(float dt) {
-        on_tick(dt);
+        onTick(dt);
 
         //TODO: get child nodes to tell layout about cleanliness, recursing every tick is expensive!
         std::function<bool(const boost::shared_ptr<GUINode> &)> isDirty = [&](
                 const boost::shared_ptr<GUINode> &node) -> bool {
             if (node->get_is_dirty()) return true;
-            for (auto &child: node->get_children()) {
-                if (is_dirty(child)) return true;
-            }
-            return false;
+            return std::any_of(
+                    node->get_children().begin(),
+                    node->get_children().end(),
+                    isDirty
+            )
         };
         if (isDirty(layout)) {
             this->layout->clean();
@@ -49,16 +51,16 @@ namespace Platform {
         Device::GPU::gpu.depth.popState();
     }
 
-    bool State::on_input_event(InputEvent &inputEvent) {
-        return this->layout->on_input_event(inputEvent);
+    bool State::onInputEvent(Input::InputEvent &input_event) {
+        return this->layout->on_input_event(input_event);
     }
 
-    void State::on_enter() {
+    void State::onEnter() {
         this->layout->set_bounds(GUINode::BoundsType(glm::vec2(), static_cast<glm::vec2>(platform.get_screen_size())));
     }
 
-    void State::on_window_event(Core::WindowEvent &windowEvent) {
-        if (windowEvent.type == Core::WindowEventType::RESIZE) {
+    void State::onWindowEvent(Core::WindowEvent &window_event) {
+        if (window_event.type == Core::WindowEventType::RESIZE) {
             this->layout->set_bounds(GUINode::BoundsType(glm::vec2(), static_cast<glm::vec2>(window_event.rectangle.size())));
         }
     }

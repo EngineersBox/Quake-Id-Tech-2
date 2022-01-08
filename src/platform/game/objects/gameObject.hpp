@@ -13,20 +13,25 @@
 #include <boost/python.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
-#include "pose.hpp"
+#include "../models/pose.hpp"
 #include "../components/cameraParams.hpp"
 
-namespace Platform::Game {
-    struct GameComponent;
+struct Scene;
+
+namespace Input {
     struct InputEvent;
+}
+
+namespace Platform::Game {
+    namespace Components {
+        struct GameComponent;
+    }
 
     namespace Objects {
-        struct Scene;
-
         struct GameObject : boost::enable_shared_from_this<GameObject> {
             GameObject();
 
-            Pose3 pose;
+            Models::Pose3<float> pose;
 
             virtual void onCreate() { }
             virtual void onDestroy() { }

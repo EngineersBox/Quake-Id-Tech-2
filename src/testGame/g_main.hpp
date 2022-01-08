@@ -10,5 +10,4 @@
 #include "../core/engine.hpp"
 #include "../rendering/scene/bsp/bsp.hpp"
 #include "../core/application/app.hpp"
-#include "../platform/game/game.hpp"
-#include "../platform/game/components/gameComponent.hpp"
+#include "../platform/game/components/cameraComponent.cpp"

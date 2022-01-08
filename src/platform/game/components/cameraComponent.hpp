@@ -7,9 +7,10 @@
 #include "../../../rendering/view/frustum.hpp"
 #include "cameraParams.hpp"
 #include "../../../device/gpu/gpuDefs.hpp"
+#include "gameComponent.hpp"
 
 namespace Platform::Game::Components {
-    struct CameraComponent {
+    struct CameraComponent : GameComponent {
         static const char* componentName;
 
         enum class ProjectionType {
