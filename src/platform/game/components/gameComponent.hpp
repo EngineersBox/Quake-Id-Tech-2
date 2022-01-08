@@ -8,31 +8,38 @@
 #include "gameComponentDefs.hpp"
 #include "cameraParams.hpp"
 
-namespace Platform::Game {
-    struct GameObject;
+namespace Input {
     struct InputEvent;
+}
 
-    struct GameComponent {
-        const boost::shared_ptr<GameObject>& getOwner() const { return this->owner; }
 
-        virtual std::string getComponentName() const { return ""; }
+namespace Platform::Game {
+    namespace Objects {
+        struct GameObject;
+    }
 
-        virtual void onCreate() { }
-        virtual void onDestroy() { }
-        virtual void onTick(float dt) { }
-        virtual void onRender(Components::CameraParameters& cameraParameters) { }
-        virtual bool onInputEvent(InputEvent& inputEvent) { return false; }
+    namespace Components {
+        struct GameComponent {
+            const boost::shared_ptr<Objects::GameObject>& getOwner() const { return this->owner; }
 
-        virtual ~GameComponent() = default;
+            virtual std::string getComponentName() const { return ""; }
 
-        boost::shared_ptr<GameObject> owner;
-    protected:
-        GameComponent() = default;
+            virtual void onCreate() { }
+            virtual void onDestroy() { }
+            virtual void onTick(float dt) { }
+            virtual void onRender(Components::CameraParameters& cameraParameters) { }
+            virtual bool onInputEvent(Input::InputEvent& inputEvent) { return false; }
 
-    private:
-        friend struct GameObject;
+            virtual ~GameComponent() = default;
 
-    };
+            boost::shared_ptr<Objects::GameObject> owner;
+        protected:
+            GameComponent() = default;
+
+        private:
+            friend struct GameObject;
+        };
+    }
 }
 
 #endif //QUAKE_GAMECOMPONENT_HPP

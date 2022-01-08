@@ -23,14 +23,14 @@ private:
 class FreeLookComponent : Platform::Game::Components::GameComponent {
 public:
     FreeLookComponent() {
-        this->pitch = 0.0
-        this->yaw = 0.0
-        this->speed = 20.0
-        this->localVelocityTarget = glm::vec3(0, 0, 0)
-        this->localVelocity = glm::vec3(0, 0, 0)
-        this->sensitivity = 0.125
-        this->pitchMin = -89.0
-        this->pitchMax = 89.0
+        this->pitch = 0.0;
+        this->yaw = 0.0;
+        this->speed = 20.0;
+        this->localVelocityTarget = glm::vec3(0, 0, 0);
+        this->localVelocity = glm::vec3(0, 0, 0);
+        this->sensitivity = 0.125;
+        this->pitchMin = -89.0;
+        this->pitchMax = 89.0;
     }
 
     void onInputEvent(Input::InputEvent e) {
@@ -53,8 +53,8 @@ private:
     float pitch;
     float yaw;
     float speed;
-    float localVelocityTarget;
-    float localVelocity;
+    glm::vec3 localVelocityTarget;
+    glm::vec3 localVelocity;
     float sensitivity;
     float pitchMin;
     float pitchMax;

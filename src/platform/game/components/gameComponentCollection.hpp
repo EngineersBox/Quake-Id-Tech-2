@@ -12,7 +12,7 @@
 #include "../../../utils/hash.hpp"
 #include "gameComponent.hpp"
 
-namespace Platform::Game {
+namespace Platform::Game::Components {
     struct GameComponentCollection {
         template<typename T, typename std::is_base_of<GameComponent, T>::value = true>
         void add(const boost::shared_ptr<T>& game_component) {
