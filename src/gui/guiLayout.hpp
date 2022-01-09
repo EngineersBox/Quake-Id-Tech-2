@@ -9,7 +9,7 @@
 #include <boost\weak_ptr.hpp>
 
 //naga
-#include "gui_node.hpp"
+#include "guiNode.hpp"
 #include "input_event.hpp"
 
 namespace naga

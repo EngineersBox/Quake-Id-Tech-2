@@ -1,50 +1,48 @@
 #pragma once
 
-//std
 #include <vector>
 #include <set>
-
-//boost
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <glm/glm.hpp>
 
-//naga
-#include "octtree.hpp"
-#include "game_object_collection.hpp"
-#include "trace_result.hpp"
+#include "../logic/structures/octtree.hpp"
+#include "../platform/game/objects/gameObjectCollection.hpp"
+#include "../rendering/query/trace_result.hpp"
 
-namespace naga
-{
-    struct GameObject;
-	struct FrameBuffer;
-	struct InputEvent;
-    struct PhysicsSimulation;
-    struct bsp;
+namespace Platform::Game::Components::Objects { struct GameObject; }
+namespace Device::GPU::Buffers { struct FrameBuffer; }
+namespace Input { struct InputEvent; }
+namespace Rendering::Scene { struct BSP; }
+// TODO: Implement the stuff below
+namespace Physics { struct PhysicsSimulation; }
+namespace Logic::Structures { struct OctTree; }
+namespace Rendering::Query { struct TraceResult; }
 
-	struct Scene : boost::enable_shared_from_this<Scene>
-    {
-		Scene();
+namespace Scene {
+    struct Scene : boost::enable_shared_from_this<Scene> {
+        Scene();
 
-		const std::vector<boost::shared_ptr<GameObject>>& get_game_objects() const { return game_objects; }
+        const std::vector<boost::shared_ptr<Platform::Game::Components::Objects::GameObject>>& get_game_objects() const { return this->gameObjects; }
 
-        void tick(f32 dt);
-		void render(const boost::shared_ptr<FrameBuffer>& frame_buffer, const boost::shared_ptr<GameObject>& camera) const;
-		void on_input_event(InputEvent& input_event);
+        void tick(float dt);
+        void render(const boost::shared_ptr<Device::GPU::Buffers::FrameBuffer>& frame_buffer, const boost::shared_ptr<Platform::Game::Components::Objects::GameObject>& camera) const;
+        void onInputEvent(Input::InputEvent& input_event);
 
-        boost::shared_ptr<GameObject> create_game_object();
-		void remove_game_object(const boost::shared_ptr<GameObject>& game_object);
+        boost::shared_ptr<Platform::Game::Components::Objects::GameObject> createGameObject();
+        void removeGameObject(const boost::shared_ptr<Platform::Game::Components::Objects::GameObject>& game_object);
 
-		const boost::shared_ptr<PhysicsSimulation>& get_physics() const { return physics; }
+        const boost::shared_ptr<Physics::PhysicsSimulation>& get_physics() const { return this->physics; }
 
-		TraceResult trace(const vec3& start, const vec3& end) const;
+        Rendering::Query::TraceResult trace(const glm::vec3& start, const glm::vec3& end) const;
 
     private:
-		friend struct GameObject;
+        friend struct GameObject;
 
-		std::vector<boost::shared_ptr<GameObject>> game_objects;
+        std::vector<boost::shared_ptr<Platform::Game::Components::Objects::GameObject>> gameObjects;
 
-		boost::shared_ptr<PhysicsSimulation> physics;
-        OctTree octtree;
-        boost::shared_ptr<bsp> bsp;
+        boost::shared_ptr<Physics::PhysicsSimulation> physics;
+        Logic::Structures::OctTree octtree;
+        boost::shared_ptr<Rendering::Scene::BSP> bsp;
     };
 }

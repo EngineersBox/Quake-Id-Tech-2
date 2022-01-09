@@ -1,6 +1,4 @@
-//
-// Created by Jack Kilrain on 2/1/22.
-//
+#pragma once
 
 #ifndef QUAKE_GAMEOBJECT_HPP
 #define QUAKE_GAMEOBJECT_HPP
@@ -16,11 +14,8 @@
 #include "../models/pose.hpp"
 #include "../components/cameraParams.hpp"
 
-struct Scene;
-
-namespace Input {
-    struct InputEvent;
-}
+namespace Scene { struct Scene; }
+namespace Input { struct InputEvent; }
 
 namespace Platform::Game {
     namespace Components {
@@ -35,13 +30,13 @@ namespace Platform::Game {
 
             virtual void onCreate() { }
             virtual void onDestroy() { }
-            virtual bool onInputEvent(InputEvent& input_event);
+            virtual bool onInputEvent(Input::InputEvent& input_event);
             virtual void onTick(float dt);
             virtual void render(Components::CameraParameters& camera_parameters);
 
-            template<typename T, typename std::enable_if_t<std::is_base_of<GameComponent, T>::value, bool>::type = true>
+            template<typename T, typename std::enable_if_t<std::is_base_of<Components::GameComponent, T>::value, bool>::type = true>
             boost::shared_ptr<T> addComponent(std::string& name, T& component) {
-                boost::shared_ptr<GameComponent> _component(component);
+                boost::shared_ptr<Components::GameComponent> _component(component);
                 _component->owner = shared_from_this();
                 if (this->components.contains(name)) {
                     throw std::runtime_error("Component with name " + name + " already exists");
@@ -52,24 +47,24 @@ namespace Platform::Game {
                 return _component;
             }
 
-            template<typename T, typename std::enable_if_t<std::is_base_of<GameComponent, T>::value, bool>::type = true>
+            template<typename T, typename std::enable_if_t<std::is_base_of<Components::GameComponent, T>::value, bool>::type = true>
             boost::shared_ptr<T> getComponent(std::string& name) const {
                 auto entry = this->components.find(name);
                 if (entry == this->components.end()) {
                     throw std::runtime_error("Component with name " + name + " does not exist");
                 }
-                return boost::static_pointer_cast<T, GameComponent>(entry->second);
+                return boost::static_pointer_cast<T, Components::GameComponent>(entry->second);
             }
 
-            const boost::shared_ptr<Scene>& getScene() const { return this->scene; }
+            const boost::shared_ptr<Scene::Scene>& getScene() const { return this->scene; }
             size_t getId() const { return this->id; }
 
         private:
             friend struct Scene;
 
             size_t id;
-            std::map<std::string, boost::shared_ptr<GameComponent>> components;
-            boost::shared_ptr<Scene> scene;
+            std::map<std::string, boost::shared_ptr<Components::GameComponent>> components;
+            boost::shared_ptr<Scene::Scene> scene;
         };
     }
 }

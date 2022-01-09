@@ -7,7 +7,7 @@
 #include "state.hpp"
 #include "../platform.hpp"
 #include "../../device/gpu/gpu.hpp"
-#include "../../gui/gui_layout.hpp"
+#include "../../gui/guiLayout.hpp"
 #include "../../core/windowEvent.hpp"
 
 

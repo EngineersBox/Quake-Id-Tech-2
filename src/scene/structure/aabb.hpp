@@ -12,6 +12,8 @@
 
 namespace Scene::Structure {
     template<typename Scalar, typename Enable = void>
+    struct Padding;
+    template<typename Scalar, typename Enable = void>
     struct AABB2;
 
     template<typename Scalar>
@@ -57,12 +59,25 @@ namespace Scene::Structure {
             return Type(this->min - rhs, this->max - rhs);
         }
 
+        Type operator-(const Padding<float>& rhs) const {
+            return Type(this->min - rhs, this->max - rhs);
+        }
+
         Type& operator-=(const VectorType& rhs) {
             *this = *this - rhs;
             return *this;
         }
 
+        Type& operator-=(const Padding<float>& rhs) {
+            *this = *this - rhs;
+            return *this;
+        }
+
         Type operator+(const VectorType& rhs) const {
+            return Type(this->min + rhs, this->max + rhs);
+        }
+
+        Type operator+(const Padding<float>& rhs) const {
             return Type(this->min + rhs, this->max + rhs);
         }
 

@@ -1,5 +1,5 @@
 // naga
-#include "gui_node.hpp"
+#include "guiNode.hpp"
 
 namespace naga
 {

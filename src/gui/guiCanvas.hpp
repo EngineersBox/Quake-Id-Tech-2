@@ -1,7 +1,7 @@
 #pragma once
 
 //naga
-#include "gui_node.hpp"
+#include "guiNode.hpp"
 #include "frame_buffer.hpp"
 #include "vertex_buffer.hpp"
 #include "index_buffer.hpp"

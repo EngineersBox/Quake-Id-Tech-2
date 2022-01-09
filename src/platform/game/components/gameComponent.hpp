@@ -12,7 +12,6 @@ namespace Input {
     struct InputEvent;
 }
 
-
 namespace Platform::Game {
     namespace Objects {
         struct GameObject;

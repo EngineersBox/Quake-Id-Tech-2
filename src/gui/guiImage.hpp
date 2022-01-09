@@ -2,10 +2,10 @@
 
 //naga
 #include "sprite.hpp"
-#include "gui_node.hpp"
+#include "guiNode.hpp"
 #include "vertex_buffer.hpp"
 #include "index_buffer.hpp"
-#include "gui_image_gpu_program.hpp"
+#include "guiImageShader.hpp"
 
 namespace naga
 {

@@ -8,9 +8,9 @@
 #include "texture.hpp"
 #include "sprite_set.hpp"
 #include "sprite.hpp"
-#include "gui_image.hpp"
+#include "guiImage.hpp"
 #include "gpu.hpp"
-#include "gui_image_gpu_program.hpp"
+#include "guiImageShader.hpp"
 #include "collision.hpp"
 #include "input_event.hpp"
 

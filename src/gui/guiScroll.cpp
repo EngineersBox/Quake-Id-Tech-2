@@ -1,5 +1,5 @@
 //naga
-#include "gui_scroll.hpp"
+#include "guiScroll.hpp"
 #include "input_event.hpp"
 #include "collision.hpp"
 

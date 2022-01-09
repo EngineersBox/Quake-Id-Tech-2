@@ -8,7 +8,7 @@
 #include <boost\shared_ptr.hpp>
 
 //naga
-#include "gui_node.hpp"
+#include "guiNode.hpp"
 #include "vertex_buffer.hpp"
 #include "index_buffer.hpp"
 

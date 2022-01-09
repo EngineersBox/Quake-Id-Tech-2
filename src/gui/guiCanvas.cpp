@@ -9,11 +9,11 @@
 #include <glm\ext.hpp>
 
 //naga
-#include "gui_canvas.hpp"
+#include "guiCanvas.hpp"
 #include "gpu.hpp"
 #include "gpu_program_mgr.hpp"
 #include "gpu_buffer_mgr.hpp"
-#include "gui_image_gpu_program.hpp"
+#include "guiImageShader.hpp"
 #include "blur_horizontal_gpu_program.hpp"
 #include "texture.hpp"
 #include "image.hpp"

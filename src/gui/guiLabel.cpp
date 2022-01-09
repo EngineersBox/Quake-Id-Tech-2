@@ -11,7 +11,7 @@
 
 //naga
 #include "bitmap_font.hpp"
-#include "gui_label.hpp"
+#include "guiLabel.hpp"
 #include "color.hpp"
 #include "collision.hpp"
 #include "input_event.hpp"
