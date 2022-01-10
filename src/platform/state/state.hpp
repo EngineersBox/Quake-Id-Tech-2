@@ -5,8 +5,11 @@
 
 #include <boost/enable_shared_from_this.hpp>
 
-namespace Platform::State {
+namespace GUI {
     struct GUILayout;
+}
+
+namespace Platform::State {
 
     struct State : public boost::enable_shared_from_this<State> {
         State();
@@ -27,9 +30,9 @@ namespace Platform::State {
         virtual void onStartInput() { }
         virtual void onTick(float dt) { }
 
-        const boost::shared_ptr<GUILayout>& getLayout() const { return this->layout; }
+        const boost::shared_ptr<GUI::GUILayout>& getLayout() const { return this->layout; }
 
     private:
-        boost::shared_ptr<GUILayout> layout;
+        boost::shared_ptr<GUI::GUILayout> layout;
     };
 }

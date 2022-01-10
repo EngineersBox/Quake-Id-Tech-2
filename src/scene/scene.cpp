@@ -1,106 +1,89 @@
 //naga
 #include "scene.hpp"
-#include "camera_component.hpp"
-#include "game_object.hpp"
-#include "gpu.hpp"
-#include "frame_buffer.hpp"
-#include "camera_params.hpp"
-#include "physics_simulation.hpp"
-#include "resource_manager.hpp"
-#include "bsp.hpp"
-#include "terrain_component.hpp"
-#include "image.hpp"
+#include "../platform/game/components/cameraComponent.hpp"
+#include "../platform/game/objects/gameObject.hpp"
+#include "../device/gpu/gpu.hpp"
+#include "../device/gpu/buffers/frameBuffer.hpp"
+#include "../platform/game/components/cameraParams.hpp"
+#include "../physics/physicsSimulation.hpp"
+#include "../resources/resourceManager.hpp"
+#include "../rendering/scene/bsp/bsp.hpp"
+#include "../patform/game/components/terrainComponent.hpp"
+#include "../resources/image.hpp"
 
-namespace naga
-{
-	Scene::Scene()
-    {
+namespace Scene {
+    Scene::Scene() {
         //bsp = resources.get<naga::bsp>(hash("dod_flash.bsp"));
-		physics = boost::make_shared<PhysicsSimulation>();
+        physics = boost::make_shared<Physics::PhysicsSimulation>();
     }
 
-	void Scene::render(const boost::shared_ptr<FrameBuffer>& frame_buffer, const boost::shared_ptr<GameObject>& camera) const
-    {
-        GpuViewportType viewport;
-        viewport.width = frame_buffer->get_size().x;
-        viewport.height = frame_buffer->get_size().y;
+    void Scene::render(const boost::shared_ptr<Device::GPU::Buffers::FrameBuffer>& frame_buffer, const boost::shared_ptr<Platform::Game::Objects::GameObject>& camera) const {
+        Device::GPU::GpuViewportType viewport;
+        viewport.width = frame_buffer->getSize().x;
+        viewport.height = frame_buffer->getSize().y;
 
-        gpu.viewports.push(viewport);
-        gpu.frame_buffers.push(frame_buffer);
+        Device::GPU::gpu.viewports.push(viewport);
+        Device::GPU::gpu.frameBufferManager.push(frame_buffer);
 
-        auto depth_state = gpu.depth.get_state();
-        depth_state.should_test = true;
-        depth_state.should_write_mask = true;
-        gpu.depth.push_state(depth_state);
+        Device::GPU::Gpu::Depth::State depth_state = Device::GPU::gpu.depth.getState();
+        depth_state.shouldTest = true;
+        depth_state.shouldWriteMask = true;
+        Device::GPU::gpu.depth.pushState(depth_state);
 
-        gpu.clear(Gpu::CLEAR_FLAG_COLOR | Gpu::CLEAR_FLAG_DEPTH | Gpu::CLEAR_FLAG_STENCIL);
+        Device::GPU::gpu.clear(Device::GPU::Gpu::CLEAR_FLAG_COLOR | Device::GPU::Gpu::CLEAR_FLAG_DEPTH | Device::GPU::Gpu::CLEAR_FLAG_STENCIL);
 
-		if (camera)
-		{
-			auto camera_comp = camera->get_component<CameraComponent>();
+        if (camera) {
+            boost::shared_ptr<Platform::Game::Components::CameraComponent> camera_comp = camera->getComponent<Platform::Game::Components::CameraComponent>("camera");
+            if (camera_comp) {
+                auto camera_parameters = camera_comp->getParameters(viewport);
 
-			if (camera_comp)
-			{
-				auto camera_parameters = camera_comp->get_parameters(viewport);
+                // TODO: this is inefficient, have components
+                // register themselves with the scene
+                // and only iterate over components that can
+                // be drawn
+                for (const boost::shared_ptr<Platform::Game::Objects::GameObject>& game_object : gameObjects) {
+                    game_object->render(camera_parameters);
+                }
+            }
+        }
 
-				// TODO: this is inefficient, have components
-				// register themselves with the scene
-				// and only iterate over components that can
-				// be drawn
-				for (auto& game_object : game_objects)
-				{
-					game_object->render(camera_parameters);
-				}
-			}
-		}
-
-        gpu.depth.pop_state();
-
-        gpu.frame_buffers.pop();
-        gpu.viewports.pop();
+        Device::GPU::gpu.depth.popState();
+        Device::GPU::gpu.frameBufferManager.pop();
+        Device::GPU::gpu.viewports.pop();
     }
 
-	void Scene::tick(f32 dt)
-    {
+    void Scene::tick(float dt) {
         physics->step(dt);
 
-        for (auto& game_object : game_objects)
-        {
-            game_object->on_tick(dt);
+        for (auto& game_object : gameObjects) {
+            game_object->onTick(dt);
         }
     }
 
-	void Scene::on_input_event(InputEvent& input_event)
-    {
-        for (auto& game_object : game_objects)
-        {
-            game_object->on_input_event(input_event);
+    void Scene::onInputEvent(Input::InputEvent& input_event) {
+        for (auto& game_object : gameObjects) {
+            game_object->onInputEvent(input_event);
         }
     }
 
-	boost::shared_ptr<GameObject> Scene::create_game_object()
-    {
-		auto game_object = boost::make_shared<GameObject>();
+    boost::shared_ptr<Platform::Game::Objects::GameObject> Scene::createGameObject() {
+        auto game_object = boost::make_shared<Platform::Game::Objects::GameObject>();
         game_object->scene = shared_from_this();
 
-        game_objects.emplace_back(game_object);
+        gameObjects.emplace_back(game_object);
 
         return game_object;
     }
 
 
-	void Scene::remove_game_object(const boost::shared_ptr<GameObject>& game_object)
-    {
-        if (game_object->get_scene() != shared_from_this())
-        {
-            throw std::exception("");
+    void Scene::removeGameObject(const boost::shared_ptr<Platform::Game::Objects::GameObject>& game_object) {
+        if (game_object->getScene() != shared_from_this()) {
+            throw std::runtime_error("");
         }
-	}
+    }
 
-	TraceResult Scene::trace(const vec3& start, const vec3& end) const
-	{
-		auto trace_result = physics->trace(start, end);
-
-		return trace_result;
-	}
+    Rendering::Query::TraceResult Scene::trace(const glm::vec3& start, const glm::vec3& end) const {
+        auto trace_result = physics->trace(start, end);
+        return trace_result;
+    }
 }

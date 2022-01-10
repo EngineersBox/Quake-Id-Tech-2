@@ -68,3 +68,7 @@ target_link_libraries(Quake PRIVATE Boost::filesystem Boost::iostreams)
 # libpng
 find_package(libpng CONFIG REQUIRED)
 target_link_libraries(Quake PRIVATE png_static)
+
+# Bullet3
+find_package(Bullet CONFIG REQUIRED)
+target_link_libraries(Quake PRIVATE LinearMath Bullet3Common BulletDynamics BulletSoftBody)

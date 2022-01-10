@@ -120,7 +120,7 @@ namespace GUI {
         bool hasFocus = false;
         GUISizeModes sizeModes;
         boost::shared_ptr<GUILayout> layout;
-     bool shouldWrapToContentWidth;
+        bool shouldWrapToContentWidth;
 
     protected:
         bool isDirty = true;

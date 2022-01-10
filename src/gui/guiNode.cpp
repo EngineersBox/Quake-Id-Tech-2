@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <glm/glm.hpp>
-#include <glm/ext.hpp>
 
 #include "../physics/collision.hpp"
 #include "../input/inputEvent.hpp"
@@ -10,7 +9,7 @@
 #include "../device/gpu/gpu.hpp"
 
 #if defined(DEBUG)
-#include "debug_renderer.hpp"
+#include "../debug/debugRenderer.hpp"
 #endif
 
 namespace GUI {
@@ -192,7 +191,7 @@ namespace GUI {
             node->size = node->bounds.size();
 
             Scene::Structure::AABB2<float> children_bounds = node->bounds - node->padding;
-            for (auto child : node->children) {
+            for (boost::shared_ptr<GUINode> child : node->children) {
                 cleanNode(child, children_bounds);
             }
 
@@ -221,7 +220,8 @@ namespace GUI {
         // pad the bounds passed into clean_node. this seems incorrect,
         // but will work for now.
         Scene::Structure::AABB2<float> paddedBounds = bounds + margin;
-        cleanNode(shared_from_this(), paddedBounds);
+        boost::shared_ptr<GUINode> shared_ref = shared_from_this();
+        cleanNode(shared_ref, paddedBounds);
     }
 
     void GUINode::tick(float dt) {
@@ -311,7 +311,9 @@ namespace GUI {
 
             Device::GPU::gpu.clear(Device::GPU::Gpu::CLEAR_FLAG_DEPTH | Device::GPU::Gpu::CLEAR_FLAG_STENCIL);
 
-            renderRectangle(world_matrix, view_projection_matrix, Scene::Structure::Rectangle<float>(bounds), glm::vec4(1), true);
+#if defined(DEBUG)
+            Debug::Renderer::renderRectangle(world_matrix, view_projection_matrix, Scene::Structure::Rectangle<float>(bounds), glm::vec4(1), true);
+#endif
 
             Device::GPU::gpu.color.popState();
             Device::GPU::gpu.depth.popState();
@@ -327,7 +329,7 @@ namespace GUI {
 
         //TODO: configure this to be enable-able in-game
 #if defined(DEBUG)
-        renderRectangle(world_matrix, view_projection_matrix, Rectangle(bounds), vec4(1.0f, 0.0f, 0.0f, 1.0f));
+        Debug::Renderer::renderRectangle(world_matrix, view_projection_matrix, Scene::Structure::Rectangle<float>(bounds), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
 
         onRenderBegin(world_matrix, view_projection_matrix);

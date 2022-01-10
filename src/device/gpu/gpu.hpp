@@ -176,7 +176,7 @@ namespace Device::GPU {
 			WeakType pop();
 
         private:
-			std::stack<SharedType> frameBuffers;
+            std::stack<SharedType> frameBuffers;
         } frameBufferManager;
 
         //textures

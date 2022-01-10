@@ -19,7 +19,7 @@ namespace Platform::Game {
 
     namespace Components {
         struct GameComponent {
-            const boost::shared_ptr<Objects::GameObject>& getOwner() const { return this->owner; }
+            [[nodiscard]] const boost::shared_ptr<Objects::GameObject>& getOwner() const { return this->owner; }
 
             virtual std::string getComponentName() const { return ""; }
 
