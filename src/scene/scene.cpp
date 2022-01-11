@@ -55,23 +55,21 @@ namespace Scene {
     void Scene::tick(float dt) {
         physics->step(dt);
 
-        for (auto& game_object : gameObjects) {
+        for (boost::shared_ptr<Platform::Game::Objects::GameObject>& game_object : gameObjects) {
             game_object->onTick(dt);
         }
     }
 
     void Scene::onInputEvent(Input::InputEvent& input_event) {
-        for (auto& game_object : gameObjects) {
+        for (boost::shared_ptr<Platform::Game::Objects::GameObject>& game_object : gameObjects) {
             game_object->onInputEvent(input_event);
         }
     }
 
     boost::shared_ptr<Platform::Game::Objects::GameObject> Scene::createGameObject() {
-        auto game_object = boost::make_shared<Platform::Game::Objects::GameObject>();
+        boost::shared_ptr<Platform::Game::Objects::GameObject> game_object = boost::make_shared<Platform::Game::Objects::GameObject>();
         game_object->scene = shared_from_this();
-
         gameObjects.emplace_back(game_object);
-
         return game_object;
     }
 
@@ -83,7 +81,6 @@ namespace Scene {
     }
 
     Rendering::Query::TraceResult Scene::trace(const glm::vec3& start, const glm::vec3& end) const {
-        auto trace_result = physics->trace(start, end);
-        return trace_result;
+        return physics->trace(start, end);;
     }
 }
