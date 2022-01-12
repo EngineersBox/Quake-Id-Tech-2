@@ -1,23 +1,21 @@
 #include "physicsSimulation.hpp"
-#include "rigidBodyComponent.hpp"
+//#include "rigidBodyComponent.hpp"
 
 #include <bullet/btBulletDynamicsCommon.h>
-#include <bullet/BulletCollision/BroadphaseCollision/btDispatcher.h>
-#include <bullet/BulletCollision/CollisionDispatch/btCollisionDispatcher.h>
-#include <bullet/bulletDynamics/featherstone/btMultiBodyDynamicsWorld.h>
-#include <bullet/bulletDynamics/featherstone/btMultiBodyConstraintSolver.h>
+#include <bullet/BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.h>
+#include <bullet/BulletDynamics/Featherstone/btMultiBodyConstraintSolver.h>
 
 namespace Physics {
     PhysicsSimulation::PhysicsSimulation() {
-        collisionConfiguration = new btDefaultCollisionConfiguration();
-        collisionDispatcher = new btCollisionDispatcher(collisionConfiguration);
-        broadphaseInterface = new btDbvtBroadphase();
-        multiBodyConstraintSolver = new btMultiBodyConstraintSolver();
-        dynamicsWorld = new btMultiBodyDynamicsWorld(
-                collisionDispatcher,
-                broadphaseInterface,
-                multiBodyConstraintSolver,
-                collisionConfiguration
+        this->collisionConfiguration = new btDefaultCollisionConfiguration();
+        this->collisionDispatcher = new btCollisionDispatcher(collisionConfiguration);
+        this->broadphaseInterface = new btDbvtBroadphase();
+        this->multiBodyConstraintSolver = new btMultiBodyConstraintSolver();
+        this->dynamicsWorld = new btMultiBodyDynamicsWorld(
+                this->collisionDispatcher,
+                this->broadphaseInterface,
+                this->multiBodyConstraintSolver,
+                this->collisionConfiguration
         );
     }
 

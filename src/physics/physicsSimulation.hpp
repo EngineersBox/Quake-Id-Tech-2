@@ -5,13 +5,14 @@
 
 #include <glm/glm.hpp>
 #include <boost/shared_ptr.hpp>
-#include <bullet/btBulletDynamicsCommon.h>
-#include <bullet/BulletCollision/BroadphaseCollision/btDispatcher.h>
-#include <bullet/BulletCollision/CollisionDispatch/btCollisionDispatcher.h>
-#include <bullet/bulletDynamics/featherstone/btMultiBodyDynamicsWorld.h>
-#include <bullet/bulletDynamics/featherstone/btMultiBodyConstraintSolver.h>
 
 #include "../rendering/query/traceResult.hpp"
+
+class btMultiBodyDynamicsWorld;
+struct btDbvtBroadphase;
+class btCollisionDispatcher;
+class btDefaultCollisionConfiguration;
+class btMultiBodyConstraintSolver;
 
 namespace Physics {
     struct RigidBodyComponent;
