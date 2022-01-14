@@ -9,7 +9,7 @@
 #include "../rendering/query/traceResult.hpp"
 
 class btMultiBodyDynamicsWorld;
-struct btDbvtBroadphase;
+class btDbvtBroadphase;
 class btCollisionDispatcher;
 class btDefaultCollisionConfiguration;
 class btMultiBodyConstraintSolver;
@@ -31,11 +31,11 @@ namespace Physics {
         [[nodiscard]] Rendering::Query::TraceResult trace(const glm::vec3& start, const glm::vec3& end) const;
 
     private:
-        btMultiBodyDynamicsWorld* dynamicsWorld;
         btDbvtBroadphase* broadphaseInterface;
         btCollisionDispatcher* collisionDispatcher;
-        btDefaultCollisionConfiguration* collisionConfiguration;
         btMultiBodyConstraintSolver* multiBodyConstraintSolver;
+        btDefaultCollisionConfiguration* collisionConfiguration;
+        btMultiBodyDynamicsWorld* dynamicsWorld;
     };
 }
 

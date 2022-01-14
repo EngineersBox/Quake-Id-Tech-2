@@ -2,13 +2,14 @@
 //#include "rigidBodyComponent.hpp"
 
 #include <bullet/btBulletDynamicsCommon.h>
+#include <bullet/btBulletCollisionCommon.h>
 #include <bullet/BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.h>
 #include <bullet/BulletDynamics/Featherstone/btMultiBodyConstraintSolver.h>
 
 namespace Physics {
     PhysicsSimulation::PhysicsSimulation() {
         this->collisionConfiguration = new btDefaultCollisionConfiguration();
-        this->collisionDispatcher = new btCollisionDispatcher(collisionConfiguration);
+        this->collisionDispatcher = new btCollisionDispatcher(this->collisionConfiguration);
         this->broadphaseInterface = new btDbvtBroadphase();
         this->multiBodyConstraintSolver = new btMultiBodyConstraintSolver();
         this->dynamicsWorld = new btMultiBodyDynamicsWorld(
@@ -55,8 +56,8 @@ namespace Physics {
 
     Rendering::Query::TraceResult PhysicsSimulation::trace(const glm::vec3& start, const glm::vec3& end) const {
         Rendering::Query::TraceResult trace_result;
-        auto rayFromWorld = btVector3(start.x, start.y, start.z);
-        auto rayToWorld = btVector3(end.x, end.y, end.z);
+        const btVector3 rayFromWorld = btVector3(start.x, start.y, start.z);
+        const btVector3 rayToWorld = btVector3(end.x, end.y, end.z);
 
         btCollisionWorld::ClosestRayResultCallback rayResultCallback(rayFromWorld, rayToWorld);
         dynamicsWorld->rayTest(rayFromWorld, rayToWorld, rayResultCallback);

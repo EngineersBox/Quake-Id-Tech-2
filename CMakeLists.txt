@@ -71,4 +71,5 @@ target_link_libraries(Quake PRIVATE png_static)
 
 # Bullet3
 find_package(Bullet CONFIG REQUIRED)
-target_link_libraries(Quake PRIVATE LinearMath Bullet3Common BulletDynamics BulletSoftBody)
+target_link_libraries(Quake PRIVATE BulletSoftBody BulletDynamics BulletCollision Bullet3Common LinearMath)
+target_link_directories(Quake PRIVATE ${BULLET_LIBRARY_DIRS})

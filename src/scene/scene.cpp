@@ -81,6 +81,6 @@ namespace Scene {
     }
 
     Rendering::Query::TraceResult Scene::trace(const glm::vec3& start, const glm::vec3& end) const {
-        return physics->trace(start, end);;
+        return physics->trace(start, end);
     }
 }

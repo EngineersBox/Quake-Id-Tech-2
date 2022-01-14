@@ -13,3 +13,5 @@
 #include "../platform/game/components/cameraComponent.cpp"
 #include "../platform/game/game.hpp"
 #include "../platform/state/state.hpp"
+#include "../physics/physicsSimulation.hpp"
+#include "../physics/physicsSimulation.cpp"

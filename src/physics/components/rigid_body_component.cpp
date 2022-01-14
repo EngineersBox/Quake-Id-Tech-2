@@ -1,11 +1,11 @@
 //naga
 #include "rigid_body_component.hpp"
-#include "game_object.hpp"
+#include "gameObject.hpp"
 #include "scene.hpp"
-#include "physics_simulation.hpp"
+#include "physicsSimulation.hpp"
 
 //bullet
-#include "btBulletDynamicsCommon.h"
+#include <bullet/btBulletDynamicsCommon.h>
 
 namespace naga
 {
