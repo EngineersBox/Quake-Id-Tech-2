@@ -87,11 +87,5 @@ private:
 int main(int, char**) {
     Core::Logger::init();
 
-    Core::Engine* engine = new Core::Engine("Test Game");
-    engine->init();
-    for (;;) {
-        engine->tick();
-    }
-
     return 0;
 }

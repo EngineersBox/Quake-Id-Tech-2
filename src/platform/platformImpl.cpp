@@ -177,7 +177,7 @@ namespace Platform {
             return;
         }
 
-        std::unique_ptr<PlatformImpl::Display>* displayItr = platform.displays.begin();
+        auto displayItr = platform.displays.begin();
 
         for (; displayItr != platform.displays.end(); ++displayItr) {
             if (*displayItr == nullptr) break;
@@ -207,7 +207,7 @@ namespace Platform {
         const GLFWvidmode* videoModePtr = glfwGetVideoModes(monitor, &videoModeCount);
 
         for (auto i = 0; i < videoModeCount; ++i){
-            std::__wrap_iter<Platform::PlatformBase::Display::VideoMode*> videoModeItr = display->videoModes.emplace(display->videoModes.end());
+            auto videoModeItr = display->videoModes.emplace(display->videoModes.end());
             videoModeItr->width = videoModePtr->width;
             videoModeItr->height = videoModePtr->height;
             videoModeItr->bitDepth = videoModePtr->blueBits + videoModePtr->greenBits + videoModePtr->redBits;

@@ -2,7 +2,6 @@
 //#include "rigidBodyComponent.hpp"
 
 #include <bullet/btBulletDynamicsCommon.h>
-#include <bullet/btBulletCollisionCommon.h>
 #include <bullet/BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.h>
 #include <bullet/BulletDynamics/Featherstone/btMultiBodyConstraintSolver.h>
 

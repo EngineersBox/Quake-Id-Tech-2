@@ -8,7 +8,7 @@
 #include "../physics/physicsSimulation.hpp"
 #include "../resources/resourceManager.hpp"
 #include "../rendering/scene/bsp/bsp.hpp"
-#include "../patform/game/components/terrainComponent.hpp"
+//#include "../patform/game/components/terrainComponent.hpp"
 #include "../resources/image.hpp"
 
 namespace Scene {

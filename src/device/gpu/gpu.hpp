@@ -159,7 +159,7 @@ namespace Device::GPU {
         //programs
         struct ProgramManager {
             typedef boost::weak_ptr<Shaders::Shader> WeakType;
-            [[nodiscard]] boost::optional<WeakType> top() const;
+            boost::optional<WeakType> top() const;
             void push(const WeakType& data);
             WeakType pop();
 
@@ -171,7 +171,7 @@ namespace Device::GPU {
         struct FrameBufferManager {
 			typedef boost::weak_ptr<Buffers::FrameBuffer> WeakType;
 			typedef boost::shared_ptr<Buffers::FrameBuffer> SharedType;
-            [[nodiscard]] boost::optional<WeakType> top() const;
+            boost::optional<WeakType> top() const;
 			void push(const SharedType& frame_buffer);
 			WeakType pop();
 
