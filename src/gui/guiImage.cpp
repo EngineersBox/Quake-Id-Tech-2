@@ -109,7 +109,7 @@ namespace naga
         {
             const auto& region = sprite->get_region();
 
-            auto blend_state = gpu.blend.get_state();
+            auto blend_state = gpu.blend.getState();
             blend_state.is_enabled = true;
             blend_state.src_factor = Gpu::BlendFactor::SRC_ALPHA;
             blend_state.dst_factor = Gpu::BlendFactor::ONE_MINUS_SRC_ALPHA;

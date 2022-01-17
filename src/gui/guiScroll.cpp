@@ -107,7 +107,7 @@ namespace naga
 
         for (const auto& child : get_children())
         {
-            const auto child_bounds = child->get_bounds();
+            const auto child_bounds = child->getBounds();
 
             scroll_extents.min = glm::min(scroll_extents.min, child_bounds.min - bounds.min);
             scroll_extents.max = glm::max(scroll_extents.max, child_bounds.max - bounds.max);

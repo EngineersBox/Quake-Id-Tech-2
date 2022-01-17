@@ -16,8 +16,8 @@ namespace Scene::Structure {
     template<typename Scalar, typename Enable = void>
     struct AABB2;
 
-    template<typename Scalar>
-    struct AABB2<Scalar, typename std::enable_if<std::is_arithmetic<Scalar>::value>::type>: Range<glm::tvec2<Scalar>> {
+    template<typename Scalar> requires std::is_arithmetic_v<Scalar>
+    struct AABB2<Scalar>: Range<glm::tvec2<Scalar>> {
         typedef Scalar ScalarType;
         typedef AABB2<ScalarType> Type;
         typedef glm::tvec2<ScalarType> VectorType;
@@ -46,7 +46,7 @@ namespace Scene::Structure {
             return (this->max - this->min) / ScalarType(2);
         }
 
-        std::array<VectorType, 4> get_corners() const {
+        std::array<VectorType, 4> getCorners() const {
             return {
                 this->min,
                 VectorType(this->min.x, this->max.y),
@@ -129,8 +129,8 @@ namespace Scene::Structure {
     template<typename T, typename Enable = void>
     struct AABB3;
 
-    template<typename Scalar>
-    struct AABB3<Scalar, typename std::enable_if<std::is_arithmetic<Scalar>::value>::type> : Range<glm::tvec3<Scalar>> {
+    template<typename Scalar> requires std::is_arithmetic_v<Scalar>
+    struct AABB3<Scalar> : Range<glm::tvec3<Scalar>> {
         typedef Scalar ScalarType;
         typedef AABB3<ScalarType> Type;
         typedef Plane3<float> PlaneType;
@@ -167,7 +167,7 @@ namespace Scene::Structure {
             return (this->max - this->min) / ScalarType(2);
         }
 
-        [[nodiscard]] std::array<PlaneType, 6> get_planes() const {
+        [[nodiscard]] std::array<PlaneType, 6> getPlanes() const {
             return {
                 { this->min, glm::vec3(1,0,0) }, // RIGHT
                 { this->max, glm::vec3(-1,0,0) }, // LEFT
@@ -178,7 +178,7 @@ namespace Scene::Structure {
             };
         }
 
-        std::array<VectorType, 8> get_corners() const {
+        std::array<VectorType, 8> getCorners() const {
             return{
                 this->min,
                 VectorType(this->min.x, this->min.y, this->max.z),
@@ -277,8 +277,7 @@ namespace Scene::Structure {
             aabb.min = VectorType(std::numeric_limits<ScalarType>::max());
             aabb.max = VectorType(-std::numeric_limits<ScalarType>::max());
 
-            for (const auto& corner : get_corners())
-            {
+            for (const auto& corner : getCorners()) {
                 auto corner_transformed = glm::tvec4<ScalarType>(corner, 1);
                 corner_transformed = rhs * corner_transformed;
 

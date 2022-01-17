@@ -1,9 +1,10 @@
 ﻿#include "g_main.hpp"
 #include "../platform/state/stateSystem.hpp"
+#include "../scene/scene.hpp"
 
 #define GL_SILENCE_DEPRECATION
 
-class TestState : Platform::State::State {
+class TestState : public Platform::State::State, boost::enable_shared_from_this<TestState> {
 public:
     TestState(): Platform::State::State() {
         this->isTracing = false;
@@ -16,11 +17,11 @@ public:
         Platform::platform.setCursorHidden(true);
     }
 private:
-    typedef Platform::State::State super;
+    using super = Platform::State::State;
     bool isTracing;
 };
 
-class FreeLookComponent : Platform::Game::Components::GameComponent {
+class FreeLookComponent : public Platform::Game::Components::GameComponent {
 public:
     FreeLookComponent() {
         this->pitch = 0.0;
@@ -59,29 +60,31 @@ private:
     float pitchMin;
     float pitchMax;
 
-    typedef Platform::Game::Components::GameComponent super;
+    using super = Platform::Game::Components::GameComponent;
 };
 
-class TestGame : Platform::Game::Game {
+class TestGame : public Platform::Game::Game {
 public:
     void onRunStart() {
         Platform::platform.windowSize = glm::vec2(1280, 720);
-        Platform::State::states.push(TestState(), Platform::State::STATE_FLAG_ALL);
+        Platform::State::states.push(boost::make_shared<TestState>(), Platform::State::STATE_FLAG_ALL);
 
         this->scene = Scene::Scene();
         this->camera = this->scene.createGameObject();
-        Platform::Game::Components::CameraComponent cameraComponent = this->camera.addComponent(
+        auto platformCamera = Platform::Game::Components::CameraComponent();
+        boost::shared_ptr<Platform::Game::Components::CameraComponent> cameraComponent = this->camera->addComponent(
                 "camera",
-                Platform::Game::Components::CameraComponent()
+                platformCamera
         );
-        FreeLookComponent freeLookComponent = this->camera.addComponent(
+        auto freelook = FreeLookComponent();
+        boost::shared_ptr<FreeLookComponent> freeLookComponent = this->camera->addComponent(
                 "freeLook",
-                FreeLookComponent()
+                freelook
         );
     }
 private:
     Scene::Scene scene;
-    Platform::Game::Objects::GameObject camera;
+    boost::shared_ptr<Platform::Game::Objects::GameObject> camera;
 };
 
 int main(int, char**) {

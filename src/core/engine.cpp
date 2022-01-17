@@ -108,11 +108,11 @@ namespace Core {
         const GLFWvidmode* videoModePtr = glfwGetVideoModes(monitor, &videoModeCount);
 
         for (int i = 0; i < videoModeCount; ++i) {
-            auto video_mode_itr = display->videoModes.emplace(display->videoModes.end());
-            video_mode_itr->width = videoModePtr->width;
-            video_mode_itr->height = videoModePtr->height;
-            video_mode_itr->bitDepth = videoModePtr->blueBits + videoModePtr->greenBits + videoModePtr->redBits;
-            video_mode_itr->refreshRate = videoModePtr->refreshRate;
+            auto videoModeItr = display->videoModes.emplace(display->videoModes.end());
+            videoModeItr->width = videoModePtr->width;
+            videoModeItr->height = videoModePtr->height;
+            videoModeItr->bitDepth = videoModePtr->blueBits + videoModePtr->greenBits + videoModePtr->redBits;
+            videoModeItr->refreshRate = videoModePtr->refreshRate;
             ++videoModePtr;
         }
     }

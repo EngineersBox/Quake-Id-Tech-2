@@ -1,20 +1,16 @@
-//naga
 #include "scene.hpp"
+
 #include "../platform/game/components/cameraComponent.hpp"
 #include "../platform/game/objects/gameObject.hpp"
 #include "../device/gpu/gpu.hpp"
-#include "../device/gpu/buffers/frameBuffer.hpp"
-#include "../platform/game/components/cameraParams.hpp"
 #include "../physics/physicsSimulation.hpp"
 #include "../resources/resourceManager.hpp"
 #include "../rendering/scene/bsp/bsp.hpp"
-//#include "../patform/game/components/terrainComponent.hpp"
-#include "../resources/image.hpp"
 
 namespace Scene {
     Scene::Scene() {
-        //bsp = resources.get<naga::bsp>(hash("dod_flash.bsp"));
-        physics = boost::make_shared<Physics::PhysicsSimulation>();
+        this->octtree = Logic::Structures::OctTree<float>();
+        this->physics = boost::make_shared<Physics::PhysicsSimulation>();
     }
 
     void Scene::render(const boost::shared_ptr<Device::GPU::Buffers::FrameBuffer>& frame_buffer, const boost::shared_ptr<Platform::Game::Objects::GameObject>& camera) const {

@@ -22,7 +22,7 @@ namespace Scene {
     struct Scene : boost::enable_shared_from_this<Scene> {
         Scene();
 
-        const std::vector<boost::shared_ptr<Platform::Game::Objects::GameObject>>& get_game_objects() const { return this->gameObjects; }
+        const std::vector<boost::shared_ptr<Platform::Game::Objects::GameObject>>& getGameObjects() const { return this->gameObjects; }
 
         void tick(float dt);
         void render(const boost::shared_ptr<Device::GPU::Buffers::FrameBuffer>& frame_buffer, const boost::shared_ptr<Platform::Game::Objects::GameObject>& camera) const;

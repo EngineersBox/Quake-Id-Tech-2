@@ -4,6 +4,7 @@
 #define QUAKE_GAMECOMPONENT_HPP
 
 #include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
 
 #include "gameComponentDefs.hpp"
 #include "cameraParams.hpp"
@@ -18,7 +19,7 @@ namespace Platform::Game {
     }
 
     namespace Components {
-        struct GameComponent {
+        struct GameComponent: boost::enable_shared_from_this<GameComponent> {
             [[nodiscard]] const boost::shared_ptr<Objects::GameObject>& getOwner() const { return this->owner; }
 
             virtual std::string getComponentName() const { return ""; }

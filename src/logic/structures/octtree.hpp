@@ -13,35 +13,34 @@ namespace Logic {
         template<typename ScalarType, typename Enable = void>
         struct OctTree;
 
-        template<typename ScalarType>
-        struct OctTree<ScalarType, typename std::enable_if<std::is_floating_point<ScalarType>::value>::type> {
-            typedef Scene::Structure::AABB3<ScalarType> BoundsType;
-            typedef OctTree<ScalarType> Type;
-            typedef std::array<boost::shared_ptr<Type>, 8> ChildrenType;
+        template<typename ScalarType> requires std::is_floating_point_v<ScalarType>
+        struct OctTree<ScalarType> {
+            using BoundsType = Scene::Structure::AABB3<ScalarType>;
+            using Type = OctTree<ScalarType>;
+            using ChildrenType = std::array<boost::shared_ptr<Type>, 8>;
 
-            OctTree(ScalarType size = 2048) :
-                    bounds(BoundsType::VectorType(-size / 2), BoundsType::VectorType(size / 2)) {}
+            OctTree(ScalarType size = 2048) : bounds(glm::tvec3<ScalarType>(-size / 2), glm::tvec3<ScalarType>(size / 2)) {}
 
             OctTree(const BoundsType& bounds) :
                     bounds(bounds) {}
 
             void grow() {
-                const auto child_bounds = BoundsType(bounds.min, bounds.center());
-                const auto child_bounds_size = child_bounds.size();
+                const auto boundsType = BoundsType(bounds.min, bounds.center());
+                const auto childBoundsSize = boundsType.size();
 
-                children[0] = boost::make_shared<Type>(child_bounds);
-                children[1] = boost::make_shared<Type>(child_bounds + BoundsType::VectorType(child_bounds_size.x, 0, 0));
-                children[2] = boost::make_shared<Type>(child_bounds + BoundsType::VectorType(0, child_bounds_size.y, 0));
-                children[3] = boost::make_shared<Type>(child_bounds + BoundsType::VectorType(child_bounds_size.x, child_bounds_size.y, 0));
-                children[4] = boost::make_shared<Type>(child_bounds + BoundsType::VectorType(0, 0, child_bounds_size.z));
-                children[5] = boost::make_shared<Type>(child_bounds + BoundsType::VectorType(child_bounds_size.x, 0, child_bounds_size.z));
-                children[6] = boost::make_shared<Type>(child_bounds + BoundsType::VectorType(0, child_bounds_size.y, child_bounds_size.z));
-                children[7] = boost::make_shared<Type>(child_bounds + child_bounds_size);
+                children[0] = boost::make_shared<Type>(boundsType);
+                children[1] = boost::make_shared<Type>(boundsType + BoundsType::VectorType(childBoundsSize.x, 0, 0));
+                children[2] = boost::make_shared<Type>(boundsType + BoundsType::VectorType(0, childBoundsSize.y, 0));
+                children[3] = boost::make_shared<Type>(boundsType + BoundsType::VectorType(childBoundsSize.x, childBoundsSize.y, 0));
+                children[4] = boost::make_shared<Type>(boundsType + BoundsType::VectorType(0, 0, childBoundsSize.z));
+                children[5] = boost::make_shared<Type>(boundsType + BoundsType::VectorType(childBoundsSize.x, 0, childBoundsSize.z));
+                children[6] = boost::make_shared<Type>(boundsType + BoundsType::VectorType(0, childBoundsSize.y, childBoundsSize.z));
+                children[7] = boost::make_shared<Type>(boundsType + childBoundsSize);
             }
 
-            const BoundsType& get_bounds() const { return bounds; }
-            const ChildrenType& get_children() const { return children; }
-            bool is_leaf() const { return children[0] == nullptr; }
+            const BoundsType& getBounds() const { return this->bounds; }
+            const ChildrenType& getChildren() const { return this->children; }
+            bool isLeaf() const { return this->children[0] == nullptr; }
 
         private:
             BoundsType bounds;

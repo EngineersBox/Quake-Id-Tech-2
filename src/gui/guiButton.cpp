@@ -4,71 +4,68 @@
 #include "../input/inputEvent.hpp"
 
 namespace GUI {
-    bool GUIButton::onInputEventBegin(Input::InputEvent& input_event) {
-        if (input_event.type.device == Input::InputDeviceType::MOUSE) {
-            auto isContained = Physics::contains(getBounds(), input_event.mouse.location());
+    bool GUIButton::handlePress(bool isContained) {
+        if (!isContained) return false;
+        this->state = State::PRESSED;
+        if (onStateChanged) {
+            auto thisPtr = shared_from_this();
+            onStateChanged(thisPtr);
+        }
+        return true;
+    }
 
-            switch (input_event.type.action) {
-                case Input::InputActionType::PRESS:
-                    if (!isContained) {
-                        break;
-                    }
-                    state = State::PRESSED;
-                    if (onStateChanged) {
-                        auto thisPtr = shared_from_this();
-                        onStateChanged(thisPtr);
-                    }
-                    return true;
-                    break;
-                case Input::InputActionType::RELEASE:
-                    if (!isContained || state != State::PRESSED) {
-                        break;
-                    }
-                    state = State::HOVER;
-                    if (onStateChanged) {
-                        auto thisPtr = shared_from_this();
-                        onStateChanged(thisPtr);
-                    }
-                    if (onPress) {
-                        auto thisPtr = shared_from_this();
-                        onPress(thisPtr);
-                    }
-                    return true;
-                    break;
-                case Input::InputActionType::MOVE:
-                    switch (state) {
-                        case State::IDLE:
-                            if (!isContained) {
-                                break;
-                            }
-                            state = State::HOVER;
-                            if (onStateChanged) {
-                                auto thisPtr = shared_from_this();
-                                onStateChanged(thisPtr);
-                            }
+    bool GUIButton::handleRelease(bool isContained) {
+        if (!isContained || this->state != State::PRESSED) return false;
+        this->state = State::HOVER;
+        if (onStateChanged) {
+            auto thisPtr = shared_from_this();
+            onStateChanged(thisPtr);
+        }
+        if (onPress) {
+            auto thisPtr = shared_from_this();
+            onPress(thisPtr);
+        }
+        return true;
+    }
 
-                            return true;
-                            break;
-                        case State::HOVER:
-                        case State::PRESSED:
-                            if (!isContained) {
-                                break;
-                            }
-                            state = State::IDLE;
-                            if (onStateChanged) {
-                                auto thisPtr = shared_from_this();
-                                onStateChanged(thisPtr);
-                            }
-                            return true;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    break;
-            }
+    bool GUIButton::handleMove(bool isContained) {
+        switch (state) {
+            case State::IDLE:
+                if (!isContained) break;
+                state = State::HOVER;
+                if (onStateChanged) {
+                    auto thisPtr = shared_from_this();
+                    onStateChanged(thisPtr);
+                }
+                return true;
+            case State::HOVER:
+            case State::PRESSED:
+                if (!isContained) break;
+                state = State::IDLE;
+                if (onStateChanged) {
+                    auto thisPtr = shared_from_this();
+                    onStateChanged(thisPtr);
+                }
+                return true;
         }
         return false;
+    }
+
+    bool GUIButton::onInputEventBegin(Input::InputEvent& input_event) {
+        if (input_event.type.device != Input::InputDeviceType::MOUSE) {
+            return false;
+        }
+        bool isContained = Physics::contains(getBounds(), input_event.mouse.location());
+
+        switch (input_event.type.action) {
+            case Input::InputActionType::PRESS:
+                return handlePress(isContained);
+            case Input::InputActionType::RELEASE:
+                return handleRelease(isContained);
+            case Input::InputActionType::MOVE:
+                return handleMove(isContained);
+            default:
+                break;
+        }
     }
 }

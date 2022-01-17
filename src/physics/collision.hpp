@@ -209,7 +209,7 @@ namespace Physics {
             AABBType inCount = AABBType::CORNER_COUNT;
             bool isPointInside = false;
 
-            for (const auto& corner : aabb.get_corners()) {
+            for (const auto& corner : aabb.getCorners()) {
                 if (distanceToPlane(plane, corner) < 0) {
                     isPointInside = true;
                     --inCount;
