@@ -89,11 +89,11 @@ namespace Core::Application {
         int width, height;
         std::unique_ptr<unsigned char[]> pixels = Device::GPU::gpu.getBackbufferPixels(width, height);
         boost::shared_ptr<Resources::Image> image = boost::make_shared<Resources::Image>(
-                Resources::Image::SizeType(width, height),
-                8,
-                Device::GPU::ColorType::RGBA,
-                pixels.get(),
-                width * height * 4
+            Resources::Image::SizeType(width, height),
+            8,
+            Device::GPU::ColorType::RGBA,
+            pixels.get(),
+            width * height * 4
         );
         const char* filename = "test.png";
         std::ofstream ofstream(filename, std::ios_base::binary);

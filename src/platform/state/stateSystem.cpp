@@ -22,12 +22,12 @@ namespace Platform::State {
         //process stack operations
         while (!operations.empty()) {
             const Operation& operation = operations.front();
-            std::__list_iterator<StateSystem::Node, void *> nodesItr = std::find_if(
-                    nodes.begin(),
-                    nodes.end(),
-                    [&](const Node& node) -> bool {
-                        return node.state == operation.state;
-                    }
+            auto nodesItr = std::find_if(
+                nodes.begin(),
+                nodes.end(),
+                [&](const Node& node) -> bool {
+                    return node.state == operation.state;
+                }
             );
 
             switch (operation.type) {
@@ -78,7 +78,7 @@ namespace Platform::State {
             operations.pop_front();
         }
 
-        for (boost::shared_ptr<State>& state : pushedStates) {
+        for (boost::shared_ptr<State> const& state : pushedStates) {
             state->onEnter();
         }
 
@@ -124,7 +124,7 @@ namespace Platform::State {
             }
         }
 
-        for (std::pair<boost::shared_ptr<State>, Platform::State::StateFlagsType>& state : poppedStates) {
+        for (std::pair<boost::shared_ptr<State>, Platform::State::StateFlagsType> const& state : poppedStates) {
             if ((state.second & STATE_FLAG_RENDER) == STATE_FLAG_RENDER) state.first->onStopRender();
             if ((state.second & STATE_FLAG_INPUT) == STATE_FLAG_INPUT) state.first->onStopInput();
             if ((state.second & STATE_FLAG_TICK) == STATE_FLAG_TICK) state.first->onStopTick();
@@ -132,20 +132,20 @@ namespace Platform::State {
         }
 
         //tick states
-        for (Node& node : boost::adaptors::reverse(this->nodes)) {
+        for (Node const& node : boost::adaptors::reverse(this->nodes)) {
             if ((node.flags & STATE_FLAG_TICK) == STATE_FLAG_NONE) break;
             node.state->tick(dt);
         }
     }
 
     void StateSystem::render() {
-        for (auto& node : this->nodes) {
+        for (auto const& node : this->nodes) {
             if ((node.flags & STATE_FLAG_RENDER) == STATE_FLAG_RENDER) node.state->render();
         }
     }
 
     bool StateSystem::onInputEvent(Input::InputEvent& input_event) {
-        for (Node& node : boost::adaptors::reverse(this->nodes)) {
+        for (Node const& node : boost::adaptors::reverse(this->nodes)) {
             if ((node.flags & STATE_FLAG_INPUT) != STATE_FLAG_INPUT ||
                 (node.flags & STATE_FLAG_POPPING) == STATE_FLAG_POPPING) {
                 return false;
@@ -156,7 +156,7 @@ namespace Platform::State {
     }
 
     void StateSystem::onWindowEvent(Core::WindowEvent& window_event) {
-        for (Node& node : this->nodes) {
+        for (Node const& node : this->nodes) {
             node.state->onWindowEvent(window_event);
         }
     }
@@ -182,23 +182,23 @@ namespace Platform::State {
             throw std::invalid_argument("state cannot be null");
         }
 
-        const std::__list_iterator<Node, void*> nodesItr = std::find_if(
-                nodes.begin(),
-                nodes.end(),
-                [&](const Node& node) -> bool {
-                    return node.state == state;
-                }
+        const auto nodesItr = std::find_if(
+            nodes.begin(),
+            nodes.end(),
+            [&](const Node& node) -> bool {
+                return node.state == state;
+            }
         );
 
         if (nodesItr == nodes.end()) {
             //state does not exist on the stack
             //check operation queue to see if state is about to be pushed
-            const auto operationsItr = std::find_if(
-                    operations.begin(),
-                    operations.end(),
-                    [&](const Operation& operation) -> bool {
-                        return operation.state == state && operation.type == Operation::Type::PUSH;
-                    }
+            const auto operationsItr = std::ranges::find_if(
+                operations.begin(),
+                operations.end(),
+                [&](const Operation& operation) {
+                    return operation.state == state && operation.type == Operation::Type::PUSH;
+                }
             );
 
             if (operationsItr != operations.end()) {
@@ -225,23 +225,23 @@ namespace Platform::State {
             throw std::invalid_argument("state cannot be null");
         }
 
-        const std::__list_iterator<Node, void*> nodesItr = std::find_if(
-                nodes.begin(),
-                nodes.end(),
-                [&](const Node& node) -> bool {
-                    return node.state == state;
-                }
+        const auto nodesItr = std::find_if(
+            nodes.begin(),
+            nodes.end(),
+            [&](const Node& node)  {
+                return node.state == state;
+            }
         );
 
         if (nodesItr == nodes.end()) {
             //state does not exist on the stack
             //check operation queue to see if state is about to be pushed
             const auto operationsItr = std::find_if(
-                    operations.begin(),
-                    operations.end(),
-                    [&](const Operation& operation) -> bool {
-                        return operation.state == state && operation.type == Operation::Type::PUSH;
-                    }
+                operations.begin(),
+                operations.end(),
+                [&](const Operation& operation) {
+                    return operation.state == state && operation.type == Operation::Type::PUSH;
+                }
             );
 
             if (operationsItr != operations.end()) {
@@ -269,21 +269,21 @@ namespace Platform::State {
             throw std::invalid_argument("state cannot be null");
         }
 
-        const std::__list_iterator<Node, void*> nodesItr = std::find_if(
-                nodes.begin(),
-                nodes.end(),
-                [&](const Node& node) -> bool {
-                    return node.state == state;
-                }
+        const auto nodesItr = std::find_if(
+            nodes.begin(),
+            nodes.end(),
+            [&](const Node& node) -> bool {
+                return node.state == state;
+            }
         );
 
         if (nodesItr == nodes.end()) {
             const auto operationsItr = std::find_if(
-                    operations.begin(),
-                    operations.end(),
-                    [&](const Operation& operation) -> bool {
-                        return operation.state == state && (operation.type == Operation::Type::PUSH || operation.type == Operation::Type::CHANGE_WEIGHT);
-                    }
+                operations.begin(),
+                operations.end(),
+                [&](const Operation& operation) {
+                    return operation.state == state && (operation.type == Operation::Type::PUSH || operation.type == Operation::Type::CHANGE_WEIGHT);
+                }
             );
 
             if (operationsItr != operations.end()) {
@@ -318,7 +318,7 @@ namespace Platform::State {
             oss << "no state at index " << index;
             throw std::out_of_range(oss.str());
         }
-        std::reverse_iterator<std::__list_const_iterator<Node, void*>> nodesReverseItr = nodes.rbegin();
+        auto nodesReverseItr = nodes.rbegin();
         while (index-- > 0) {
             ++nodesReverseItr;
         }
@@ -327,20 +327,20 @@ namespace Platform::State {
 
     bool StateSystem::contains(const StateType& state) const {
         return std::find_if(
-                nodes.rbegin(),
-                nodes.rend(),
-                [&](const Node& node) -> bool { return node.state == state; }
+            nodes.rbegin(),
+            nodes.rend(),
+            [&](const Node& node) { return node.state == state; }
         ) != nodes.rend();
     }
 
     boost::optional<size_t> StateSystem::indexOf(const StateType& state) const {
         boost::optional<size_t> index;
-        const std::reverse_iterator<std::__list_const_iterator<Node, void*>> nodesReverseItr = std::find_if(
-                nodes.rbegin(),
-                nodes.rend(),
-                [&](const Node& node) -> bool {
-                    return node.state == state;
-                }
+        const auto nodesReverseItr = std::find_if(
+            nodes.rbegin(),
+            nodes.rend(),
+            [&](const Node& node) {
+                return node.state == state;
+            }
         );
 
         if (nodesReverseItr != nodes.rend()) {
@@ -350,12 +350,12 @@ namespace Platform::State {
     }
 
     StateFlagsType StateSystem::getLinkFlags(const StateType& state) const {
-        const std::__list_const_iterator<Node, void*> nodesItr = std::find_if(
-                nodes.begin(),
-                nodes.end(),
-                [&](const Node& node) -> bool {
-                    return node.state == state;
-                }
+        const auto nodesItr = std::find_if(
+            nodes.begin(),
+            nodes.end(),
+            [&](const Node& node) -> bool {
+                return node.state == state;
+            }
         );
 
         if (nodesItr == nodes.end()) {
@@ -366,12 +366,12 @@ namespace Platform::State {
     }
 
     StateFlagsType StateSystem::getFlags(const StateType& state) const {
-        const std::__list_const_iterator<Node, void*> nodesItr = std::find_if(
-                nodes.begin(),
-                nodes.end(),
-                [&](const Node& node) -> bool {
-                    return node.state == state;
-                }
+        const auto nodesItr = std::find_if(
+            nodes.begin(),
+            nodes.end(),
+            [&](const Node& node) {
+                return node.state == state;
+            }
         );
 
         if (nodesItr == nodes.end()) {
@@ -381,12 +381,12 @@ namespace Platform::State {
     }
 
     int StateSystem::getWeight(const StateType& state) const {
-        const std::__list_const_iterator<Node, void*> nodesItr = std::find_if(
-                nodes.begin(),
-                nodes.end(),
-                [&](const Node& node) -> bool {
-                    return node.state == state;
-                }
+        const auto nodesItr = std::find_if(
+            nodes.begin(),
+            nodes.end(),
+            [&](const Node& node) {
+                return node.state == state;
+            }
         );
 
         if (nodesItr == nodes.end()) {

@@ -3,7 +3,7 @@
 #include <array>
 #include <chrono>
 #include <iostream>
-#include <GL/glew.h>
+#include <gl/glew.h>
 #include <GLFW/glfw3.h>
 
 namespace Platform {

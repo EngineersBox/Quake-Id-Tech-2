@@ -22,9 +22,9 @@ namespace Platform::State {
         std::function<bool(const boost::shared_ptr<GUI::GUINode> &)> isDirty = [&](const boost::shared_ptr<GUI::GUINode> &node) -> bool {
             if (node->getIsDirty()) return true;
             return std::any_of(
-                    node->getChildren().begin(),
-                    node->getChildren().end(),
-                    isDirty
+                node->getChildren().begin(),
+                node->getChildren().end(),
+                isDirty
             );
         };
         if (isDirty(layout)) {
@@ -36,10 +36,10 @@ namespace Platform::State {
     void State::render() {
         const glm::vec2 screen_size = platform.getScreenSize();
         glm::mat4 view_projection_matrix = glm::ortho(
-                0.0f,
-                static_cast<float>(screen_size.x),
-                0.0f,
-                static_cast<float>(screen_size.y)
+            0.0f,
+            static_cast<float>(screen_size.x),
+            0.0f,
+            static_cast<float>(screen_size.y)
         );
         Device::GPU::Gpu::Depth::State depthState = Device::GPU::gpu.depth.getState();
         depthState.shouldTest = false;
