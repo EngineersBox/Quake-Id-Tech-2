@@ -6,7 +6,7 @@
 namespace GUI {
     bool GUIButton::onInputEventBegin(Input::InputEvent& input_event) {
         if (input_event.type.device == Input::InputDeviceType::MOUSE) {
-            auto is_contained = contains(getBounds(), input_event.mouse.location());
+            auto isContained = Physics::contains(getBounds(), input_event.mouse.location());
 
             switch (input_event.type.action) {
                 case Input::InputActionType::PRESS:
@@ -15,7 +15,8 @@ namespace GUI {
                     }
                     state = State::PRESSED;
                     if (onStateChanged) {
-                        onStateChanged(shared_from_this());
+                        auto thisPtr = shared_from_this();
+                        onStateChanged(thisPtr);
                     }
                     return true;
                     break;
@@ -25,10 +26,12 @@ namespace GUI {
                     }
                     state = State::HOVER;
                     if (onStateChanged) {
-                        onStateChanged(shared_from_this());
+                        auto thisPtr = shared_from_this();
+                        onStateChanged(thisPtr);
                     }
                     if (onPress) {
-                        onPress(shared_from_this());
+                        auto thisPtr = shared_from_this();
+                        onPress(thisPtr);
                     }
                     return true;
                     break;
@@ -39,8 +42,9 @@ namespace GUI {
                                 break;
                             }
                             state = State::HOVER;
-                            if (onStateShanged) {
-                                onStateShanged(shared_from_this());
+                            if (onStateChanged) {
+                                auto thisPtr = shared_from_this();
+                                onStateChanged(thisPtr);
                             }
 
                             return true;
@@ -51,14 +55,17 @@ namespace GUI {
                                 break;
                             }
                             state = State::IDLE;
-                            if (onStateShanged) {
-                                onStateShanged(shared_from_this());
+                            if (onStateChanged) {
+                                auto thisPtr = shared_from_this();
+                                onStateChanged(thisPtr);
                             }
                             return true;
                             break;
                         default:
                             break;
                     }
+                    break;
+                default:
                     break;
             }
         }

@@ -2,33 +2,31 @@
 
 //naga
 #include "guiNode.hpp"
-#include "frame_buffer.hpp"
-#include "vertex_buffer.hpp"
-#include "index_buffer.hpp"
-#include "blur_horizontal_gpu_program.hpp"
+#include "../device/gpu/buffers/frameBuffer.hpp"
+#include "../device/gpu/buffers/vertexBuffer.hpp"
+#include "../device/gpu/buffers/indexBuffer.hpp"
+#include "../device/gpu/shaders/programs/blurHorizontalShader.hpp"
 
-namespace naga
-{
-	struct GUICanvas : GUINode
-    {
+namespace GUI {
+	struct GUICanvas : GUINode {
 		GUICanvas();
 
         static const auto INDEX_COUNT = 4;
 
-        typedef blur_horizontal_gpu_program::VertexType VertexType;
-		typedef VertexBuffer<VertexType> VertexBufferType;
-        typedef IndexType<INDEX_COUNT>::Type IndexType;
-		typedef IndexBuffer<IndexType> IndexBufferType;
+        using VertexType = Device::GPU::Shaders::Programs::BlurHorizontalShader::VertexType;
+        using VertexBufferType = Device::GPU::Buffers::VertexBuffer<VertexType>;
+        using IndexType = Device::GPU::IndexType<INDEX_COUNT>::Type;
+        using IndexBufferType = Device::GPU::Buffers::IndexBuffer<IndexType>;
 
-        virtual void on_render_begin(mat4& world_matrix, mat4& view_projection_matrix) override;
-        virtual void on_render_end(mat4& world_matrix, mat4& view_projection_matrix) override;
-        virtual void on_clean_end() override;
+        virtual void onRenderBegin(glm::mat4& world_matrix, glm::mat4& view_projection_matrix) override;
+        virtual void onRenderEnd(glm::mat4& world_matrix, glm::mat4& view_projection_matrix) override;
+        virtual void onCleanEnd() override;
 
-		const boost::shared_ptr<FrameBuffer>& get_frame_buffer() const { return frame_buffer; }
+		const boost::shared_ptr<Device::GPU::Buffers::FrameBuffer>& getFrameBuffer() const { return this->frameBuffer; }
 
     private:
-        boost::shared_ptr<FrameBuffer> frame_buffer;
-		static boost::weak_ptr<VertexBufferType> vertex_buffer;
-		static boost::weak_ptr<IndexBufferType> index_buffer;
+        boost::shared_ptr<Device::GPU::Buffers::FrameBuffer> frameBuffer;
+		static boost::weak_ptr<VertexBufferType> vertexBuffer;
+		static boost::weak_ptr<IndexBufferType> indexBuffer;
     };
 }

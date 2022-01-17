@@ -1,110 +1,83 @@
-//std
-#include <chrono>
 #include <fstream>
+#include <boost/make_shared.hpp>
+#include <glm/ext.hpp>
 
-//boost
-#include <boost\make_shared.hpp>
-
-//glm
-#include <glm\ext.hpp>
-
-//naga
 #include "guiCanvas.hpp"
-#include "gpu.hpp"
-#include "gpu_program_mgr.hpp"
-#include "gpu_buffer_mgr.hpp"
-#include "guiImageShader.hpp"
-#include "blur_horizontal_gpu_program.hpp"
-#include "texture.hpp"
-#include "image.hpp"
-#include "app.hpp"
+#include "../device/gpu/shaders/shaderManager.hpp"
+#include "../device/gpu/buffers/gpuBufferManager.hpp"
+#include "../core/application/app.hpp"
 
-namespace naga
-{
-	boost::weak_ptr<GUICanvas::IndexBufferType> GUICanvas::index_buffer;
-	boost::weak_ptr<GUICanvas::VertexBufferType> GUICanvas::vertex_buffer;
+namespace GUI {
+    boost::weak_ptr<GUICanvas::IndexBufferType> GUICanvas::indexBuffer;
+    boost::weak_ptr<GUICanvas::VertexBufferType> GUICanvas::vertexBuffer;
 
-	GUICanvas::GUICanvas()
-    {
-        if (index_buffer.expired())
-        {
-            index_buffer = gpu_buffers.make<IndexBufferType>().lock();
-            index_buffer.lock()->data({ 0, 1, 2, 3 }, Gpu::BufferUsage::STATIC_DRAW);
+    GUICanvas::GUICanvas() {
+        if (GUICanvas::indexBuffer.expired()) {
+            GUICanvas::indexBuffer = Device::GPU::Buffers::gpuBuffers.make<IndexBufferType>().lock();
+            GUI::GUICanvas::indexBuffer.lock()->data({ 0, 1, 2, 3 }, Device::GPU::Gpu::BufferUsage::STATIC_DRAW);
         }
 
-        if (vertex_buffer.expired())
-        {
-            auto vertices =
-            {
-                VertexType(vec3(0, 0, 0), vec2(0, 0)),
-				VertexType(vec3(1, 0, 0), vec2(1, 0)),
-				VertexType(vec3(1, 1, 0), vec2(1, 1)),
-				VertexType(vec3(0, 1, 0), vec2(0, 1))
+        if (GUICanvas::vertexBuffer.expired()) {
+            auto vertices = {
+                VertexType(glm::vec3(0, 0, 0), glm::vec2(0, 0)),
+                VertexType(glm::vec3(1, 0, 0), glm::vec2(1, 0)),
+                VertexType(glm::vec3(1, 1, 0), glm::vec2(1, 1)),
+                VertexType(glm::vec3(0, 1, 0), glm::vec2(0, 1))
             };
-			vertex_buffer = gpu_buffers.make<VertexBufferType>().lock();
-            vertex_buffer.lock()->data(vertices, Gpu::BufferUsage::STATIC_DRAW);
+            GUICanvas::vertexBuffer = Device::GPU::Buffers::gpuBuffers.make<VertexBufferType>().lock();
+            GUICanvas::vertexBuffer.lock()->data(vertices, Device::GPU::Gpu::BufferUsage::STATIC_DRAW);
         }
     }
 
-	void GUICanvas::on_render_begin(mat4& world_matrix, mat4& view_projection_matrix)
-	{
-		GpuViewportType viewport;
-		viewport.width = static_cast<GpuViewportType::ScalarType>(get_size().x);
-		viewport.height = static_cast<GpuViewportType::ScalarType>(get_size().y);
-		viewport.x = static_cast<GpuViewportType::ScalarType>(get_bounds().min.x);
-		viewport.y = static_cast<GpuViewportType::ScalarType>(get_bounds().min.y);
-		gpu.frame_buffers.push(frame_buffer);
-		gpu.viewports.push(viewport);
-	}
+    void GUICanvas::onRenderBegin(glm::mat4& world_matrix, glm::mat4& view_projection_matrix) {
+        Device::GPU::GpuViewportType viewport;
+        viewport.width = static_cast<Device::GPU::GpuViewportType::ScalarType>(getSize().x);
+        viewport.height = static_cast<Device::GPU::GpuViewportType::ScalarType>(getSize().y);
+        viewport.x = static_cast<Device::GPU::GpuViewportType::ScalarType>(getBounds().min.x);
+        viewport.y = static_cast<Device::GPU::GpuViewportType::ScalarType>(getBounds().min.y);
+        Device::GPU::gpu.frameBufferManager.push(frameBuffer);
+        Device::GPU::gpu.viewports.push(viewport);
+    }
 
-	void GUICanvas::on_render_end(mat4& world_matrix, mat4& view_projection_matrix)
-    {
-        static const u32 DIFFUSE_TEXTURE_INDEX = 0;
+    void GUICanvas::onRenderEnd(glm::mat4& world_matrix, glm::mat4& view_projection_matrix) {
+        static const unsigned int DIFFUSE_TEXTURE_INDEX = 0;
 
-        gpu.viewports.pop();
-        gpu.frame_buffers.pop();
+        Device::GPU::gpu.viewports.pop();
+        Device::GPU::gpu.frameBufferManager.pop();
 
         //TODO: for each render pass, push/pop frame buffer, do gpu program etc.
 
-        gpu.buffers.push(Gpu::BufferTarget::ARRAY, vertex_buffer.lock());
-        gpu.buffers.push(Gpu::BufferTarget::ELEMENT_ARRAY, index_buffer.lock());
+        Device::GPU::gpu.buffers.push(Device::GPU::Gpu::BufferTarget::ARRAY, vertexBuffer.lock());
+        Device::GPU::gpu.buffers.push(Device::GPU::Gpu::BufferTarget::ELEMENT_ARRAY, indexBuffer.lock());
 
-        const auto gpu_program = gpu_programs.get<blur_horizontal_gpu_program>();
+        const auto shader = Device::GPU::Shaders::shaders.get<Device::GPU::Shaders::Programs::BlurHorizontalShader>();
+        Device::GPU::gpu.programs.push(shader);
 
-        gpu.programs.push(gpu_program);
+        auto gpuWorldMatrix = world_matrix;
+        gpuWorldMatrix *= glm::translate(glm::mat4(), glm::vec3(getBounds().min.x, getBounds().min.y, 0.0f));
+        gpuWorldMatrix *= glm::scale(glm::mat4(), glm::vec3(getSize().x, getSize().y, 1.0f));   //TODO: verify correctness
 
-        auto gpu_world_matrix = world_matrix;
-        gpu_world_matrix *= glm::translate(vec3(get_bounds().min.x, get_bounds().min.y, 0.0f));
-		gpu_world_matrix *= glm::scale(vec3(get_size().x, get_size().y, 1.0f));   //TODO: verify correctness
+        Device::GPU::gpu.setUniform("world_matrix", gpuWorldMatrix);
+        Device::GPU::gpu.setUniform("view_projection_matrix", view_projection_matrix);
+        Device::GPU::gpu.setUniform("diffuse_texture", DIFFUSE_TEXTURE_INDEX);
+        Device::GPU::gpu.setUniform("t", Core::Application::app.getUptimeSeconds());
 
-        gpu.set_uniform("world_matrix", gpu_world_matrix);
-        gpu.set_uniform("view_projection_matrix", view_projection_matrix);
-        gpu.set_uniform("diffuse_texture", DIFFUSE_TEXTURE_INDEX);
-        gpu.set_uniform("t", app.get_uptime_seconds());
+        Device::GPU::gpu.textures.bind(DIFFUSE_TEXTURE_INDEX, frameBuffer->getColorTexture());
+        Device::GPU::gpu.drawElements(Device::GPU::Gpu::PrimitiveType::TRIANGLE_FAN, 4, IndexBufferType::DATA_TYPE, 0);
+        Device::GPU::gpu.textures.unbind(DIFFUSE_TEXTURE_INDEX);
 
-        gpu.textures.bind(DIFFUSE_TEXTURE_INDEX, frame_buffer->get_color_texture());
-
-        gpu.draw_elements(Gpu::PrimitiveType::TRIANGLE_FAN, 4, IndexBufferType::DATA_TYPE, 0);
-
-        gpu.textures.unbind(DIFFUSE_TEXTURE_INDEX);
-
-        gpu.buffers.pop(Gpu::BufferTarget::ELEMENT_ARRAY);
-        gpu.buffers.pop(Gpu::BufferTarget::ARRAY);
-
-        gpu.programs.pop();
+        Device::GPU::gpu.buffers.pop(Device::GPU::Gpu::BufferTarget::ELEMENT_ARRAY);
+        Device::GPU::gpu.buffers.pop(Device::GPU::Gpu::BufferTarget::ARRAY);
+        Device::GPU::gpu.programs.pop();
     }
 
-	void GUICanvas::on_clean_end()
-    {
-		const auto frame_buffer_size = static_cast<GpuFrameBufferSizeType>(get_size());
+    void GUICanvas::onCleanEnd() {
+        const auto frameBufferSize = static_cast<Device::GPU::GpuFrameBufferSizeType>(getSize());
 
-        if (!frame_buffer)
-        {
-            frame_buffer = boost::make_shared<FrameBuffer>(GpuFrameBufferType::COLOR_DEPTH_STENCIL, frame_buffer_size);
-        }
-        else if(frame_buffer_size != frame_buffer->get_size())
-        {
-            frame_buffer->set_size(frame_buffer_size);
+        if (!frameBuffer) {
+            frameBuffer = boost::make_shared<Device::GPU::Buffers::FrameBuffer>(Device::GPU::GpuFrameBufferType::COLOR_DEPTH_STENCIL, frameBufferSize);
+        } else if(frameBufferSize != frameBuffer->getSize()) {
+            frameBuffer->setSize(frameBufferSize);
         }
     }
 }

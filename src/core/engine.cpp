@@ -73,13 +73,13 @@ namespace Core {
             return;
         }
 
-        std::unique_ptr<Display>* displayIter = engine->displays.begin();
+        auto displayIter = engine->displays.begin();
         for (; displayIter != engine->displays.end(); ++displayIter) {
             if (*displayIter == nullptr) break;
         }
         if (displayIter == engine->displays.end()) return;
 
-        std::unique_ptr<Display>& display = (*displayIter);
+        std::unique_ptr<Platform::PlatformBase::Display>& display = (*displayIter);
         display = std::make_unique<Display>();
         display->name = glfwGetMonitorName(monitor);
 
@@ -100,7 +100,7 @@ namespace Core {
 
         const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
         float dp = glm::sqrt(static_cast<float>((videoMode->width * videoMode->width) + (videoMode->height * videoMode->height)));
-        float di = glm::sqrt(static_cast<float>((physicalSize.x * physicalSize.x) + (physicalSize.y * physicalSize.y)));
+        float di = glm::sqrt((physicalSize.x * physicalSize.x) + (physicalSize.y * physicalSize.y));
         display->ppi = (dp / di);
 
         int videoModeCount = 0;
@@ -108,7 +108,7 @@ namespace Core {
         const GLFWvidmode* videoModePtr = glfwGetVideoModes(monitor, &videoModeCount);
 
         for (int i = 0; i < videoModeCount; ++i) {
-            std::__wrap_iter<Display::VideoMode*> video_mode_itr = display->videoModes.emplace(display->videoModes.end());
+            auto video_mode_itr = display->videoModes.emplace(display->videoModes.end());
             video_mode_itr->width = videoModePtr->width;
             video_mode_itr->height = videoModePtr->height;
             video_mode_itr->bitDepth = videoModePtr->blueBits + videoModePtr->greenBits + videoModePtr->redBits;

@@ -7,7 +7,7 @@
 #include "logging/logger.hpp"
 #include "../platform/platform.hpp"
 
-#include <GL/glew.h>
+#include <gl/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
 #include <map>
@@ -26,7 +26,7 @@ namespace Core {
         static void configureCallbacks();
     public:
         std::map<GLFWmonitor*, size_t> monitors;
-        std::array<std::unique_ptr<Core::Display>, 8> displays;
+        std::array<std::unique_ptr<Platform::PlatformBase::Display>, 8> displays;
 
         Engine(const char* windowName);
 

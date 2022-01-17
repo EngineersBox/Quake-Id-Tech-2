@@ -42,7 +42,7 @@ namespace Physics {
 
     glm::vec3 PhysicsSimulation::getGravity() const {
         const auto gravity = dynamicsWorld->getGravity();
-        return vec3(gravity.getX(), gravity.getY(), gravity.getZ());
+        return glm::vec3(gravity.getX(), gravity.getY(), gravity.getZ());
     }
 
     void PhysicsSimulation::addRigidBody(const boost::shared_ptr<RigidBodyComponent>& rigid_body) {
