@@ -59,9 +59,9 @@ namespace Core::Application {
 
         void tick(float dt);
         void render();
-        void handleInputEvents();
-        void handleWindowEvents();
-        bool shouldKeepRunning();
+        static void handleInputEvents();
+        void handleWindowEvents() const;
+        bool shouldKeepRunning() const;
     };
 
     extern App app;

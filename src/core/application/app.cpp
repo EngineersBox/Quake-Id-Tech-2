@@ -146,14 +146,14 @@ namespace Core::Application {
         }
     }
 
-    void App::handleWindowEvents() {
+    void App::handleWindowEvents() const {
         Core::WindowEvent windowEvent;
         while (Platform::platform.popWindowEvent(windowEvent)) {
             this->game->onWindowEvent(windowEvent);
         }
     }
 
-    bool App::shouldKeepRunning() {
+    bool App::shouldKeepRunning() const {
         return !this->isExiting && !this->isResetting && !Platform::platform.shouldExit();
     }
 }
