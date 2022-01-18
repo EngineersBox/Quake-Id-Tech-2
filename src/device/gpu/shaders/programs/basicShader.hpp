@@ -5,6 +5,7 @@
 
 #include "../shader.hpp"
 #include <glm/glm.hpp>
+#include "../../../../resources/io/fileReader.hpp"
 
 namespace Device::GPU::Shaders::Programs {
     struct BasicShader : Shader {
@@ -22,44 +23,10 @@ namespace Device::GPU::Shaders::Programs {
 
         typedef Vertex VertexType;
 
-        BasicShader() :
-                Shader(R"(#version 400
-
-uniform mat4 world_matrix;
-uniform mat4 view_projection_matrix;
-uniform float texture_scale;
-
-in vec3 location;
-in vec4 color;
-
-out vec4 out_color;
-out vec2 out_texcoord;
-
-void main()
-{
-    gl_Position = view_projection_matrix * (world_matrix * vec4(location, 1));
-
-    out_texcoord.x = location.x * texture_scale;
-    out_texcoord.y = location.z * texture_scale;
-
-    out_color = color;
-}
-)", R"(#version 400
-
-uniform sampler2D diffuse_texture;
-uniform vec4 color;
-
-in vec4 out_color;
-in vec2 out_texcoord;
-
-out vec4 fragment;
-
-void main()
-{
-    fragment = texture2D(diffuse_texture, out_texcoord) * out_color * color;
-}
-)")
-        {
+        BasicShader() : Shader(
+            Resources::IO::readFile("shaders/basic/basic.vert"),
+            Resources::IO::readFile("shaders/basic/basic.frag")
+        ) {
             this->locationLocation = gpu.getAttributeLocation(getId(), "location");
             this->colorLocation = gpu.getAttributeLocation(getId(), "color");
         }
