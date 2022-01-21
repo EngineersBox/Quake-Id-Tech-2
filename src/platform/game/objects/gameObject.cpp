@@ -7,8 +7,8 @@
 
 namespace Platform::Game::Objects {
     GameObject::GameObject() {
-        static unsigned int next_id = 1;
-        this->id = next_id++;
+        static unsigned int nextId = 1;
+        this->id = nextId++;
     }
 
     void GameObject::render(Components::CameraParameters& cameraParameters) {

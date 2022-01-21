@@ -27,7 +27,9 @@ namespace Platform::Game::Components {
         Scene::Structure::Line3<float> getRay(const Device::GPU::GpuViewportType& viewport, const glm::vec2& sreenLocation) const;
         CameraParameters getParameters(const Device::GPU::GpuViewportType& viewport) const;
 
-        CameraComponent();
+        std::string getComponentName() const override { return Platform::Game::Components::CameraComponent::componentName; }
+
+        CameraComponent(): GameComponent() {};
         ~CameraComponent();
     private:
         glm::mat4 viewMatrix;

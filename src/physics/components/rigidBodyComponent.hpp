@@ -16,8 +16,8 @@ namespace Physics::Components {
         RigidBodyComponent();
 
         virtual void onTick(float dt) override;
-        virtual void onCreate() override;;
-        virtual void onDestroy() override;;
+        virtual void onCreate() override;
+        virtual void onDestroy() override;
 
         Models::Pose3<float> getPose() const;
         float getMass() const;

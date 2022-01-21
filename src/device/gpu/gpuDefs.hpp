@@ -35,7 +35,7 @@ namespace Device::GPU {
     typedef unsigned char GpuClearFlagType;
     typedef glm::vec2 GpuFrameBufferSizeType;
     typedef unsigned char GpuFrameBufferTypeFlagsType;
--
+
     enum : GpuFrameBufferTypeFlagsType {
         GPU_FRAME_BUFFER_TYPE_FLAG_COLOR = (1 << 0),
         GPU_FRAME_BUFFER_TYPE_FLAG_DEPTH = (1 << 1),

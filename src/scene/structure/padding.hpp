@@ -9,8 +9,8 @@
 
 namespace Scene {
     namespace Structure {
-        template<typename Scalar>
-        struct Padding<Scalar, typename std::enable_if<std::is_arithmetic<Scalar>::value>::type> {
+        template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+        struct Padding {
             typedef Scalar ScalarType;
             typedef Padding<ScalarType> Type;
             typedef glm::tvec2<ScalarType> VectorType;

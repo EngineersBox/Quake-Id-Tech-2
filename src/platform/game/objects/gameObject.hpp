@@ -11,6 +11,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <type_traits>
 
 #include "../models/pose.hpp"
 #include "../components/cameraParams.hpp"
@@ -31,12 +32,12 @@ namespace Platform::Game::Objects {
         virtual void onTick(float dt);
         virtual void render(Components::CameraParameters& camera_parameters);
 
-        template<typename T> requires std::is_base_of_v<Components::GameComponent, T>
+        template<typename T, typename = typename std::enable_if_t<std::is_base_of_v<Components::GameComponent, T>, T>>
         boost::shared_ptr<T> addComponent(const char* name, T& component) {
             boost::shared_ptr<T> _component = boost::make_shared<T>(component);
             _component->owner = shared_from_this();
-            if (this->components.contains(name)) {
-                throw std::runtime_error("Component with name " + name + " already exists");
+            if (this->components.find(name) != this->components.end()) {
+                throw std::runtime_error("Component with name " + std::string(name) + " already exists");
             }
 
             this->components.emplace(name, _component);
@@ -44,7 +45,7 @@ namespace Platform::Game::Objects {
             return _component;
         }
 
-        template<typename T> requires std::is_base_of_v<Components::GameComponent, T>
+        template<typename T, typename = typename std::enable_if_t<std::is_base_of_v<Components::GameComponent, T>, T>>
         boost::shared_ptr<T> getComponent(const char* name) const {
             auto entry = this->components.find(name);
             if (entry == this->components.end()) {

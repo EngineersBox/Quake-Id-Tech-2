@@ -11,13 +11,11 @@
 #include <glm/gtx/quaternion.hpp>
 
 namespace Scene::Structure {
-    template<typename Scalar, typename Enable = void>
+    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>>>
     struct Padding;
-    template<typename Scalar, typename Enable = void>
-    struct AABB2;
 
-    template<typename Scalar> requires std::is_arithmetic_v<Scalar>
-    struct AABB2<Scalar>: Range<glm::tvec2<Scalar>> {
+    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+    struct AABB2 : Range<glm::tvec2<Scalar>> {
         typedef Scalar ScalarType;
         typedef AABB2<ScalarType> Type;
         typedef glm::tvec2<ScalarType> VectorType;
@@ -126,11 +124,8 @@ namespace Scene::Structure {
         }
     };
 
-    template<typename T, typename Enable = void>
-    struct AABB3;
-
-    template<typename Scalar> requires std::is_arithmetic_v<Scalar>
-    struct AABB3<Scalar> : Range<glm::tvec3<Scalar>> {
+    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+    struct AABB3 : Range<glm::tvec3<Scalar>> {
         typedef Scalar ScalarType;
         typedef AABB3<ScalarType> Type;
         typedef Plane3<float> PlaneType;

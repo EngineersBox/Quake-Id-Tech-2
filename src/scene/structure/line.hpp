@@ -6,11 +6,9 @@
 #include <glm/glm.hpp>
 
 namespace Scene::Structure {
-    template<typename Scalar, typename Enable = void>
-    struct Line2;
 
-    template<typename Scalar> requires std::is_arithmetic_v<Scalar>
-    struct Line2<Scalar> {
+    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>, Scalar>>
+    struct Line2 {
         using ScalarType = Scalar;
         using Type = Line2<ScalarType>;
         using VectorType = glm::tvec2<ScalarType>;
@@ -58,11 +56,8 @@ namespace Scene::Structure {
         }
     };
 
-    template<typename Scalar, typename Real = void, typename Enable = void>
-    struct Line3;
-
-    template<typename Scalar> requires std::is_arithmetic_v<Scalar>
-    struct Line3<Scalar> {
+    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>, Scalar>>
+    struct Line3 {
         using ScalarType = Scalar;
         using Type = Line3<ScalarType>;
         using VectorType = glm::tvec3<ScalarType>;

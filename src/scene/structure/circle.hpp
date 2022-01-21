@@ -5,11 +5,9 @@
 #include <glm/gtx/optimum_pow.hpp>
 
 namespace Scene::Structure {
-    template<typename Scalar, typename Enable = void>
-    struct Circle;
 
-    template<typename Scalar>
-    struct Circle<Scalar, typename std::enable_if<std::is_arithmetic<Scalar>::value>::type> {
+    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+    struct Circle {
         typedef Scalar ScalarType;
         typedef glm::tvec2<ScalarType> VectorType;
         typedef Circle<Scalar> type;

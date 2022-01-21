@@ -7,6 +7,7 @@ project(Quake VERSION 1.0)
 
 # C++ standard
 set(CMAKE_CXX_STANDARD 20)
+set(CXXFLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 

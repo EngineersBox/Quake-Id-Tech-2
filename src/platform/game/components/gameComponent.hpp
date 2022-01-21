@@ -19,7 +19,7 @@ namespace Platform::Game {
     }
 
     namespace Components {
-        struct GameComponent: boost::enable_shared_from_this<GameComponent> {
+        struct GameComponent : boost::enable_shared_from_this<GameComponent> {
             [[nodiscard]] const boost::shared_ptr<Objects::GameObject>& getOwner() const { return this->owner; }
 
             virtual std::string getComponentName() const { return ""; }
@@ -37,7 +37,7 @@ namespace Platform::Game {
             GameComponent() = default;
 
         private:
-            friend struct GameObject;
+            friend struct Objects::GameObject;
         };
     }
 }

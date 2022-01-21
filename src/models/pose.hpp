@@ -23,7 +23,7 @@ namespace Models {
         ScaleType scale = ScaleType(1);
 
         inline glm::tmat4x4<T> toMatrix() const {
-            return glm::translate(location.x location.y, T(0)) * glm::toMat4(rotation) * glm::scale(scale.x, scale.y, 1.0);
+            return glm::translate(location.x, location.y, T(0)) * glm::toMat4(rotation) * glm::scale(scale.x, scale.y, 1.0);
         }
     };
 
@@ -57,7 +57,7 @@ namespace Models {
 
     template<typename T>
     Pose3<T> operator *(const Pose3<T>& lhs, const Pose3<T>& rhs) {
-        return details::Pose3<T>(lhs.to_matrix() * rhs.to_matrix());
+        return Pose3<T>(lhs.to_matrix() * rhs.to_matrix());
     }
 }
 
