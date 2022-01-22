@@ -1,5 +1,6 @@
 ﻿#include "g_main.hpp"
 #include "../platform/state/stateSystem.hpp"
+#include "../platform/state/state.hpp"
 #include "../scene/scene.hpp"
 
 #define GL_SILENCE_DEPRECATION
@@ -69,7 +70,7 @@ public:
         Platform::platform.windowSize = glm::vec2(1280, 720);
         Platform::State::states.push(boost::make_shared<TestState>(), Platform::State::STATE_FLAG_ALL);
 
-        this->scene = Scene::Scene();
+        this->scene = Platform::Scene::Scene();
         this->camera = this->scene.createGameObject();
         auto platformCamera = Platform::Game::Components::CameraComponent();
         boost::shared_ptr<Platform::Game::Components::CameraComponent> cameraComponent = this->camera->addComponent(

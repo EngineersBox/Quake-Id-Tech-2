@@ -10,7 +10,7 @@
 
 namespace GUI {
     struct GUILayout : GUINode {
-        template<typename T, typename std::enable_if<std::is_base_of<GUINode, T>::value>::type = true>
+        template<typename T> requires IsGuiNode<T>
         void put(const std::string& name, boost::shared_ptr<T> node) {
             static const std::type_index TYPE_INDEX = typeid(T);
             auto type_nodes_itr = typeNodes.find(TYPE_INDEX);
@@ -25,7 +25,7 @@ namespace GUI {
             }
         }
 
-        template<typename T, typename std::enable_if<std::is_base_of<GUINode, T>::value>::type = true>
+        template<typename T> requires IsGuiNode<T>
         boost::shared_ptr<T> get(const std::string& name) {
             static const std::type_index TYPE_INDEX = typeid(T);
             auto type_nodes_itr = typeNodes.find(TYPE_INDEX);
@@ -41,7 +41,7 @@ namespace GUI {
             return boost::static_pointer_cast<T, GUINode>(nodes_itr->second);
         }
 
-        template<typename T, typename std::enable_if<std::is_base_of<GUINode, T>::value>::type = true>
+        template<typename T> requires IsGuiNode<T>
         size_t count() {
             static const std::type_index TYPE_INDEX = typeid(T);
             auto type_nodes_itr = typeNodes.find(TYPE_INDEX);

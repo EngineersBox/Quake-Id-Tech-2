@@ -5,16 +5,14 @@
 
 #include <array>
 #include <boost/make_shared.hpp>
+#include <concepts>
 
 #include "../../scene/structure/aabb.hpp"
 
 namespace Logic {
     namespace Structures {
-        template<typename ScalarType, typename Enable = void>
-        struct OctTree;
-
-        template<typename ScalarType> requires std::is_floating_point_v<ScalarType>
-        struct OctTree<ScalarType> {
+        template<typename ScalarType> requires std::floating_point<ScalarType>
+        struct OctTree {
             using BoundsType = Scene::Structure::AABB3<ScalarType>;
             using Type = OctTree<ScalarType>;
             using ChildrenType = std::array<boost::shared_ptr<Type>, 8>;

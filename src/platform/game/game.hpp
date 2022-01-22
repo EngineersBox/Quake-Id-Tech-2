@@ -3,13 +3,8 @@
 #ifndef QUAKE_GAME_HPP
 #define QUAKE_GAME_HPP
 
-namespace Input {
-    struct InputEvent;
-}
-
-namespace Core {
-    struct WindowEvent;
-}
+#include "../../input/inputEvent.hpp"
+#include "../../core/windowEvent.hpp"
 
 namespace Platform::Game {
     struct Game {

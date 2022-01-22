@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/enable_shared_from_this.hpp>
+#include <concepts>
 
 #include "../gpu.hpp"
 
@@ -23,9 +24,6 @@ namespace Device::GPU::Shaders {
         Shader& operator=(const Shader&) = delete;
     };
 
-    template<typename T, typename Enable = void>
-    struct IsGpuProgram : std::false_type {};
-
     template<typename T>
-    struct IsGpuProgram<T, typename std::enable_if<std::is_base_of<Shader, T>::value>::type> : std::true_type {};
+    concept IsShader = std::derived_from<T, Shader>;
 }

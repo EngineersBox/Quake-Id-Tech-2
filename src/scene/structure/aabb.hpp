@@ -7,14 +7,15 @@
 
 #include "plane.hpp"
 #include "range.hpp"
+#include "arithmeticConcept.hpp"
 
 #include <glm/gtx/quaternion.hpp>
 
 namespace Scene::Structure {
-    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+    template<typename Scalar>
     struct Padding;
 
-    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+    template<typename Scalar> requires arithmetic<Scalar>
     struct AABB2 : Range<glm::tvec2<Scalar>> {
         typedef Scalar ScalarType;
         typedef AABB2<ScalarType> Type;
@@ -124,7 +125,7 @@ namespace Scene::Structure {
         }
     };
 
-    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+    template<typename Scalar> requires arithmetic<Scalar>
     struct AABB3 : Range<glm::tvec3<Scalar>> {
         typedef Scalar ScalarType;
         typedef AABB3<ScalarType> Type;

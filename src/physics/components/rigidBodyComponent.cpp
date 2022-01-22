@@ -35,11 +35,11 @@ namespace Physics::Components {
     }
 
     void RigidBodyComponent::onCreate() {
-        getOwner()->getScene()->get_physics()->addRigidBody(shared_from_this());
+        getOwner()->getScene()->getPhysics()->addRigidBody(shared_from_this());
     }
 
     void RigidBodyComponent::onDestroy() {
-        getOwner()->getScene()->get_physics()->removeRigidBody(shared_from_this());
+        getOwner()->getScene()->getPhysics()->removeRigidBody(shared_from_this());
     }
 
     Models::Pose3<float> RigidBodyComponent::getPose() const {
@@ -66,13 +66,13 @@ namespace Physics::Components {
 
     //https://studiofreya.com/game-maker/bullet-physics/bullet-physics-how-to-change-body-mass/
     void RigidBodyComponent::setMass(float mass) {
-        getOwner()->getScene()->get_physics()->removeRigidBody(shared_from_this());
+        getOwner()->getScene()->getPhysics()->removeRigidBody(shared_from_this());
 
         btVector3 inertia;
         ptr->getCollisionShape()->calculateLocalInertia(mass, inertia);
         ptr->setMassProps(mass, inertia);
 
-        getOwner()->getScene()->get_physics()->addRigidBody(shared_from_this());
+        getOwner()->getScene()->getPhysics()->addRigidBody(shared_from_this());
     }
 
     glm::vec3 RigidBodyComponent::getCenterOfMass() const {

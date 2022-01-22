@@ -5,9 +5,11 @@
 
 #include <glm/glm.hpp>
 
+#include "arithmeticConcept.hpp"
+
 namespace Scene::Structure {
 
-    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>, Scalar>>
+    template<typename Scalar> requires arithmetic<Scalar>
     struct Line2 {
         using ScalarType = Scalar;
         using Type = Line2<ScalarType>;
@@ -56,7 +58,7 @@ namespace Scene::Structure {
         }
     };
 
-    template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>, Scalar>>
+    template<typename Scalar> requires arithmetic<Scalar>
     struct Line3 {
         using ScalarType = Scalar;
         using Type = Line3<ScalarType>;

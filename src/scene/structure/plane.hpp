@@ -6,11 +6,11 @@
 #include <glm/glm.hpp>
 
 namespace Scene::Structure {
-    template<typename Scalar, typename Enable = void>
+    template<typename Scalar>
     struct Plane2;
 
-    template<typename Scalar>
-    struct Plane2<Scalar, typename std::enable_if<std::is_floating_point<Scalar>::value>::type> {
+    template<typename Scalar> requires std::floating_point<Scalar>
+    struct Plane2<Scalar> {
         typedef Scalar ScalarType;
         typedef Plane2<ScalarType> Type;
         typedef glm::tvec2<ScalarType> VectorType;
@@ -47,11 +47,11 @@ namespace Scene::Structure {
             return Type(-this->normal, -this->distance);
         }
     };
-    template<typename Scalar, typename Enable = void>
+    template<typename Scalar>
     struct Plane3;
 
-    template<typename Scalar>
-    struct Plane3<Scalar, typename std::enable_if<std::is_floating_point<Scalar>::value>::type> {
+    template<typename Scalar> requires std::floating_point<Scalar>
+    struct Plane3<Scalar> {
         typedef Scalar ScalarType;
         typedef Plane3<ScalarType> Type;
         typedef glm::tvec3<ScalarType> VectorType;

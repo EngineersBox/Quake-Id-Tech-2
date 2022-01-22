@@ -72,7 +72,7 @@ namespace Scene {
 
     void Scene::removeGameObject(const boost::shared_ptr<Platform::Game::Objects::GameObject>& game_object) {
         if (game_object->getScene() != shared_from_this()) {
-            throw std::runtime_error("");
+            throw std::runtime_error("Could not get scene");
         }
     }
 

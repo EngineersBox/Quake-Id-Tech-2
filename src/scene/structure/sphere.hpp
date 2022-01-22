@@ -2,13 +2,15 @@
 
 #include <glm/gtx/optimum_pow.hpp>
 
+#include "arithmeticConcept.hpp"
+
 namespace Scene {
     namespace Structure {
-        template<typename Scalar, typename Enable = void>
+        template<typename Scalar>
         struct Sphere;
 
-        template<typename Scalar>
-        struct Sphere<Scalar, typename std::enable_if<std::is_arithmetic<Scalar>::value>::type> {
+        template<typename Scalar> requires arithmetic<Scalar>
+        struct Sphere<Scalar> {
             typedef Scalar ScalarType;
             typedef Sphere<ScalarType> Type;
             typedef glm::tvec3<ScalarType> VectorType;

@@ -144,7 +144,7 @@ namespace Physics {
         return IntersectType::INTERSECT;
     }
 
-    template<typename Scalar, typename std::enable_if<std::is_floating_point<Scalar>::value>::type = true>
+    template<typename Scalar> requires std::floating_point<Scalar>
     IntersectType intersects(const Scene::Structure::Line3<Scalar>& line,
                              const Scene::Structure::Plane3<Scalar>& plane,
                              Scalar& t) {
@@ -229,7 +229,7 @@ namespace Physics {
         return IntersectType::INTERSECT;
     }
 
-    template<typename Scalar, typename std::enable_if<std::is_floating_point<Scalar>::value>::type = true>
+    template<typename Scalar> requires std::floating_point<Scalar>
     IntersectType intersects(const Scene::Structure::AABB3<Scalar> aabb0,
                              const glm::tvec3<Scalar>& d0,
                              const Scene::Structure::AABB3<Scalar>& aabb1,

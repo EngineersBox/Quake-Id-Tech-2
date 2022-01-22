@@ -32,7 +32,7 @@ namespace Platform::Game::Objects {
         virtual void onTick(float dt);
         virtual void render(Components::CameraParameters& camera_parameters);
 
-        template<typename T, typename = typename std::enable_if_t<std::is_base_of_v<Components::GameComponent, T>, T>>
+        template<typename T> requires Components::IsGameComponent<T>
         boost::shared_ptr<T> addComponent(const char* name, T& component) {
             boost::shared_ptr<T> _component = boost::make_shared<T>(component);
             _component->owner = shared_from_this();
@@ -45,7 +45,7 @@ namespace Platform::Game::Objects {
             return _component;
         }
 
-        template<typename T, typename = typename std::enable_if_t<std::is_base_of_v<Components::GameComponent, T>, T>>
+        template<typename T> requires Components::IsGameComponent<T>
         boost::shared_ptr<T> getComponent(const char* name) const {
             auto entry = this->components.find(name);
             if (entry == this->components.end()) {

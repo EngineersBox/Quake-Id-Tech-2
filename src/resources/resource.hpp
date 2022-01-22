@@ -3,6 +3,7 @@
 #include <chrono>
 #include <type_traits>
 #include <string>
+#include <concepts>
 
 namespace Resources {
     struct Resource {
@@ -24,9 +25,6 @@ namespace Resources {
 		Resource& operator=(const Resource&) = delete;
     };
 
-    template<typename T, typename Enable = void>
-    struct IsResource : std::false_type { };
-
-    template<typename T>
-	struct IsResource<T, typename std::enable_if<std::is_base_of<Resource, T>::value>::type> : std::true_type{};
+	template<typename T>
+	concept IsResource = std::derived_from<T, Resource>;
 }

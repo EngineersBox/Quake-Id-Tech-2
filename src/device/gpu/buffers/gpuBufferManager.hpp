@@ -2,12 +2,13 @@
 
 #include <map>
 #include <boost/make_shared.hpp>
+#include <concepts>
 
 #include "gpuBuffer.hpp"
 
 namespace Device::GPU::Buffers {
     struct GpuBufferManager {
-        template<typename T, std::enable_if_t<IsGpuBuffer<T>::value, bool> = true>
+        template<typename T> requires IsGpuBuffer<T>
         boost::weak_ptr<T> make() {
             boost::shared_ptr<T> gpuBuffer = boost::make_shared<T>();
             auto buffersIter = buffers.insert(buffers.begin(), std::make_pair(gpuBuffer->getId(), gpuBuffer));

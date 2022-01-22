@@ -125,4 +125,7 @@ namespace GUI {
     protected:
         bool isDirty = true;
     };
+
+    template<typename T>
+    concept IsGuiNode = std::derived_from<T, GUINode>;
 }

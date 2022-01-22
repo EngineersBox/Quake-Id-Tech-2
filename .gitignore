@@ -353,3 +353,9 @@ cclass.exe
 
 # CMake generated content
 CMakeFiles/
+
+# CLion
+
+.idea/
+cmake-build-debug/
+cmake-build-debug-visual-studio/

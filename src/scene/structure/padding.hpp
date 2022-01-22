@@ -6,10 +6,11 @@
 #include <iostream>
 
 #include "aabb.hpp"
+#include "arithmeticConcept.hpp"
 
 namespace Scene {
     namespace Structure {
-        template<typename Scalar, typename = typename std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+        template<typename Scalar> requires arithmetic<Scalar>
         struct Padding {
             typedef Scalar ScalarType;
             typedef Padding<ScalarType> Type;

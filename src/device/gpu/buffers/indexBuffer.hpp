@@ -3,17 +3,18 @@
 #include <array>
 #include <vector>
 #include <type_traits>
+#include <concepts>
 
 #include "../gpu.hpp"
 #include "gpuBuffer.hpp"
 
 namespace Device::GPU::Buffers {
-	template<typename Index, typename Enable = void>
+	template<typename Index>
     struct IndexBuffer;
 
     //TODO: is_integral is not actually restrictive enough, since int64s can't be translated to a GL type
-    template<typename Index>
-	struct IndexBuffer<Index, typename std::enable_if<std::is_integral<Index>::value>::type> : GpuBuffer {
+    template<typename Index> requires std::integral<Index>
+	struct IndexBuffer<Index> : GpuBuffer {
 		typedef Index IndexType;
 		static const auto DATA_TYPE = GpuDataType<IndexType>::VALUE;
 

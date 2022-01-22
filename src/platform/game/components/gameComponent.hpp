@@ -39,6 +39,9 @@ namespace Platform::Game {
         private:
             friend struct Objects::GameObject;
         };
+
+        template<typename T>
+        concept IsGameComponent = std::derived_from<T, GameComponent>;
     }
 }
 

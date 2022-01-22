@@ -3,6 +3,7 @@
 #include <array>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_access.hpp>
+#include <concepts>
 
 #include "../../scene/structure/plane.hpp"
 #include "../../scene/structure/aabb.hpp"
@@ -33,11 +34,11 @@ namespace Rendering {
         static const size_t FRUSTUM_PLANE_COUNT = 6;
         static const size_t FRUSTUM_CORNER_COUNT = 8;
 
-        template<typename ScalarType, typename Enable = void>
+        template<typename ScalarType>
         struct Frustum;
 
-        template<typename ScalarType>
-        struct Frustum<ScalarType, typename std::enable_if<std::is_floating_point<ScalarType>::value>::type> {
+        template<typename ScalarType> requires std::floating_point<ScalarType>
+        struct Frustum<ScalarType> {
             typedef glm::tvec3<ScalarType> VectorType;
             typedef Frustum<ScalarType> Type;
             typedef ::Scene::Structure::Plane3<ScalarType> PlaneType;
@@ -49,8 +50,14 @@ namespace Rendering {
 
             Frustum() = default;
 
-            void set(const VectorType &origin, const VectorType &left, const VectorType &up, const VectorType &forward,
-                     ScalarType fov, ScalarType near, ScalarType far, ScalarType aspect) {
+            void set(const VectorType &origin,
+                    const VectorType &left,
+                    const VectorType &up,
+                    const VectorType &forward,
+                     ScalarType fov,
+                    ScalarType near,
+                    ScalarType far,
+                    ScalarType aspect) {
                 const glm::vec2 tangent = glm::tan(glm::radians(fov) / 2);
                 const auto nearHeight = near * tangent;
                 const auto nearWidth = nearHeight * aspect;

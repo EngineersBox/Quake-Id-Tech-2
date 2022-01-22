@@ -4,14 +4,15 @@
 #define QUAKE_RECTANGLE_HPP
 
 #include "aabb.hpp"
+#include "arithmeticConcept.hpp"
 
 namespace Scene {
     namespace Structure {
-        template<typename Scalar, typename Enable = void>
+        template<typename Scalar>
         struct Rectangle;
 
-        template<typename Scalar>
-        struct Rectangle<Scalar, typename std::enable_if<std::is_arithmetic<Scalar>::value>::type> {
+        template<typename Scalar> requires arithmetic<Scalar>
+        struct Rectangle<Scalar> {
             typedef Scalar ScalarType;
             typedef glm::tvec2<ScalarType> VectorType;
             typedef Rectangle<ScalarType> Type;
