@@ -3,7 +3,7 @@
 #ifndef QUAKE_RANGE_HPP
 #define QUAKE_RANGE_HPP
 
-namespace Scene::Structure {
+namespace Scenes::Structure {
     template<typename T>
     struct Range {
         typedef T ValueType;

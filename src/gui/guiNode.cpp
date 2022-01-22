@@ -72,7 +72,7 @@ namespace GUI {
     }
 
     void GUINode::clean() {
-        std::function<void(boost::shared_ptr<GUINode>&, Scene::Structure::AABB2<float>&)> cleanNode = [&cleanNode](boost::shared_ptr<GUINode>& node, Scene::Structure::AABB2<float>& sibling_bounds) -> void {
+        std::function<void(boost::shared_ptr<GUINode>&, Scenes::Structure::AABB2<float>&)> cleanNode = [&cleanNode](boost::shared_ptr<GUINode>& node, Scenes::Structure::AABB2<float>& sibling_bounds) -> void {
             if (node->getVisibility() == GUIVisibility::OMIT) return;
 
             node->onCleanBegin();
@@ -190,7 +190,7 @@ namespace GUI {
             // TODO: size to children:
             node->size = node->bounds.size();
 
-            Scene::Structure::AABB2<float> children_bounds = node->bounds - node->padding;
+            Scenes::Structure::AABB2<float> children_bounds = node->bounds - node->padding;
             for (boost::shared_ptr<GUINode> child : node->children) {
                 cleanNode(child, children_bounds);
             }
@@ -219,7 +219,7 @@ namespace GUI {
         // margins can be accumulated with every tick unless we
         // pad the bounds passed into clean_node. this seems incorrect,
         // but will work for now.
-        Scene::Structure::AABB2<float> paddedBounds = bounds + margin;
+        Scenes::Structure::AABB2<float> paddedBounds = bounds + margin;
         boost::shared_ptr<GUINode> shared_ref = shared_from_this();
         cleanNode(shared_ref, paddedBounds);
     }
@@ -312,7 +312,7 @@ namespace GUI {
             Device::GPU::gpu.clear(Device::GPU::Gpu::CLEAR_FLAG_DEPTH | Device::GPU::Gpu::CLEAR_FLAG_STENCIL);
 
 #if defined(DEBUG)
-            Debug::Renderer::renderRectangle(world_matrix, view_projection_matrix, Scene::Structure::Rectangle<float>(bounds), glm::vec4(1), true);
+            Debug::Renderer::renderRectangle(world_matrix, view_projection_matrix, Scenes::Structure::Rectangle<float>(bounds), glm::vec4(1), true);
 #endif
 
             Device::GPU::gpu.color.popState();
@@ -329,7 +329,7 @@ namespace GUI {
 
         //TODO: configure this to be enable-able in-game
 #if defined(DEBUG)
-        Debug::Renderer::renderRectangle(world_matrix, view_projection_matrix, Scene::Structure::Rectangle<float>(bounds), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+        Debug::Renderer::renderRectangle(world_matrix, view_projection_matrix, Scenes::Structure::Rectangle<float>(bounds), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
 
         onRenderBegin(world_matrix, view_projection_matrix);

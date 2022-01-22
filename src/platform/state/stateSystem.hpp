@@ -9,7 +9,7 @@
 #include <boost/optional.hpp>
 #include <boost/shared_ptr.hpp>
 
-namespace Platform::State {
+namespace Platform::States {
     struct State;
 
     typedef unsigned char StateFlagsType;

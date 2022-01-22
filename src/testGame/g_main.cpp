@@ -5,9 +5,9 @@
 
 #define GL_SILENCE_DEPRECATION
 
-class TestState : public Platform::State::State, boost::enable_shared_from_this<TestState> {
+class TestState : public Platform::States::State, boost::enable_shared_from_this<TestState> {
 public:
-    TestState(): Platform::State::State() {
+    TestState(): Platform::States::State() {
         this->isTracing = false;
     }
 
@@ -18,7 +18,7 @@ public:
         Platform::platform.setCursorHidden(true);
     }
 private:
-    using super = Platform::State::State;
+    using super = Platform::States::State;
     bool isTracing;
 };
 
@@ -68,9 +68,9 @@ class TestGame : public Platform::Game::Game {
 public:
     void onRunStart() {
         Platform::platform.windowSize = glm::vec2(1280, 720);
-        Platform::State::states.push(boost::make_shared<TestState>(), Platform::State::STATE_FLAG_ALL);
+        Platform::States::states.push(boost::make_shared<TestState>(), Platform::States::STATE_FLAG_ALL);
 
-        this->scene = Platform::Scene::Scene();
+        this->scene = Platform::Scenes::Scene();
         this->camera = this->scene.createGameObject();
         auto platformCamera = Platform::Game::Components::CameraComponent();
         boost::shared_ptr<Platform::Game::Components::CameraComponent> cameraComponent = this->camera->addComponent(
@@ -84,7 +84,7 @@ public:
         );
     }
 private:
-    Scene::Scene scene;
+    Scenes::Scene scene;
     boost::shared_ptr<Platform::Game::Objects::GameObject> camera;
 };
 

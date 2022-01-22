@@ -8,7 +8,7 @@
 #include "aabb.hpp"
 #include "arithmeticConcept.hpp"
 
-namespace Scene {
+namespace Scenes {
     namespace Structure {
         template<typename Scalar> requires arithmetic<Scalar>
         struct Padding {

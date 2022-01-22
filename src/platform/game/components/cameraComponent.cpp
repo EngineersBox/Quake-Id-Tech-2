@@ -51,9 +51,9 @@ namespace Platform::Game::Components {
     //  have getRay accept a viewport, and calculate the matrices before we use them in the
     //  unProject functions. This would probably be perfectly acceptable since getRay
     //  wouldn't likely be happening more than once per frame.
-    Scene::Structure::Line3<float> CameraComponent::getRay(const Device::GPU::GpuViewportType& viewport, const glm::vec2& screen_location) const {
+    Scenes::Structure::Line3<float> CameraComponent::getRay(const Device::GPU::GpuViewportType& viewport, const glm::vec2& screen_location) const {
         // TODO: this is problematic because the viewport isn't necessarily going to be stacked on top, maybe we need to pass in the viewport here?
-        Scene::Structure::Line3<float> ray{};
+        Scenes::Structure::Line3<float> ray{};
         CameraParameters parameters = getParameters(viewport);
         ray.start = glm::unProject(glm::vec3(screen_location, 0), parameters.viewMatrix, parameters.projectionMatrix, glm::vec4(viewport.x, viewport.y, viewport.width, viewport.height));
         ray.end = glm::unProject(glm::vec3(screen_location, 1), parameters.viewMatrix, parameters.projectionMatrix, glm::vec4(viewport.x, viewport.y, viewport.width, viewport.height));

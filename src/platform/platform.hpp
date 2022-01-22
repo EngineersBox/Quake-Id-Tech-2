@@ -25,7 +25,7 @@ namespace Platform {
 
         struct WindowManager {
             std::deque<Core::WindowEvent> events;
-            Scene::Structure::Rectangle<int> rectangle;
+            Scenes::Structure::Rectangle<int> rectangle;
         } window;
 
         struct Display {
@@ -62,7 +62,7 @@ namespace Platform {
         virtual void setScreenSize(const glm::vec2& screen_size) const = 0;
 
         //viewport
-        virtual Scene::Structure::Rectangle<float> getViewport() const = 0;
+        virtual Scenes::Structure::Rectangle<float> getViewport() const = 0;
 
         //pop_input_event
         virtual bool popInputEvent(Input::InputEvent& input_event) = 0;

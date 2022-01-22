@@ -17,7 +17,7 @@ namespace Rendering::Scene { struct BSP; }
 namespace Physics { struct PhysicsSimulation; }
 namespace Rendering::Query { struct TraceResult; }
 
-namespace Scene {
+namespace Scenes {
     struct Scene : public boost::enable_shared_from_this<Scene> {
         Scene();
 

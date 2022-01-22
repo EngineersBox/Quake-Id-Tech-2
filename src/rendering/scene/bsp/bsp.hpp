@@ -57,7 +57,7 @@ class BSP: public Resources::Resource {
             static const auto CHILD_COUNT = 2;
             int planeIndex = 0;
             std::array<short, CHILD_COUNT> childIndices;
-            ::Scene::Structure::AABB3<short> aabb;
+            ::Scenes::Structure::AABB3<short> aabb;
             unsigned short faceStartIndex = 0;
             unsigned short faceCount = 0;
         };
@@ -78,7 +78,7 @@ class BSP: public Resources::Resource {
         struct Leaf {
             static const auto AMBIENT_SOUND_LEVEL_COUNT = 4;
             typedef unsigned char AmbientSoundLevelType;
-            typedef ::Scene::Structure::AABB3<short> AABBType;
+            typedef ::Scenes::Structure::AABB3<short> AABBType;
             ContentType contentType = ContentType::EMPTY;
             int visibilityOffset = 0;
             AABBType aabb;
@@ -111,7 +111,7 @@ class BSP: public Resources::Resource {
 
         struct Model {
             static const auto HEAD_NODE_INDEX_COUNT = 4;
-            ::Scene::Structure::AABB3<float> aabb;
+            ::Scenes::Structure::AABB3<float> aabb;
             glm::vec3 origin;
             std::array<NodeIndexType, HEAD_NODE_INDEX_COUNT> headNodeIndices;
             int visLeafs = 0;
@@ -127,7 +127,7 @@ class BSP: public Resources::Resource {
         };
 
         struct BSPPlane {
-            typedef ::Scene::Structure::Plane3<float> PlaneType;
+            typedef ::Scenes::Structure::Plane3<float> PlaneType;
             enum class Type: unsigned int {
                 X,
                 Y,
@@ -146,14 +146,14 @@ class BSP: public Resources::Resource {
         typedef Device::GPU::Buffers::IndexBuffer<IndexType> IndexBufferType;
 
         struct TraceArgs {
-            ::Scene::Structure::Line3<float> line;
+            ::Scenes::Structure::Line3<float> line;
         };
 
         struct TraceResult {
             bool didHit = false;
             bool isAllSolid = false;
             glm::vec3 location;
-            ::Scene::Structure::Plane3<float> plane;
+            ::Scenes::Structure::Plane3<float> plane;
             float ratio = 0.0f;
         };
 

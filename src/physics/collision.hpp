@@ -20,9 +20,9 @@ namespace Physics {
     };
 
     template<typename Scalar>
-    glm::tvec3<Scalar> intersect(const Scene::Structure::Plane3<Scalar>& p0,
-                                 const Scene::Structure::Plane3<Scalar>& p1,
-                                 const Scene::Structure::Plane3<Scalar>& p2) {
+    glm::tvec3<Scalar> intersect(const Scenes::Structure::Plane3<Scalar>& p0,
+                                 const Scenes::Structure::Plane3<Scalar>& p1,
+                                 const Scenes::Structure::Plane3<Scalar>& p2) {
         const auto d0 = p0.distance;
         const auto d1 = p1.distance;
         const auto d2 = p2.distance;
@@ -38,8 +38,8 @@ namespace Physics {
     }
 
     template<typename Scalar>
-    IntersectType intersects(const Scene::Structure::Circle<Scalar>& circle,
-                             const Scene::Structure::AABB2<Scalar>& aabb) {
+    IntersectType intersects(const Scenes::Structure::Circle<Scalar>& circle,
+                             const Scenes::Structure::AABB2<Scalar>& aabb) {
         const auto aabb_center = aabb.center();
         const glm::vec2 distance = glm::vec2(glm::abs(circle.origin.x - aabb_center.x), glm::abs(circle.origin.y - aabb_center.y));
 
@@ -62,8 +62,8 @@ namespace Physics {
     }
 
     template<typename LHSScalar, typename RHSScalar>
-    IntersectType intersects(const Scene::Structure::AABB2<LHSScalar>& lhs,
-                             const Scene::Structure::AABB2<RHSScalar>& rhs) {
+    IntersectType intersects(const Scenes::Structure::AABB2<LHSScalar>& lhs,
+                             const Scenes::Structure::AABB2<RHSScalar>& rhs) {
         if (lhs.max.x < rhs.min.x || lhs.min.x > rhs.max.x ||
             lhs.max.y < rhs.min.y || lhs.min.y > rhs.max.y) {
             return IntersectType::DISJOINT;
@@ -72,28 +72,28 @@ namespace Physics {
     }
 
     template<typename AABBScalar, typename PointScalar>
-    bool contains(const Scene::Structure::AABB2<AABBScalar>& aabb,
+    bool contains(const Scenes::Structure::AABB2<AABBScalar>& aabb,
                   const glm::tvec2<PointScalar>& point) {
         return aabb.min == glm::min(aabb.min, static_cast<glm::tvec2<AABBScalar>>(point)) &&
                aabb.max == glm::max(aabb.max, static_cast<glm::tvec2<AABBScalar>>(point));
     }
 
     template<typename AABBScalar, typename PointScalar>
-    bool contains(const Scene::Structure::AABB3<AABBScalar>& aabb,
+    bool contains(const Scenes::Structure::AABB3<AABBScalar>& aabb,
                   const glm::tvec3<PointScalar>& point) {
         return aabb.min == glm::min(aabb.min, static_cast<glm::tvec3<AABBScalar>>(point)) &&
                aabb.max == glm::max(aabb.max, static_cast<glm::tvec3<AABBScalar>>(point));
     }
 
     template<typename LHSScalar, typename RHSScalar>
-    bool contains(const Scene::Structure::AABB3<LHSScalar>& lhs,
-                  const Scene::Structure::AABB3<RHSScalar>& rhs) {
+    bool contains(const Scenes::Structure::AABB3<LHSScalar>& lhs,
+                  const Scenes::Structure::AABB3<RHSScalar>& rhs) {
         return contains(lhs, rhs.min) && contains(lhs, rhs.max);
     }
 
     template<typename LHSScalar, typename RHSScalar>
-    IntersectType intersects(const Scene::Structure::AABB3<LHSScalar>& lhs,
-                             const Scene::Structure::AABB3<RHSScalar>& rhs) {
+    IntersectType intersects(const Scenes::Structure::AABB3<LHSScalar>& lhs,
+                             const Scenes::Structure::AABB3<RHSScalar>& rhs) {
         if (contains(lhs, rhs)) {
             return IntersectType::CONTAIN;
         }
@@ -108,8 +108,8 @@ namespace Physics {
     }
 
     template<typename Scalar>
-    IntersectType intersects(const Scene::Structure::Line3<Scalar>& line,
-                             const Scene::Structure::AABB3<Scalar>& aabb,
+    IntersectType intersects(const Scenes::Structure::Line3<Scalar>& line,
+                             const Scenes::Structure::AABB3<Scalar>& aabb,
                              Scalar* t = nullptr,
                              glm::tvec3<Scalar>* location = nullptr,
                              glm::tvec3<Scalar>* normal = nullptr) {
@@ -145,8 +145,8 @@ namespace Physics {
     }
 
     template<typename Scalar> requires std::floating_point<Scalar>
-    IntersectType intersects(const Scene::Structure::Line3<Scalar>& line,
-                             const Scene::Structure::Plane3<Scalar>& plane,
+    IntersectType intersects(const Scenes::Structure::Line3<Scalar>& line,
+                             const Scenes::Structure::Plane3<Scalar>& plane,
                              Scalar& t) {
         const auto u = line.end - line.start;
         const auto w = line.start - plane.normal;
@@ -165,13 +165,13 @@ namespace Physics {
     }
 
     template<typename Scalar>
-    Scalar distanceToPlane(const Scene::Structure::Plane3<Scalar>& plane,
+    Scalar distanceToPlane(const Scenes::Structure::Plane3<Scalar>& plane,
                            const glm::tvec3<Scalar>& point) {
         return glm::dot(plane.normal, point - plane.origin());
     }
 
     template<typename PlaneScalar, typename PointScalar>
-    PlaneScalar distanceToPlane(const Scene::Structure::Plane3<PlaneScalar>& plane,
+    PlaneScalar distanceToPlane(const Scenes::Structure::Plane3<PlaneScalar>& plane,
                                 const glm::tvec3<PointScalar>& point) {
         return glm::dot(plane.normal, static_cast<glm::tvec3<PlaneScalar>>(point)-plane.origin());
     }
@@ -189,7 +189,7 @@ namespace Physics {
 
     template<typename FrustumScalar, typename SphereScalar>
     IntersectType intersects(const Rendering::View::Frustum<FrustumScalar>& frustum,
-                             const Scene::Structure::Sphere<SphereScalar>& sphere) {
+                             const Scenes::Structure::Sphere<SphereScalar>& sphere) {
         for (const auto& plane : frustum.get_planes()) {
             if (distanceToPlane(plane, sphere.origin) + sphere.radius < 0) {
                 return IntersectType::DISJOINT;
@@ -200,9 +200,9 @@ namespace Physics {
 
     template<typename FrustumScalar, typename AABBScalar>
     IntersectType intersects(const Rendering::View::Frustum<FrustumScalar>& frustum,
-                             const Scene::Structure::AABB3<AABBScalar>& aabb) {
+                             const Scenes::Structure::AABB3<AABBScalar>& aabb) {
         typedef Rendering::View::Frustum<FrustumScalar> FrustumType;
-        typedef Scene::Structure::AABB3<AABBScalar> AABBType;
+        typedef Scenes::Structure::AABB3<AABBScalar> AABBType;
 
         size_t totalIn = 0;
         for (const auto& plane : frustum.get_planes()) {
@@ -230,9 +230,9 @@ namespace Physics {
     }
 
     template<typename Scalar> requires std::floating_point<Scalar>
-    IntersectType intersects(const Scene::Structure::AABB3<Scalar> aabb0,
+    IntersectType intersects(const Scenes::Structure::AABB3<Scalar> aabb0,
                              const glm::tvec3<Scalar>& d0,
-                             const Scene::Structure::AABB3<Scalar>& aabb1,
+                             const Scenes::Structure::AABB3<Scalar>& aabb1,
                              const glm::tvec3<Scalar>& d1,
                              Scalar& u0,
                              Scalar& u1) {

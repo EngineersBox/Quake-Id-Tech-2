@@ -5,7 +5,7 @@
 #include <glm/gtx/optimum_pow.hpp>
 #include "arithmeticConcept.hpp"
 
-namespace Scene::Structure {
+namespace Scenes::Structure {
 
     template<typename Scalar> requires arithmetic<Scalar>
     struct Circle {

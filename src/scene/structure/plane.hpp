@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 
-namespace Scene::Structure {
+namespace Scenes::Structure {
     template<typename Scalar>
     struct Plane2;
 

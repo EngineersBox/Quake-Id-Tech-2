@@ -289,8 +289,8 @@ namespace Platform {
     }
 
     // viewport
-    Scene::Structure::Rectangle<float> PlatformImpl::getViewport() const {
-        Scene::Structure::Rectangle<float> viewport;
+    Scenes::Structure::Rectangle<float> PlatformImpl::getViewport() const {
+        Scenes::Structure::Rectangle<float> viewport;
         viewport.width = getScreenSize().x;
         viewport.height = getScreenSize().y;
         return viewport;

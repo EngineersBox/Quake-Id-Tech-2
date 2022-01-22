@@ -9,7 +9,7 @@ namespace GUI {
     struct GUILayout;
 }
 
-namespace Platform::State {
+namespace Platform::States {
 
     struct State : public boost::enable_shared_from_this<State> {
         State();

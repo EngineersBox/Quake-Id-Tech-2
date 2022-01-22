@@ -4,7 +4,7 @@
 #include "stateSystem.hpp"
 #include "state.hpp"
 
-namespace Platform::State {
+namespace Platform::States {
     StateSystem states;
 
     void StateSystem::tick(float dt) {
@@ -124,7 +124,7 @@ namespace Platform::State {
             }
         }
 
-        for (std::pair<boost::shared_ptr<State>, Platform::State::StateFlagsType> const& state : poppedStates) {
+        for (std::pair<boost::shared_ptr<State>, Platform::States::StateFlagsType> const& state : poppedStates) {
             if ((state.second & STATE_FLAG_RENDER) == STATE_FLAG_RENDER) state.first->onStopRender();
             if ((state.second & STATE_FLAG_INPUT) == STATE_FLAG_INPUT) state.first->onStopInput();
             if ((state.second & STATE_FLAG_TICK) == STATE_FLAG_TICK) state.first->onStopTick();

@@ -44,7 +44,7 @@ namespace GUI {
     };
 
     struct GUINode : public boost::enable_shared_from_this<GUINode> {
-        typedef Scene::Structure::AABB2<float> BoundsType;
+        typedef Scenes::Structure::AABB2<float> BoundsType;
         typedef glm::vec2 SizeType;
         typedef glm::vec4 ColorType;
 
@@ -54,8 +54,8 @@ namespace GUI {
         GUIDockMode getDockMode() const { return this->dockMode; }
         GUIAnchorFlagsType getAnchorFlags() const { return this->anchorFlags; }
         const glm::vec2& getAnchorOffset() const { return this->anchorOffset; }
-		const Scene::Structure::Padding<float>& getPadding() const { return this->padding; }
-		const Scene::Structure::Padding<float>& getMargin() const { return this->margin; }
+		const Scenes::Structure::Padding<float>& getPadding() const { return this->padding; }
+		const Scenes::Structure::Padding<float>& getMargin() const { return this->margin; }
         const GUISizeModes& getSizeModes() const { return this->sizeModes; }
         const GUISizeModes getSizeModesReal() const;
         const SizeType& getDesiredSize() const { return this->desiredSize; }
@@ -71,8 +71,8 @@ namespace GUI {
         void setDockMode(GUIDockMode dock_mode) { this->dockMode = dock_mode; dirty(); }
         void setAnchorFlags(GUIAnchorFlagsType anchor_flags) { this->anchorFlags = anchor_flags; dirty(); }
         void setAnchorOffset(const glm::vec2& anchor_offset) { this->anchorOffset = anchor_offset; dirty(); }
-        void setPadding(const Scene::Structure::Padding<float>& padding) { this->padding = padding; dirty(); }
-        void setMargin(const Scene::Structure::Padding<float>& margin) { this->margin = margin; dirty(); }
+        void setPadding(const Scenes::Structure::Padding<float>& padding) { this->padding = padding; dirty(); }
+        void setMargin(const Scenes::Structure::Padding<float>& margin) { this->margin = margin; dirty(); }
         void setSize(const SizeType& size) { this->desiredSize = size; dirty(); }
         void setSizeModes(const GUISizeModes size_modes) { this->sizeModes = size_modes; dirty(); }
         void setColor(const ColorType& color) { this->color = color; dirty(); }
@@ -109,8 +109,8 @@ namespace GUI {
         GUIDockMode dockMode = GUIDockMode::NONE;
         GUIAnchorFlagsType anchorFlags = (GUI_ANCHOR_FLAG_TOP | GUI_ANCHOR_FLAG_LEFT);
         SizeType anchorOffset;
-        Scene::Structure::Padding<float> padding;
-        Scene::Structure::Padding<float> margin;
+        Scenes::Structure::Padding<float> padding;
+        Scenes::Structure::Padding<float> margin;
         SizeType size;
         SizeType desiredSize;
         ColorType color = ColorType(1.0f);

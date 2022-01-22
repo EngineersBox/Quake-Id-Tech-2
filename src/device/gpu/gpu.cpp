@@ -662,10 +662,10 @@ namespace Device::GPU {
 
     GpuViewportType Gpu::ViewportManager::pop() {
         if (viewports.empty()) throw std::exception();
-        const Scene::Structure::Rectangle<float>& previousViewport = viewports.top();
+        const Scenes::Structure::Rectangle<float>& previousViewport = viewports.top();
 
         viewports.pop();
-        const Scene::Structure::Rectangle<int> topViewport = static_cast<Scene::Structure::Rectangle<int>>(top());
+        const Scenes::Structure::Rectangle<int> topViewport = static_cast<Scenes::Structure::Rectangle<int>>(top());
         glViewport(
                 topViewport.x,
                 topViewport.y,
@@ -1044,7 +1044,7 @@ namespace Device::GPU {
     }
 
     std::unique_ptr<unsigned char[]> Gpu::getBackbufferPixels(int& width, int& height) {
-        Scene::Structure::Rectangle<float> viewport = this->viewports.top();
+        Scenes::Structure::Rectangle<float> viewport = this->viewports.top();
         width = static_cast<int>(viewport.width);
         height = static_cast<int>(viewport.height);
         std::unique_ptr<unsigned char[]> pixels(new unsigned char[width * height * 4]);

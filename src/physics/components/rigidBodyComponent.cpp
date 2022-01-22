@@ -86,11 +86,11 @@ namespace Physics::Components {
         ptr->setCenterOfMassTransform(xform);
     }
 
-    Scene::Structure::AABB3<float> RigidBodyComponent::getAABB() const {
+    Scenes::Structure::AABB3<float> RigidBodyComponent::getAABB() const {
         btVector3 min, max;
         ptr->getAabb(min, max);
 
-        return Scene::Structure::AABB3<float>(glm::vec3(min.x(), min.y(), min.z()), glm::vec3(max.x(), max.y(), max.z()));
+        return Scenes::Structure::AABB3<float>(glm::vec3(min.x(), min.y(), min.z()), glm::vec3(max.x(), max.y(), max.z()));
     }
 
     void RigidBodyComponent::setPose(const Models::Pose3<float>& pose) {

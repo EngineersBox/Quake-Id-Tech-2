@@ -13,7 +13,7 @@ namespace Logic {
     namespace Structures {
         template<typename ScalarType> requires std::floating_point<ScalarType>
         struct OctTree {
-            using BoundsType = Scene::Structure::AABB3<ScalarType>;
+            using BoundsType = Scenes::Structure::AABB3<ScalarType>;
             using Type = OctTree<ScalarType>;
             using ChildrenType = std::array<boost::shared_ptr<Type>, 8>;
 

@@ -22,7 +22,7 @@ namespace Physics::Components {
         Models::Pose3<float> getPose() const;
         float getMass() const;
         glm::vec3 getCenterOfMass() const;
-        Scene::Structure::AABB3<float> getAABB() const;
+        Scenes::Structure::AABB3<float> getAABB() const;
 
         void setPose(const Models::Pose3<float>& pose);
         void setMass(float mass);

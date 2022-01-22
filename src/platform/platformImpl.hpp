@@ -35,7 +35,7 @@ namespace Platform {
         virtual void setScreenSize(const glm::vec2& screenSize) const override;
 
         //viewport
-        virtual Scene::Structure::Rectangle<float> getViewport() const override;
+        virtual Scenes::Structure::Rectangle<float> getViewport() const override;
 
         //fullscreen
         virtual bool isFullscreen() const override;

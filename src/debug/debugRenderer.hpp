@@ -76,7 +76,7 @@ namespace Debug::Renderer {
     }
 
     template<typename T>
-    void renderRectangle(const glm::mat4& world_matrix, const glm::mat4& view_projection_matrix, const Scene::Structure::Rectangle<T>& rectangle, const glm::vec4& color, bool is_filled = false) {
+    void renderRectangle(const glm::mat4& world_matrix, const glm::mat4& view_projection_matrix, const Scenes::Structure::Rectangle<T>& rectangle, const glm::vec4& color, bool is_filled = false) {
         typedef Device::GPU::Buffers::VertexBuffer<Device::GPU::Shaders::Programs::BasicShader::VertexType> VertexBufferType;
         typedef Device::GPU::Buffers::IndexBuffer<unsigned char> IndexBufferType;
 
@@ -123,7 +123,7 @@ namespace Debug::Renderer {
     void renderAxes(const glm::mat4& world_matrix, const glm::mat4& view_projection_matrix);
 
     template<typename T>
-    void renderAabb(const glm::mat4& world_matrix, const glm::mat4& view_projection_matrix, const Scene::Structure::AABB3<T>& aabb, const glm::vec4& color) {
+    void renderAabb(const glm::mat4& world_matrix, const glm::mat4& view_projection_matrix, const Scenes::Structure::AABB3<T>& aabb, const glm::vec4& color) {
         typedef Device::GPU::Buffers::VertexBuffer<Device::GPU::Shaders::Programs::BasicShader::VertexType> VertexBufferType;
         typedef Device::GPU::Buffers::IndexBuffer<unsigned char> IndexBufferType;
         typedef VertexBufferType::VertexType VertexType;
@@ -171,7 +171,7 @@ namespace Debug::Renderer {
     }
 
     template<typename T>
-    void renderSphere(const glm::mat4& world_matrix, const glm::mat4& view_projection_matrix, const Scene::Structure::Sphere<T>& sphere, const glm::vec4& color) {
+    void renderSphere(const glm::mat4& world_matrix, const glm::mat4& view_projection_matrix, const Scenes::Structure::Sphere<T>& sphere, const glm::vec4& color) {
         typedef Device::GPU::Buffers::VertexBuffer<Device::GPU::Shaders::Programs::BasicShader::VertexType> VertexBufferType;
         typedef Device::GPU::Buffers::IndexBuffer<unsigned char> IndexBufferType;
 

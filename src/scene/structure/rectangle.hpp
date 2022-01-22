@@ -6,7 +6,7 @@
 #include "aabb.hpp"
 #include "arithmeticConcept.hpp"
 
-namespace Scene {
+namespace Scenes {
     namespace Structure {
         template<typename Scalar>
         struct Rectangle;

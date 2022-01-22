@@ -24,7 +24,7 @@ namespace Platform::Game::Components {
         float roll = 0.0f;
         ProjectionType projectionType = ProjectionType::PERSPECTIVE;
 
-        Scene::Structure::Line3<float> getRay(const Device::GPU::GpuViewportType& viewport, const glm::vec2& sreenLocation) const;
+        Scenes::Structure::Line3<float> getRay(const Device::GPU::GpuViewportType& viewport, const glm::vec2& sreenLocation) const;
         CameraParameters getParameters(const Device::GPU::GpuViewportType& viewport) const;
 
         std::string getComponentName() const override { return Platform::Game::Components::CameraComponent::componentName; }

@@ -11,7 +11,7 @@
 
 #include <glm/gtx/quaternion.hpp>
 
-namespace Scene::Structure {
+namespace Scenes::Structure {
     template<typename Scalar>
     struct Padding;
 

@@ -17,7 +17,7 @@
 #include "../components/cameraParams.hpp"
 #include "../components/gameComponent.hpp"
 
-namespace Scene { struct Scene; }
+namespace Scenes { struct Scene; }
 namespace Input { struct InputEvent; }
 
 namespace Platform::Game::Objects {
@@ -54,10 +54,10 @@ namespace Platform::Game::Objects {
             return boost::static_pointer_cast<T, Components::GameComponent>(entry->second);
         }
 
-        const boost::shared_ptr<Scene::Scene>& getScene() const { return this->scene; }
+        const boost::shared_ptr<Scenes::Scene>& getScene() const { return this->scene; }
         size_t getId() const { return this->id; }
 
-        boost::shared_ptr<Scene::Scene> scene;
+        boost::shared_ptr<Scenes::Scene> scene;
     private:
         friend struct Scene;
 

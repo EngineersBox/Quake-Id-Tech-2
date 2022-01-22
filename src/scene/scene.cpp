@@ -7,7 +7,7 @@
 #include "../resources/resourceManager.hpp"
 #include "../rendering/scene/bsp/bsp.hpp"
 
-namespace Scene {
+namespace Scenes {
     Scene::Scene() {
         this->octtree = Logic::Structures::OctTree<float>();
         this->physics = boost::make_shared<Physics::PhysicsSimulation>();

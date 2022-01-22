@@ -12,7 +12,7 @@ namespace Core {
     };
 
     struct WindowEvent {
-        typedef Scene::Structure::Rectangle<unsigned short> RectangleType;
+        typedef Scenes::Structure::Rectangle<unsigned short> RectangleType;
 
         WindowEventType type;
         RectangleType rectangle;

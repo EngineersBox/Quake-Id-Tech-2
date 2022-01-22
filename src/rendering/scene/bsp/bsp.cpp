@@ -706,7 +706,7 @@ namespace Rendering::Scene {
 
         while (nodeIndex >= 0) {
             const Node& node = this->nodes[nodeIndex];
-            const ::Scene::Structure::Plane3<float>& plane = this->planes[node.planeIndex].plane;
+            const ::Scenes::Structure::Plane3<float>& plane = this->planes[node.planeIndex].plane;
 
             if (glm::dot(plane.normal, (location - plane.origin())) >= 0) {
                 nodeIndex = node.childIndices[0];

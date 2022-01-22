@@ -31,7 +31,7 @@ namespace Device::GPU {
     typedef ValueWrapper<int, -1>	GpuLocation;
     typedef ValueWrapper<unsigned int, 0>	GpuIndex;
 
-    typedef Scene::Structure::Rectangle<float> GpuViewportType;
+    typedef Scenes::Structure::Rectangle<float> GpuViewportType;
     typedef unsigned char GpuClearFlagType;
     typedef glm::vec2 GpuFrameBufferSizeType;
     typedef unsigned char GpuFrameBufferTypeFlagsType;

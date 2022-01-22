@@ -9,8 +9,8 @@
 #include "../../gui/guiLayout.hpp"
 
 
-namespace Platform::State {
-    State::State() {
+namespace Platform::States {
+    States::State() {
         this->layout = boost::make_shared<GUI::GUILayout>();
         this->layout->setDockMode(GUI::GUIDockMode::FILL);
     }
