@@ -11,7 +11,7 @@ namespace GUI {
 
 namespace Platform::States {
 
-    struct State : public boost::enable_shared_from_this<State> {
+    struct State : boost::enable_shared_from_this<State> {
         State();
 
         virtual void tick(float dt);

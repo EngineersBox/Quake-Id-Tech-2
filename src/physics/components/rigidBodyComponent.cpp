@@ -42,12 +42,12 @@ namespace Physics::Components {
         getOwner()->getScene()->getPhysics()->removeRigidBody(shared_from_this());
     }
 
-    Models::Pose3<float> RigidBodyComponent::getPose() const {
+    Platform::Game::Models::Pose3<float> RigidBodyComponent::getPose() const {
         const auto& world_transform = ptr->getWorldTransform();
         const auto& location = world_transform.getOrigin();
         const auto& rotation = world_transform.getRotation();
 
-        Models::Pose3<float> pose;
+        Platform::Game::Models::Pose3<float> pose;
         pose.location.x = location.x();
         pose.location.y = location.y();
         pose.location.z = location.z();

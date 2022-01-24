@@ -15,7 +15,9 @@ class btDefaultCollisionConfiguration;
 class btMultiBodyConstraintSolver;
 
 namespace Physics {
-    struct RigidBodyComponent;
+    namespace Components {
+        struct RigidBodyComponent;
+    }
 
     struct PhysicsSimulation {
         PhysicsSimulation();
@@ -25,8 +27,8 @@ namespace Physics {
         void setGravity(const glm::vec3& gravity);
         [[nodiscard]] glm::vec3 getGravity() const;
 
-        void addRigidBody(const boost::shared_ptr<RigidBodyComponent>& rigid_body);
-        void removeRigidBody(const boost::shared_ptr<RigidBodyComponent>& rigid_body);
+        void addRigidBody(const boost::shared_ptr<Components::RigidBodyComponent>& rigid_body);
+        void removeRigidBody(const boost::shared_ptr<Components::RigidBodyComponent>& rigid_body);
 
         [[nodiscard]] Rendering::Query::TraceResult trace(const glm::vec3& start, const glm::vec3& end) const;
 

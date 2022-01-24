@@ -12,7 +12,7 @@
 namespace Platform::Game::Objects {
     struct GameObject;
 
-    struct GameObjectCollection :  public boost::enable_shared_from_this<GameObjectCollection> {
+    struct GameObjectCollection : boost::enable_shared_from_this<GameObjectCollection> {
         typedef boost::shared_ptr<GameObject> type;
 
         void add(type& game_object);

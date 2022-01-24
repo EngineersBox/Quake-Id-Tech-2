@@ -1,5 +1,5 @@
 #include "physicsSimulation.hpp"
-//#include "rigidBodyComponent.hpp"
+#include "components/rigidBodyComponent.hpp"
 
 #include <bullet/btBulletDynamicsCommon.h>
 #include <bullet/BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.h>
@@ -45,12 +45,12 @@ namespace Physics {
         return glm::vec3(gravity.getX(), gravity.getY(), gravity.getZ());
     }
 
-    void PhysicsSimulation::addRigidBody(const boost::shared_ptr<RigidBodyComponent>& rigid_body) {
-        dynamicsWorld->addRigidBody(rigid_body->get_ptr());
+    void PhysicsSimulation::addRigidBody(const boost::shared_ptr<Components::RigidBodyComponent>& rigid_body) {
+        dynamicsWorld->addRigidBody(rigid_body->getPtr());
     }
 
-    void PhysicsSimulation::removeRigidBody(const boost::shared_ptr<RigidBodyComponent>& rigid_body) {
-        dynamicsWorld->removeRigidBody(rigid_body->get_ptr());
+    void PhysicsSimulation::removeRigidBody(const boost::shared_ptr<Components::RigidBodyComponent>& rigid_body) {
+        dynamicsWorld->removeRigidBody(rigid_body->getPtr());
     }
 
     Rendering::Query::TraceResult PhysicsSimulation::trace(const glm::vec3& start, const glm::vec3& end) const {

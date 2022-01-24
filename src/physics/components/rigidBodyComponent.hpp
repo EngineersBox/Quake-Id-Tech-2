@@ -10,7 +10,7 @@ class btRigidBody;
 class btCollisionShape;
 
 namespace Physics::Components {
-    struct RigidBodyComponent : public Platform::Game::Components::GameComponent, public boost::enable_shared_from_this<RigidBodyComponent> {
+    struct RigidBodyComponent : Platform::Game::Components::GameComponent, boost::enable_shared_from_this<RigidBodyComponent> {
         static const char* component_name;
 
         RigidBodyComponent();
@@ -19,7 +19,7 @@ namespace Physics::Components {
         virtual void onCreate() override;
         virtual void onDestroy() override;
 
-        Models::Pose3<float> getPose() const;
+        Platform::Game::Models::Pose3<float> getPose() const;
         float getMass() const;
         glm::vec3 getCenterOfMass() const;
         Scenes::Structure::AABB3<float> getAABB() const;
