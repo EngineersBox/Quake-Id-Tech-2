@@ -10,7 +10,7 @@
 
 
 namespace Platform::States {
-    States::State() {
+    State::State() {
         this->layout = boost::make_shared<GUI::GUILayout>();
         this->layout->setDockMode(GUI::GUIDockMode::FILL);
     }

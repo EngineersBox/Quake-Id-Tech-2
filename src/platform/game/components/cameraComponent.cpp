@@ -1,6 +1,6 @@
 #include "cameraComponent.hpp"
 
-#include <glm/ext.hpp
+#include <glm/ext.hpp>
 
 #include "../../platform.hpp"
 #include "../../../device/gpu/gpu.hpp"

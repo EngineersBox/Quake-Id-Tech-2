@@ -70,7 +70,7 @@ public:
         Platform::platform.windowSize = glm::vec2(1280, 720);
         Platform::States::states.push(boost::make_shared<TestState>(), Platform::States::STATE_FLAG_ALL);
 
-        this->scene = Platform::Scenes::Scene();
+        this->scene = Scenes::Scene();
         this->camera = this->scene.createGameObject();
         auto platformCamera = Platform::Game::Components::CameraComponent();
         boost::shared_ptr<Platform::Game::Components::CameraComponent> cameraComponent = this->camera->addComponent(
